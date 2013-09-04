@@ -1,5 +1,5 @@
 import gc
-gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_INSTANCES | gc.DEBUG_OBJECTS)
+gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
 from tkinter import *
 import win32api, win32con, win32gui
 import time
@@ -21,9 +21,9 @@ def tempfilename(suffix = ''):
     return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep)
 
 path = os.path.dirname(tempfilename())
-shutil.rmtree(path)
-if not os.path.isdir(path):
-    os.mkdir(path)
+if os.path.isdir(path):
+    shutil.rmtree(path)
+os.mkdir(path)
 
 height = 1
 width = 1
@@ -630,17 +630,18 @@ class Ressource(Ressource):
 
     @property
     def relx(self):
-        assert pos, 'starte_kartenpositionsbestimmung() vorher'
         return self.x - self.pos[0]
 
     @property
     def rely(self):
-        assert pos, 'starte_kartenpositionsbestimmung() vorher'
         return self.y - self.pos[1]
+
+    def abstand_zu(self, other):
+        return ((self.relx - other.relx)**2 + (self.rely - other.rely)**2)**0.5
 
     @property
     def abstand_zum_dorf(self):
-        return ((self.relx - dorf.relx)**2 + (self.rely - dorf.rely)**2)**0.5
+        return self.abstand_zu(dorf)
 
     def __lt__(self, other):
         return self.abstand_zum_dorf < other.abstand_zum_dorf
@@ -651,12 +652,20 @@ class Ressource(Ressource):
                differenz_pixel**2
 
     def __hash__(self):
-        return hash(1)
+        return 1
 
     def set_pos(self, pos):
         while self.pos:
             self.pos.pop()
         self.pos.extend(pos)
+
+    def abstand_zu_gerade_zwischen(self, a, b):
+        if a == b: return self.abstand_zu(a)
+        dx = a.relx - b.relx
+        dy = a.rely - b.rely
+        u = ((a.relx - self.relx) * dy + (self.rely - a.rely) * dx) / (dy*dy + dx*dx)
+        return abs(u) * (dy*dy + dx*dx)**0.5
+        
 
 def sichte_ressourcen(zahl = 1000):
     res = set()
@@ -678,6 +687,8 @@ def sichte_ressourcen(zahl = 1000):
     
 ############################## Algorithmen
 
+andere_waren_nicht_dran_zeit = 0.5
+
 def algorithmus(funktion):
     def f(*args, **kw):
         schedule.schedule()
@@ -686,13 +697,20 @@ def algorithmus(funktion):
             try:
                 for timeout in iterator:
                     if not timeout: timeout = 0
-                    t = time.time() + timeout
+                    letztes_scheduling = now = time.time()
+                    ende = letztes_scheduling + timeout
                     schedule.schedule()
-                    while time.time() < t:
+                    while now < ende:
+                        # busy waiting
+                        if letztes_scheduling + andere_waren_nicht_dran_zeit > now:
+                            sleep_time = (1 if ende - letztes_scheduling > 1 else t - letztes_scheduling)
+                            time.sleep(sleep_time)
+                        letztes_scheduling = now
                         schedule.schedule()
+                        now = time.time()
             except KeyboardInterrupt: pass
             else: break
-    f.__name__ = function.__name__
+    f.__name__ = funktion.__name__
     f.__doc__ = funktion.__doc__
     return f
         
