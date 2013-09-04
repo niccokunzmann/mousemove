@@ -94,10 +94,11 @@ def move_mouse(x, y):
         time.sleep(0.01)
     win32api.SetCursorPos((posx, posy))
 
-def mouse_drag(from_x, from_y, to_x, to_y):
+def mouse_drag(from_x, from_y, to_x, to_y, sleep = 0):
     move_mouse(from_x, from_y)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,from_x,from_y,0,0)
     move_mouse(to_x, to_y)
+    time.sleep(sleep)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,to_x,to_y,0,0)
 
 def rechts(x, y):
@@ -611,8 +612,7 @@ def scrolle_um(x, y):
         from_y = mittey + sy - sy //2
         x-= sx
         y -= sy
-        mouse_drag(from_x, from_y, to_x, to_y)
-        time.sleep(0.9)
+        mouse_drag(from_x, from_y, to_x, to_y, sleep = 0.9)
         pos[0]-= sx
         pos[1]-= sy
     scrolle_um(*scroll_back)
@@ -672,7 +672,7 @@ def sichte_ressourcen(zahl = 1000):
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(-h,b),(-b,-h)]:
+    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(-b,h),(-b,-h)]:
         if last != (0,0):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
