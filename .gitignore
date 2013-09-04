@@ -213,4 +213,13 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+## unser zeug
+
 /*.out
+/Scripts/r0.PNG
+/Scripts/r1.PNG
+/Scripts/r2.PNG
+/Scripts/r3.PNG
+/Scripts/r4.PNG
+
