@@ -11,7 +11,10 @@ PORT = 5083
 ADDRESS = ('localhost', PORT)
 
 def debug_file():
-    return open('server.out', 'a', encoding = 'utf8')
+    f = open('server.out', 'a', encoding = 'utf8')
+    if f.tell() == 0:
+        f.write('\ufeff') # BOM
+    return f
 
 def debug(*args):
 ##    print(*args)
