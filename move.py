@@ -679,8 +679,24 @@ def sichte_ressourcen(zahl = 1000):
 ############################## Algorithmen
 
 def algorithmus(funktion):
-    
-
+    def f(*args, **kw):
+        schedule.schedule()
+        iterator = funktion(*args, **kw)
+        while 1:
+            try:
+                for timeout in iterator:
+                    if not timeout: timeout = 0
+                    t = time.time() + timeout
+                    schedule.schedule()
+                    while time.time() < t:
+                        schedule.schedule()
+            except KeyboardInterrupt: pass
+            else: break
+    f.__name__ = function.__name__
+    f.__doc__ = funktion.__doc__
+    return f
+        
+@algorithmus
 def test_erkunde_ressourcen(kundschafter = 3):
     def start():
         öffne_spiel()
@@ -717,14 +733,14 @@ def test_erkunde_ressourcen(kundschafter = 3):
                     else:
                         break
             print('kein Kundschafter mehr')
-            time.sleep(60)
+            yield 60
         except KeyboardInterrupt:
             while 1:
                 try:
                     rrr = input('Keyboardinterrupt - pausiert. zum fortsetzen ENTER, zum beenden etwas anderes und ENTER')
                 except KeyboardInterrupt: continue                
                 if rrr:
-                    raise KeyboardInterrupt()
+                    return
                 start()
                 break
                 
