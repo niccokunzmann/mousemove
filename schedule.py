@@ -13,7 +13,7 @@ def serve():
     listener = socket.socket()
     try:
         listener.bind(ADDRESS)
-    except ():
+    except socket.error:
         print('Es wurde schon ein server gestartet.')
         return
     else:
