@@ -137,7 +137,7 @@ Func defineResearch()
 		EndIf
 	Next
 	If $name Then
-		Send(@DesktopDir &"\Scripts")
+		Send(@WorkingDir)
 		Sleep(500)
 		Send("{ENTER}")
 		Sleep(500)
