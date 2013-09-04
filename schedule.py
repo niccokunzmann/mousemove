@@ -5,19 +5,31 @@ import select
 import time
 import subprocess
 import sys
+import traceback
 
 PORT = 5083
 ADDRESS = ('localhost', PORT)
+
+def debug_file():
+    f = open('server.out', 'a', encoding = 'utf8')
+    if f.tell() == 0:
+        f.write('\ufeff') # BOM
+    return f
+
+def debug(*args):
+##    print(*args)
+    with debug_file() as f:
+        print(*args, file = f)
 
 def serve():
     listener = socket.socket()
     try:
         listener.bind(ADDRESS)
-    except ():
-        print('Es wurde schon ein server gestartet.')
+    except socket.error:
+        debug('Es wurde schon ein server gestartet.')
         return
     else:
-        print('Server wurde gestartet auf', ADDRESS)
+        debug('Server wurde gestartet auf', ADDRESS)
     listener.listen(1)
     connections = []
     has_token = listener # ich bin an der reihe
@@ -27,7 +39,7 @@ def serve():
         if has_token == connection:
             has_token = listener
         connections.remove(connection)
-        print('Verbindung verloren zu', addrs[connection])
+        debug('Verbindung verloren zu', addrs[connection])
     while 1:
         try:
             readers = select.select(connections + [listener], [], [])[0]
@@ -41,7 +53,7 @@ def serve():
                 sock, addr = listener.accept()
                 sock.setblocking(0)
                 addrs[sock] = addr
-                print('verbunden hat sich', addr[0], ':', addr[1])
+                debug('verbunden hat sich', addr[0], ':', addr[1])
                 connections.insert(0, sock)
             else:
                 try:
@@ -52,10 +64,10 @@ def serve():
                     if not byte:
                         connection_kaputt(connection)
                     elif has_token != connection:
-                        print('Meinte wohl, wäre dran!', addrs[connection])
+                        debug('Meinte wohl, wäre dran!', addrs[connection])
                         connection.close()
                     else:
-                        print('Will nciht mehr dran sein:', addrs[connection])
+                        debug('Will nicht mehr dran sein:', addrs[connection])
                         has_token = listener
         if connections and has_token == listener:
             connection = connections.pop(0)
@@ -67,17 +79,16 @@ def serve():
             else:
                 if bytes_sent == 1:
                     has_token = connection
-                    print("Der ist dran:", addrs[connection])
+                    debug("Der ist dran:", addrs[connection])
         elif not connections:
-            print('keine Verbindungen, schließe!')
+            debug('keine Verbindungen, schließe!')
             break
 
 server_process = None
 
 def start_dedicated_server():
     global server_process
-    server_process = subprocess.Popen([sys.executable, __file__], \
-                                      stdout = open('server.out', 'ab'))
+    server_process = subprocess.Popen([sys.executable, __file__])
 
 connection = None
 ich_bin_dran = False
@@ -129,4 +140,7 @@ def schedule():
                 break
 
 if __name__ == '__main__':
-    serve()
+    try:
+        serve()
+    except:
+        traceback.print_exc(file = debug_file())

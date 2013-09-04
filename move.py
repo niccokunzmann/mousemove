@@ -1,5 +1,5 @@
 import gc
-gc.set_debug(gc.DEBUG_UNCOLLECTABLE | gc.DEBUG_INSTANCES | gc.DEBUG_OBJECTS)
+gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
 from tkinter import *
 import win32api, win32con, win32gui
 import time
@@ -21,9 +21,9 @@ def tempfilename(suffix = ''):
     return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep)
 
 path = os.path.dirname(tempfilename())
-shutil.rmtree(path)
-if not os.path.isdir(path):
-    os.mkdir(path)
+if os.path.isdir(path):
+    shutil.rmtree(path)
+os.mkdir(path)
 
 height = 1
 width = 1
@@ -94,10 +94,11 @@ def move_mouse(x, y):
         time.sleep(0.01)
     win32api.SetCursorPos((posx, posy))
 
-def mouse_drag(from_x, from_y, to_x, to_y):
+def mouse_drag(from_x, from_y, to_x, to_y, sleep = 0):
     move_mouse(from_x, from_y)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,from_x,from_y,0,0)
     move_mouse(to_x, to_y)
+    time.sleep(sleep)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,to_x,to_y,0,0)
 
 def rechts(x, y):
@@ -611,8 +612,7 @@ def scrolle_um(x, y):
         from_y = mittey + sy - sy //2
         x-= sx
         y -= sy
-        mouse_drag(from_x, from_y, to_x, to_y)
-        time.sleep(0.9)
+        mouse_drag(from_x, from_y, to_x, to_y, sleep = 0.9)
         pos[0]-= sx
         pos[1]-= sy
     scrolle_um(*scroll_back)
@@ -630,17 +630,18 @@ class Ressource(Ressource):
 
     @property
     def relx(self):
-        assert pos, 'starte_kartenpositionsbestimmung() vorher'
         return self.x - self.pos[0]
 
     @property
     def rely(self):
-        assert pos, 'starte_kartenpositionsbestimmung() vorher'
         return self.y - self.pos[1]
+
+    def abstand_zu(self, other):
+        return ((self.relx - other.relx)**2 + (self.rely - other.rely)**2)**0.5
 
     @property
     def abstand_zum_dorf(self):
-        return ((self.relx - dorf.relx)**2 + (self.rely - dorf.rely)**2)**0.5
+        return self.abstand_zu(dorf)
 
     def __lt__(self, other):
         return self.abstand_zum_dorf < other.abstand_zum_dorf
@@ -651,19 +652,27 @@ class Ressource(Ressource):
                differenz_pixel**2
 
     def __hash__(self):
-        return hash(1)
+        return 1
 
     def set_pos(self, pos):
         while self.pos:
             self.pos.pop()
         self.pos.extend(pos)
 
+    def abstand_zu_gerade_zwischen(self, a, b):
+        if a == b: return self.abstand_zu(a)
+        dx = a.relx - b.relx
+        dy = a.rely - b.rely
+        u = ((a.relx - self.relx) * dy + (self.rely - a.rely) * dx) / (dy*dy + dx*dx)
+        return abs(u) * (dy*dy + dx*dx)**0.5
+        
+
 def sichte_ressourcen(zahl = 1000):
     res = set()
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(-h,b),(-b,-h)]:
+    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(-b,h),(-b,-h)]:
         if last != (0,0):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
@@ -678,9 +687,34 @@ def sichte_ressourcen(zahl = 1000):
     
 ############################## Algorithmen
 
-def algorithmus(funktion):
-    
+andere_waren_nicht_dran_zeit = 0.5
 
+def algorithmus(funktion):
+    def f(*args, **kw):
+        schedule.schedule()
+        iterator = funktion(*args, **kw)
+        while 1:
+            try:
+                for timeout in iterator:
+                    if not timeout: timeout = 0
+                    letztes_scheduling = now = time.time()
+                    ende = letztes_scheduling + timeout
+                    schedule.schedule()
+                    while now < ende:
+                        # busy waiting
+                        if letztes_scheduling + andere_waren_nicht_dran_zeit > now:
+                            sleep_time = (1 if ende - letztes_scheduling > 1 else t - letztes_scheduling)
+                            time.sleep(sleep_time)
+                        letztes_scheduling = now
+                        schedule.schedule()
+                        now = time.time()
+            except KeyboardInterrupt: pass
+            else: break
+    f.__name__ = funktion.__name__
+    f.__doc__ = funktion.__doc__
+    return f
+        
+@algorithmus
 def test_erkunde_ressourcen(kundschafter = 3):
     def start():
         öffne_spiel()
@@ -717,14 +751,14 @@ def test_erkunde_ressourcen(kundschafter = 3):
                     else:
                         break
             print('kein Kundschafter mehr')
-            time.sleep(60)
+            yield 60
         except KeyboardInterrupt:
             while 1:
                 try:
                     rrr = input('Keyboardinterrupt - pausiert. zum fortsetzen ENTER, zum beenden etwas anderes und ENTER')
                 except KeyboardInterrupt: continue                
                 if rrr:
-                    raise KeyboardInterrupt()
+                    return
                 start()
                 break
                 
