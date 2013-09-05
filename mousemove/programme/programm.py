@@ -1,6 +1,9 @@
 from .. import schedule
 from ..navigation import beep
 from ..errorhandling import report_exc
+from .. import config
+
+import time
 
 andere_waren_nicht_dran_zeit = 0.5
 
@@ -8,6 +11,7 @@ def programm(funktion):
     def f(*args, **kw):
         schedule.schedule()
         iterator = funktion(*args, **kw)
+        config.load()
         while 1:
             try:
                 for timeout in iterator:

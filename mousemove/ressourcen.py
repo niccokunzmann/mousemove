@@ -54,7 +54,7 @@ class Ressource(Ressource):
         if not isinstance(self.x, int): raise TypeError('x is {} but should be an int'.format(self.x))
         if not isinstance(self.y, int): raise TypeError('y is {} but should be an int'.format(self.y))
         if not isinstance(self.pos, list): raise TypeError('pos is {} but should be a list'.format(self.pos))
-        if not len(self.pos) not in (0, 2): raise TypeError('pos is {} but should be of length 0 or 2'.format(self.pos))
+        if len(self.pos) not in (0, 2): raise TypeError('pos is {} but should be of length 0 or 2'.format(self.pos))
         if self.pos and not isinstance(self.pos[0], int): raise TypeError('pos[0] is {} but should be an int'.format(self.pos[0]))
         if self.pos and not isinstance(self.pos[1], int): raise TypeError('pos[1] is {} but should be an int'.format(self.pos[1]))
     
@@ -99,7 +99,7 @@ class Ressource(Ressource):
         return self.abstand_zum_dorf / self.priorität
 
     def __lt__(self, other):
-        return self.abstand_zum_dorf < other.abstand_zum_dorf
+        return self.sortier_priorität < other.sortier_priorität
 
     def __eq__(self, other):
         differenz_pixel = 70 # 100 vielleicht?
@@ -123,7 +123,13 @@ class Ressource(Ressource):
 
     def gibt_ehre_beim_erkunden(self):
         return self.name.lower() == 'ressourcen'
-        
+
+    def format_for_print(self, *args):
+        return '{:<15} {:4.0f}({:4.2f}) {} {}'.format(self.name, \
+                                                      self.abstand_zum_dorf, \
+                                                      self.sortier_priorität,
+                                                      ' '.join(map(str, args)),\
+                                                      self)
 
 def sichte_ressourcen(zahl = 1000):
     res = set()
