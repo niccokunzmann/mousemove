@@ -11,6 +11,8 @@ import collections
 import pywintypes
 import shutil
 import schedule
+import config
+from constants import *
 
 
 ## get mouse position
@@ -335,15 +337,82 @@ def screenshot():
         filename = _screenshot[0]
     return PIL.Image.open(filename)
 
-##def pil2tkinter_image(img, master = None):
-##    x0, y0, width, height = img.getbbox()
-##    print(img.getbbox())
-##    pi = PhotoImage(master = master, width = width - x0, height = height - y0)
-##    for x in range(x0, width):
-##        for y in range(y0, height):
-##            pi.put('{#%02X%02X%02X}' % img.getpixel((x, y)), (x - x0, y - y0))
-##    return pi
-##    
+def pil2tkinter_image(img, master = None):
+    if isinstance(img, str):
+        img = open_image(img)
+    x0, y0, width, height = img.getbbox()
+    l = []
+    for y in range(y0, height):
+        l.append('{')
+        for x in range(x0, width):
+            l.append('#%02X%02X%02X' % img.getpixel((x, y)))
+        l.append('}')
+    data = ' '.join(l)
+    pi = PhotoImage(master = master)
+    pi.put(data, (0,0))
+    return pi
+
+
+
+def configure_ressources():
+    t = Tk()
+    t.title('Ressourcen Konfigurieren')
+    image = pil2tkinter_image('RessourcenKonfigurationHintergrund', t)
+    l = Label(t, image = image)
+    l.pack()
+    b = Button(t, command = t.quit, text = 'OK')
+    b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+    t.resizable(width=FALSE, height=FALSE)
+    entry1 = lambda x: entry(x, 109)
+    entry2 = lambda x: entry(x, 270)
+    def entry(x, y):
+        spin = Spinbox(t, width = 6, increment = 10,
+                       validate = ALL,
+                       justify = LEFT,
+                       invalidcommand = t.bell,
+                       to = 1000,
+                       )
+        v = IntVar(spin)
+        spin.config({"from": 1}, textvariable = v)
+        spin.place(x = x, y = y, anchor = CENTER)
+        return v
+    entries = dict(
+        holz = entry1(45),
+        stein = entry1(125),
+        eisen = entry1(205),
+        pech = entry1(285),
+        wild = entry1(380),
+        möbel = entry1(460),
+        metallwaren = entry1(540),
+        kleidung = entry1(620),
+        wein = entry1(700),
+        salz = entry1(780),
+        gewürze = entry1(860),
+        seide = entry1(940),
+        
+        äpfel = entry2(45),
+        käse = entry2(125),
+        fleisch = entry2(205),
+        brot = entry2(285),
+        gemüse = entry2(365),
+        fisch = entry2(445),
+        bier = entry2(530),)
+    config.load()
+    for name, var in entries.items():
+        prio = config.ressourcen_prioritäten[name]
+        var.set(prio)
+    t.bind('<Escape>', lambda e: t.quit())
+    t.protocol("WM_DELETE_WINDOW", t.quit)
+    try:
+        t.mainloop()
+        config.load()
+        for name, var in entries.items():
+            config.ressourcen_prioritäten[name] = var.get()
+        config.save()
+    finally:
+        t.destroy()
+
+    
 ##
 ##def capture_button_image(name):
 ##    t = Tk()
@@ -617,6 +686,12 @@ def scrolle_um(x, y):
         pos[1]-= sy
     scrolle_um(*scroll_back)
 
+config.load()
+
+if not hasattr(config, 'ressourcen_prioritäten'):
+    config.ressourcen_prioritäten = collections.defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT)
+    config.save()
+
 class Ressource(Ressource):
     def scrolle_hin(self):
         assert pos, 'starte_kartenpositionsbestimmung() vorher'
@@ -627,6 +702,13 @@ class Ressource(Ressource):
         v = ressource_erkunden(self.x, self.y)
         starte_kartenpositionsbestimmung()
         return v
+
+    @property
+    def priorität(self):
+        prio = config.ressourcen_prioritäten[self.name.lower()]
+        if prio <= 1:
+            return 1
+        return prio
 
     @property
     def relx(self):
@@ -642,6 +724,10 @@ class Ressource(Ressource):
     @property
     def abstand_zum_dorf(self):
         return self.abstand_zu(dorf)
+
+    @property
+    def sortier_priorität(self):
+        return self.abstand_zum_dorf / self.priorität
 
     def __lt__(self, other):
         return self.abstand_zum_dorf < other.abstand_zum_dorf
@@ -783,5 +869,5 @@ def test_erkunde_ressourcen1():
 
 
 if __name__ == '__main__':
-    test_erkunde_ressourcen()
+    configure_ressources()
 
