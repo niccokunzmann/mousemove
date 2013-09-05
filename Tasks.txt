@@ -1,0 +1,11 @@
+
+Scripte, die benutzt werden können, habe ich in den ordner main getan
+
+- autorekrutieren
+- bergfried reparieren/herstellen/truppen hinstellen
+- kundschafter auf karte erkennen
+	- kundschafter abbrechen wenn ressource erkundet
+	
+- automatisch stufen aufsteigen (vl mit forschung)
+- ressourcen verkaufen
+	- zahlen auf bildschirm erkennen
