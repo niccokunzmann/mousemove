@@ -1,6 +1,8 @@
-import .ressourcen
+from .navigation import *
+from .positionen import *
 
 def ressourcen_positionen(*args):
+    from . import ressourcen
     return ressourcen.ressourcen_positionen(*args)
 
 def sign(i):
@@ -8,27 +10,28 @@ def sign(i):
     return i // abs(i)
 
 def zerstöre_positionsbestimmung():
-    global pos
-    pos = []
+    global _pos
+    _pos = []
 
 zerstöre_positionsbestimmung()
 _dorf = None
 
 def starte_kartenpositionsbestimmung():
-    global pos, dorf
+    global _pos, _dorf
+    from .ressourcen import Ressource
     öffne_karte()
     öffne_dorf_auf_karte()
     x = breite_der_karte() // 2
     y = höhe_der_karte() // 2
     _dorf = Ressource('Dorf', x, y, [x, y])
-    pos = [dorf.x, dorf.y]
-
+    _pos = [dorf().x, dorf().y]
 
 @im_menu('karte')
 def scrolle_um(x, y):
-    assert pos, 'starte_kartenpositionsbestimmung() vorher'
+    assert pos(), 'starte_kartenpositionsbestimmung() vorher'
     if x == 0 and y == 0: return
-    *__, mittex, mittey = _karten_koordinaten()
+    from . import mouse
+    *__, mittex, mittey = karten_koordinaten()
     max_scroll_x = breite_der_karte() // 2
     max_scroll_y = höhe_der_karte() // 2
     scroll_back = 0, 0
@@ -40,20 +43,22 @@ def scrolle_um(x, y):
             sy += 30
             assert scroll_back == (0, 0)
             scroll_back = -30, -30
-##        print(sx, sy, x, y, max_scroll_x, max_scroll_y)
         to_x = mittex - sx //2
         to_y = mittey - sy //2
         from_x = mittex + sx - sx //2
         from_y = mittey + sy - sy //2
         x-= sx
         y -= sy
-        mouse_drag(from_x, from_y, to_x, to_y, sleep = 0.9)
-        pos[0]-= sx
-        pos[1]-= sy
+        mouse.drag(from_x, from_y, to_x, to_y, sleep = 0.9)
+        _pos[0]-= sx
+        _pos[1]-= sy
     scrolle_um(*scroll_back)
 
 def dorf():
     return _dorf
 
+def pos():
+    return _pos[:]
+
 __all__ = 'dorf scrolle_um starte_kartenpositionsbestimmung'\
-          ' zerstöre_positionsbestimmung'.split()
+          ' zerstöre_positionsbestimmung pos'.split()

@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 
-try: import .files
+try: from . import files
 except ImportError: import files
 
 def screenshot():

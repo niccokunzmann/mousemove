@@ -1,16 +1,19 @@
-import .screenshot as _screenshot
+import os
 import PIL.Image
-import files
-from Tkinter import PhotoImage
+from tkinter import PhotoImage
+import time
+
+from . import files
 
 _screenshot = (None, 0) # filename, time
 
 def screenshot():
+    from . import screenshot
     global _screenshot
     now = time.time()
     if now - 0.05 > _screenshot[1]:
-        import screenshot
-        filename = _screenshot.screenshot()
+        from . import screenshot
+        filename = screenshot.screenshot()
         _screenshot = filename, now
     else:
         filename = _screenshot[0]
@@ -63,9 +66,12 @@ def open_image(image):
     return PIL.Image.open(image)
 
 
+def bild_positionen(*args, **kw):
+    from .positionen import bild_positionen
+    return bild_positionen(*args, **kw)
 
 __all__ = 'screenshot last_screenshot_file_name pil2tkinter_image open_image'\
-          ''.split()
+          ' bild_positionen'.split()
 
 
 

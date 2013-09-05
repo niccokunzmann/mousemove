@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 from images import pil2tkinter_image
 
 def configure_ressources():

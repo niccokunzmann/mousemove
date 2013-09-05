@@ -2,13 +2,12 @@ from tkinter import *
 
 import win32gui
 
-from . import navigation
-import .images
-import .ressourcen
+import mousemove.navigation
+from . import images
 
 m1 = Tk()
 m1.overrideredirect(1)
-m1.geometry("{}x{}-12-12".format(height, width))
+m1.geometry("1x1-12-12")
 
 screen_width = m1.winfo_screenwidth
 screen_height = m1.winfo_screenheight
@@ -48,6 +47,7 @@ def karte_mitte(x, y):
     return x, y
 
 def spiel_koordinaten():
+    from . import navigation
     left, top, right, bottom = win32gui.GetWindowRect(navigation.spiel_window_handle())
     return left, top ,right, bottom
 
@@ -65,7 +65,7 @@ def ressourcen_positionen(*bilder):
     if not bilder: bilder = images.bilder_ressourcen
     return karten_positionen(*bilder)
 
-def _karten_koordinaten():
+def karten_koordinaten():
     # wenn 1 und 2 gelten, gilt auch 3
     miny = start_der_karte_y # 3
     minx = 0 # 3
@@ -76,21 +76,21 @@ def _karten_koordinaten():
     return minx, miny, maxx, maxy, mittex, mittey
 
 def karten_positionen(*bilder):
-    minx, miny, maxx, maxy, *x = _karten_koordinaten()
+    minx, miny, maxx, maxy, *x = karten_koordinaten()
     return bild_positionen(minx, miny, maxx, maxy, bilder)
 
-def bild_positionen(minx, miny, maxx, maxy, bilder):
-    Ressource = ressourcen.Ressource
-    if not bilder: bilder = namen
-    images = [open_image(name) for name in bilder]
-    s = screenshot()
+def bild_positionen(minx, miny, maxx, maxy, namen):
+    from .ressourcen import Ressource
+    from . import karte
+    bilder = [images.open_image(name) for name in namen]
+    s = images.screenshot()
     s_getpixel = s.getpixel
     x0, y0, maxx, maxy = s.getbbox()
     assert x0 == 0, x0
     assert y0 == 0, y0
     assert maxx == screen_width() #1
     assert maxy == screen_height() #2
-    ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in images]
+    ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
     maxx -= min([img[2][2] for img in ps1])
     maxy -= min([img[2][3] for img in ps1])
     positions = []
@@ -116,18 +116,22 @@ def bild_positionen(minx, miny, maxx, maxy, bilder):
                             break
                     if not match: break
                 if match:
-                    positions.append(Ressource(bilder[ps1.index(img)],
-                                      x + width // 2,
-                                      y + height // 2,
-                                      pos[:]))
+                    positions.append(Ressource(namen[ps1.index(img)],
+                                      x + bbox[2] // 2,
+                                      y + bbox[3] // 2,
+                                      karte.pos()))
     for img, _matches in matches.items():
         if _matches > 20:
             print('many matches', _matches, 'for', bilder[ps1.index(img)])
     return positions
 
+def beep():
+    m1.bell()
 
 __all__ = 'screen_width screen_height spiel_height spiel_width '\
           'my_height my_width breite_des_rechten_menus '\
           'höhe_des_oberen_menus my_breite_der_karte my_höhe_der_karte '\
-          'start_der_karte_y höhe_der_karte breite_der_karte'\
-          'rechts unten karte_mitte spiel_koordinaten spiel_bbox'.split()
+          'start_der_karte_y höhe_der_karte breite_der_karte '\
+          'rechts unten karte_mitte spiel_koordinaten spiel_bbox '\
+          'karten_koordinaten beep ressourcen_positionen '\
+          'karten_positionen bild_positionen'.split()

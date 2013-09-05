@@ -1,3 +1,7 @@
+from .. import schedule
+from ..navigation import beep
+from ..errorhandling import report_exc
+
 andere_waren_nicht_dran_zeit = 0.5
 
 def programm(funktion):
@@ -20,6 +24,8 @@ def programm(funktion):
                         schedule.schedule()
                         now = time.time()
             except KeyboardInterrupt: pass
+            except:
+                raise report_exc()
             else: break
     f.__name__ = funktion.__name__
     f.__doc__ = funktion.__doc__

@@ -1,10 +1,12 @@
 import tempfile
 import os
 import os.path
+import shutil
+
 from . import constants
 
-def tempfilename(suffix = ''):
-    return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep)
+def tempfilename(suffix = '', prefix = ''):
+    return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep + prefix)
 
 path = os.path.dirname(tempfilename())
 if os.path.isdir(path):
@@ -21,4 +23,11 @@ forschungsordner = os.path.join(image_folder, 'Forschung')
 def config_file_name():
     return constants.config_file_name()
 
-__all__ = 'tempfilename image_folder forschungsordner config_file_name'.split()
+def error_report_file():
+    filename = tempfilename('.txt', 'error_report_')
+    file = open(filename, 'w', encoding = 'utf8')
+    file.write('\ufeff')
+    return file
+
+__all__ = 'tempfilename image_folder forschungsordner config_file_name '\
+          'error_report_file'.split()

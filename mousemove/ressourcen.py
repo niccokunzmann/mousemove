@@ -1,14 +1,16 @@
 import collections
-import .positionen
-
-def ressourcen_positionen(*args):
-    return positionen.ressourcen_positionen()
+from . navigation import im_menu
+from . import config
+from .constants import *
+from .positionen import *
+from .navigation import *
+from . import mouse
 
 Ressource = collections.namedtuple('Ressource', ['name', 'x', 'y', 'pos'])
 
-ressource_erkunden_click = lambda: click(*rechts(1270, 200))
-ressource_erkunden_ausführen = lambda: click(*karte_mitte(824, 569))
-ressource_erkunden_abbrechen = lambda: click(*karte_mitte(910, 210))
+ressource_erkunden_click = lambda: mouse.click(*rechts(1270, 200))
+ressource_erkunden_ausführen = lambda: mouse.click(*karte_mitte(824, 569))
+ressource_erkunden_abbrechen = lambda: mouse.click(*karte_mitte(910, 210))
 
 def ein_kundschafter():
     """=> ob ein kundschafter ausgewaehlt ist."""
@@ -19,11 +21,11 @@ def ein_kundschafter():
 def ressource_erkunden(x, y):
     """erkunde eine ressource => ob geklappt"""
     zerstöre_positionsbestimmung()
-    click(x, y)
+    mouse.click(x, y)
     ressource_erkunden_click()
     for i in range(10):
         if not ein_kundschafter():
-            click(*karte_mitte(309, 582))
+            mouse.click(*karte_mitte(309, 582))
         else:
             break
     if i > 1:
@@ -43,9 +45,24 @@ if not hasattr(config, 'ressourcen_prioritäten'):
     config.save()
 
 class Ressource(Ressource):
+
+    def __init__(self, *args, **kw):
+        self.validate()
+
+    def validate(self):
+        if not isinstance(self.name, str): raise TypeError('name is {} but should be a string'.format(self.name))
+        if not isinstance(self.x, int): raise TypeError('x is {} but should be an int'.format(self.x))
+        if not isinstance(self.y, int): raise TypeError('y is {} but should be an int'.format(self.y))
+        if not isinstance(self.pos, list): raise TypeError('pos is {} but should be a list'.format(self.pos))
+        if not len(self.pos) not in (0, 2): raise TypeError('pos is {} but should be of length 0 or 2'.format(self.pos))
+        if self.pos and not isinstance(self.pos[0], int): raise TypeError('pos[0] is {} but should be an int'.format(self.pos[0]))
+        if self.pos and not isinstance(self.pos[1], int): raise TypeError('pos[1] is {} but should be an int'.format(self.pos[1]))
+    
     def scrolle_hin(self):
-        assert pos, 'starte_kartenpositionsbestimmung() vorher'
-        scrolle_um(pos[0] - self.pos[0], pos[1] - self.pos[1])
+        assert pos(), 'starte_kartenpositionsbestimmung() vorher'
+        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
+        p = pos()
+        scrolle_um(p[0] - self.pos[0], p[1] - self.pos[1])
 
     def erkunde(self):
         self.scrolle_hin()
@@ -62,10 +79,12 @@ class Ressource(Ressource):
 
     @property
     def relx(self):
+        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         return self.x - self.pos[0]
 
     @property
     def rely(self):
+        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         return self.y - self.pos[1]
 
     def abstand_zu(self, other):
@@ -73,7 +92,7 @@ class Ressource(Ressource):
 
     @property
     def abstand_zum_dorf(self):
-        return self.abstand_zu(dorf)
+        return self.abstand_zu(dorf())
 
     @property
     def sortier_priorität(self):
@@ -101,6 +120,9 @@ class Ressource(Ressource):
         dy = a.rely - b.rely
         u = ((a.relx - self.relx) * dy + (self.rely - a.rely) * dx) / (dy*dy + dx*dx)
         return abs(u) * (dy*dy + dx*dx)**0.5
+
+    def gibt_ehre_beim_erkunden(self):
+        return self.name.lower() == 'ressourcen'
         
 
 def sichte_ressourcen(zahl = 1000):
@@ -108,7 +130,7 @@ def sichte_ressourcen(zahl = 1000):
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(-b,h),(-b,-h)]:
+    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0)]:#,(b,h),(-b,h),(b,-h),(-b,-h)]:
         if last != (0,0):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
@@ -122,4 +144,5 @@ def sichte_ressourcen(zahl = 1000):
     
 
 
-__all__ = 'ressourcen_positionen Ressource'.split()
+__all__ = 'ressourcen_positionen Ressource sichte_ressourcen ein_kundschafter'\
+          ''.split()

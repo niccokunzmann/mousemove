@@ -1,4 +1,10 @@
-import .karte
+import time
+import os
+import win32gui
+from . mouse import *
+
+from .files import forschungsordner
+from . positionen import *
 
 wo = 'spiel geöffnet'
 
@@ -140,15 +146,23 @@ for kathegorie in os.listdir(forschungsordner):
 del funktion
 
 def dorf():
+    from . import karte
     return karte.dorf()
 
+def pos():
+    from . import karte
+    return karte.pos()
+
 def scrolle_um(x, y):
+    from . import karte
     return karte.scrolle_um(x, y)
 
 def starte_kartenpositionsbestimmung():
+    from . import karte
     return karte.starte_kartenpositionsbestimmung()
 
 def zerstöre_positionsbestimmung():
+    from . import karte
     return karte.zerstöre_positionsbestimmung()
     
 
@@ -157,8 +171,8 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' öffne_quests öffne_angriffe öffne_berichte öffne_fraktion'\
           ' öffne_forschungsliste öffne_gewerbe öffne_militär öffne_landwirtschaft'\
           ' öffne_bildung scrolle_um starte_kartenpositionsbestimmung'\
-          ' zerstöre_positionsbestimmung dorf im_menu'.split()
+          ' zerstöre_positionsbestimmung dorf im_menu pos beep'.split()
 
-__all__.extent(_names)
+__all__.extend(_names)
 
 del _names

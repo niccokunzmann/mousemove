@@ -1,6 +1,6 @@
-
-
 from .programm import programm
+from ..navigation import *
+from ..ressourcen import *
 
 @programm
 def erkunde_ressourcen(kundschafter = 3):
@@ -18,7 +18,7 @@ def erkunde_ressourcen(kundschafter = 3):
                     if r in ressourcen_erkundet: erk = '(erkundet)'
                     else: erk = ''
                     print('\t', int(r.abstand_zum_dorf), '\t', r.name, erk, '\t', r)
-            unbekannte = [r for r in res if r.name == 'Ressourcen' and \
+            unbekannte = [r for r in res if r.gibt_ehre_beim_erkunden() and \
                                             r not in ressourcen_erkundet]
             i = 0
             kein_kundschater_mehr = False

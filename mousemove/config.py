@@ -1,14 +1,11 @@
 import pickle as _pickle
-import config
 import os as _os
 
 from . import files as _files
 
 _config_file_name = _files.config_file_name
 
-_config = config.__dict__
-del config
-
+_config = globals()
 
 def load():
     if not _os.path.isfile(_config_file_name()):
