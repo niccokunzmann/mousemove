@@ -139,8 +139,11 @@ def schedule():
                 ich_bin_dran = True
                 break
 
-if __name__ == '__main__':
+def main():
     try:
         serve()
     except:
         traceback.print_exc(file = debug_file())
+
+if __name__ == '__main__':
+    main()
