@@ -1,10 +1,10 @@
 from tkinter import *
-from images import pil2tkinter_image
+from ..images import pil2tkinter_image
 from .. import config
 
 def configure_ressources():
     t = Tk()
-    t.title('Ressourcen Konfigurieren')
+    t.title('Ressourcenprioritäten beim Erkunden')
     image = pil2tkinter_image('RessourcenKonfigurationHintergrund', t)
     l = Label(t, image = image)
     l.pack()

@@ -136,7 +136,7 @@ def sichte_ressourcen(zahl = 1000):
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0)]:#,(b,h),(-b,h),(b,-h),(-b,-h)]:
+    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]:
         if last != (0,0):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
