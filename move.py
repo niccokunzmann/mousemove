@@ -703,7 +703,7 @@ def algorithmus(funktion):
                     while now < ende:
                         # busy waiting
                         if letztes_scheduling + andere_waren_nicht_dran_zeit > now:
-                            sleep_time = (1 if ende - letztes_scheduling > 1 else t - letztes_scheduling)
+                            sleep_time = (1 if ende - letztes_scheduling > 1 else ende - letztes_scheduling)
                             time.sleep(sleep_time)
                         letztes_scheduling = now
                         schedule.schedule()
