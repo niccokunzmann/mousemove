@@ -1,7 +1,7 @@
 import collections
 from . navigation import im_menu
 from . import config
-from .constants import *
+import mousemove.constants
 from .positionen import *
 from .navigation import *
 from . import mouse
@@ -36,13 +36,6 @@ def ressource_erkunden(x, y):
         ressource_erkunden_abbrechen()
         return False
     return True
-
-
-config.load()
-
-if not hasattr(config, 'ressourcen_prioritäten'):
-    config.ressourcen_prioritäten = collections.defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT)
-    config.save()
 
 class Ressource(Ressource):
 

@@ -24,7 +24,7 @@ def configure_ressources():
                        to = 1000,
                        )
         v = IntVar(spin)
-        spin.config({"from": 1}, textvariable = v)
+        spin.config({'from' : 1}, textvariable = v)
         spin.place(x = x, y = y, anchor = CENTER)
         return v
     entries = dict(
