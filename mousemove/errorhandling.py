@@ -14,6 +14,14 @@ def report_exception(ty, err, tb):
                                  file.name)
     return err.with_traceback(tb)
 
+class ErrorHandling:
+    def __enter__(self):
+        return self
+    def __exit__(self, ty = None, err = None, tb = None):
+        if ty:
+            report_exception(ty, err, tb)
+            raise ty, err, tb
 
+error_handling = ErrorHandling()
 
-__all__ = 'report_exc report_exception'.split()
+__all__ = 'report_exc report_exception error_handling'.split()

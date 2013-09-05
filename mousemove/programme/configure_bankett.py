@@ -1,10 +1,7 @@
 from tkinter import *
 from ..images import pil2tkinter_image
 from .. import config
-from .. errorhandling import error_handling
-from .programm import configuration
 
-@configuration
 def configure_ressources():
     t = Tk()
     t.title('Ressourcenprioritäten beim Erkunden')

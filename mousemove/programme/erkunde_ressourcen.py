@@ -67,8 +67,7 @@ def test_erkunde_ressourcen1():
                 öffne_dorf_auf_karte()
         else:
             time.sleep(10) # aktualisierungszeit
-
-
+            
 
 if __name__ == '__main__':
     erkunde_ressourcen()

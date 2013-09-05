@@ -1,6 +1,6 @@
 from .. import schedule
 from ..navigation import beep
-from ..errorhandling import report_exc
+from ..errorhandling import report_exc, error_handling
 from .. import config
 
 import time
@@ -35,4 +35,13 @@ def programm(funktion):
     f.__name__ = funktion.__name__
     f.__doc__ = funktion.__doc__
     return f
+
+def configuration(funktion):
+    def f(*args, **kw):
+        with error_handling:
+            funktion(*args, **kw)
+    f.__name__ = funktion.__name__
+    f.__doc__ = funktion.__doc__
+    return f
         
+__all__ = 'configuration programm'.split()

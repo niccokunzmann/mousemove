@@ -164,6 +164,38 @@ def starte_kartenpositionsbestimmung():
 def zerstöre_positionsbestimmung():
     from . import karte
     return karte.zerstöre_positionsbestimmung()
+
+def öffne_dorfkarte():
+    öffne_dorf()
+    click(*rechts(977, 123))
+
+def öffne_burgkarte():
+    öffne_dorf()
+    click(*rechts(1027, 123))
+
+def öffne_ressourcen():
+    öffne_dorf()
+    click(*rechts(1084, 123))
+
+def öffne_handel():
+    öffne_dorf()
+    click(*rechts(1142, 123))
+
+def öffne_truppen():
+    öffne_dorf()
+    click(*rechts(1194, 123))
+
+def öffne_einheiten():
+    öffne_dorf()
+    click(*rechts(1252, 123))
+
+def öffne_bankett():
+    öffne_dorf()
+    click(*rechts(1286, 123))
+
+def öffne_vasallen():
+    öffne_dorf()
+    click(*rechts(1345, 123))
     
 
 __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\

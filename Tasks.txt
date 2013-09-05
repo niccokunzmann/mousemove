@@ -9,3 +9,5 @@ Scripte, die benutzt werden können, habe ich in den ordner main getan
 - automatisch stufen aufsteigen (vl mit forschung)
 - ressourcen verkaufen
 	- zahlen auf bildschirm erkennen
+	
+- automatisches Bankett (höchste Stufe zuerst) (ist in Arbeit)
