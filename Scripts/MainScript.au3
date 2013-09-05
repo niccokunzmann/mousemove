@@ -21,7 +21,7 @@ $v2 = 0
 $count = 0
 
 Func startServer()
-	ShellExecute(@HomePath & "\Documents\GitHub\mousemove\schedule.py")
+	ShellExecute(@WorkingDir & "\..\schedule.py")
 	If WinExists("C:\Windows\py.exe") Then
 		Return True
 	EndIf
@@ -273,10 +273,10 @@ EndFunc
 
 Func algorithm()
 	While 1
+		schedule()
 		executeResearch()
 		levelUp()
 		Sleep(6000)
-		schedule()
 	WEnd
 EndFunc
 
