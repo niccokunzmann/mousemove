@@ -215,7 +215,9 @@ pip-log.txt
 .mr.developer.cfg
 
 ## unser zeug
-/config.cfg
+
+/*/config.cfg
+
 /Ressourcen.png
 /*/*.out
 /Scripts/r0.PNG
@@ -225,4 +227,4 @@ pip-log.txt
 /Scripts/r4.PNG
 /temp
 
-/config.cfg
+

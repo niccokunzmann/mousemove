@@ -1,5 +1,6 @@
 from tkinter import *
 from images import pil2tkinter_image
+from .. import config
 
 def configure_ressources():
     t = Tk()

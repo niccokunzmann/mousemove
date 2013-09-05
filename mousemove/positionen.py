@@ -2,7 +2,6 @@ from tkinter import *
 
 import win32gui
 
-import mousemove.navigation
 from . import images
 
 m1 = Tk()

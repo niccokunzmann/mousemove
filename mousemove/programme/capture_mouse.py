@@ -1,3 +1,9 @@
+from tkinter import *
+from ..positionen import *
+import win32api
+import win32con
+import time
+
 tkinter_to_win32api = { 
     '4' : win32con.MOUSEEVENTF_LEFTDOWN,
     '5' : win32con.MOUSEEVENTF_LEFTUP,

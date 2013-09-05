@@ -11,9 +11,9 @@ def programm(funktion):
     def f(*args, **kw):
         schedule.schedule()
         iterator = funktion(*args, **kw)
-        config.load()
         while 1:
             try:
+                config.load()
                 for timeout in iterator:
                     if not timeout: timeout = 0
                     letztes_scheduling = now = time.time()
@@ -27,6 +27,7 @@ def programm(funktion):
                         letztes_scheduling = now
                         schedule.schedule()
                         now = time.time()
+                    config.load()
             except KeyboardInterrupt: pass
             except:
                 raise report_exc()

@@ -17,7 +17,7 @@ def erkunde_ressourcen(kundschafter = 3):
                 for r in res:
                     if r in ressourcen_erkundet: erk = '(erkundet)'
                     else: erk = ''
-                    print('\t', int(r.abstand_zum_dorf), '\t', r.name, erk, '\t', r)
+                    print(r.format_for_print(erk))
             unbekannte = [r for r in res if r.gibt_ehre_beim_erkunden() and \
                                             r not in ressourcen_erkundet]
             i = 0

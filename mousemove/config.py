@@ -11,7 +11,6 @@ def load():
     if not _os.path.isfile(_config_file_name()):
         return
     d = _pickle.load(open(_config_file_name(), 'rb'))
-    print('load', d)
     for k, v in d.items():
         if k not in _do_not_load_and_save and not k.startswith('_'):
             _config[k] = v
@@ -21,7 +20,6 @@ def save():
     for k in list(d.keys()):
         if k in _do_not_load_and_save or k.startswith('_'):
             d.pop(k)
-    print('save', d)
     _pickle.dump(d, open(_config_file_name(), 'wb'))
 
 
