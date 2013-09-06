@@ -15,3 +15,5 @@ Scripte, die benutzt werden können, habe ich in den ordner main getan
 	
 - automatisches Bankett (höchste Stufe zuerst) (ist in Arbeit)
 	- zeit einstellen in minuten
+	
+	5 + 3, 6, 

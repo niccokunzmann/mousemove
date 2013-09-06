@@ -10,8 +10,10 @@ def tempfilename(suffix = '', prefix = ''):
 
 path = os.path.dirname(tempfilename())
 if os.path.isdir(path):
-    shutil.rmtree(path)
-os.mkdir(path)
+    try: shutil.rmtree(path)
+    except PermissionError: pass
+try: os.mkdir(path)
+except PermissionError: pass
 
 image_folder = os.path.join(os.path.dirname(__file__), 'images')
 if not os.path.isdir(image_folder):

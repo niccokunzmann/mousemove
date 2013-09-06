@@ -34,6 +34,17 @@ def rechts(x, y):
 def unten(x, y):
     return x, y - my_height + spiel_height()
 
+def mitte(x, y):
+    # x
+    my_mitte = my_width // 2
+    mitte = spiel_width() // 2
+    x = x - my_mitte + mitte
+    # y
+    my_mitte = (my_height - höhe_des_oberen_menus) // 2
+    mitte = (spiel_height() - höhe_des_oberen_menus) // 2
+    y = y - my_mitte + mitte
+    return x, y
+
 def karte_mitte(x, y):
     # x
     my_mitte = my_breite_der_karte // 2
