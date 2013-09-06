@@ -1,5 +1,6 @@
 import time
-from . import config
+from collections import defaultdict
+
 def wait():
     time.sleep(0.5)
 
@@ -12,14 +13,10 @@ def DEFAULT_RESSOURCEN_PRIORITÄT():
 def DEFAULT_BANKETT_OPTION():
     return False
 
-config.load()
-if not hasattr(config, 'bankett_optionen'):
-    config.bankett_optionen = collections.defaultdict(DEFAULT_BANKETT_OPTION)
-    config.save()
-
-if not hasattr(config, 'ressourcen_prioritäten'):
-    config.ressourcen_prioritäten = collections.defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT)
-    config.save()
+def default_configuration():
+    return dict(bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
+                ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
+                )
 
 __all__ = 'wait DEFAULT_RESSOURCEN_PRIORITÄT config_file_name'\
-          ' DEFAULT_BANKETT_OPTION'.split()
+          ' DEFAULT_BANKETT_OPTION default_configuration'.split()

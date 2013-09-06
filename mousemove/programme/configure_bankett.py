@@ -8,7 +8,7 @@ def configure_bankett():
     t = Tk()
     t.title('Welche Bankette sollen abgehalten werden?')
     image = pil2tkinter_image('BankettKonfigurationHintergrund', t)
-    l = Label(t, image = image)
+    l = Label(t, image = image, border = 0)
     l.pack()
     b = Button(t, command = t.quit, text = 'OK')
     b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
@@ -16,7 +16,7 @@ def configure_bankett():
     def entry(x, y):
         spin = Checkbutton(t)
         v = BooleanVar(spin)
-        spin.config(textvariable = v)
+        spin.config(variable = v)
         spin.place(x = x, y = y, anchor = CENTER)
         return v
     # http://hilfe.strongholdkingdoms.de/index.php/Bankette

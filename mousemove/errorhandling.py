@@ -20,7 +20,7 @@ class ErrorHandling:
     def __exit__(self, ty = None, err = None, tb = None):
         if ty:
             report_exception(ty, err, tb)
-            raise ty, err, tb
+            raise err.with_traceback(tb)
 
 error_handling = ErrorHandling()
 

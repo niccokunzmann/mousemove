@@ -2,6 +2,7 @@ import pickle as _pickle
 import os as _os
 
 from . import files as _files
+from . import constants as _constants
 
 _config_file_name = _files.config_file_name
 
@@ -25,4 +26,11 @@ def save():
 
 
 _do_not_load_and_save = dir()
-# do not write anything behind this point
+# everything below this line will be loaded and saved
+load()
+for _name, _value in _constants.default_configuration().items():
+    if not _name in globals():
+        globals()[_name] = _value
+del _name, _value
+save()
+

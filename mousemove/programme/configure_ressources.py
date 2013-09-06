@@ -9,7 +9,7 @@ def configure_ressources():
     t = Tk()
     t.title('Ressourcenprioritäten beim Erkunden')
     image = pil2tkinter_image('RessourcenKonfigurationHintergrund', t)
-    l = Label(t, image = image)
+    l = Label(t, image = image, border = 0)
     l.pack()
     b = Button(t, command = t.quit, text = 'OK')
     b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
