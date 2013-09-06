@@ -6,7 +6,6 @@ from ..ressourcen import *
 def erkunde_ressourcen(kundschafter = 3):
     def start():
         öffne_spiel()
-        öffne_karte()
     ressourcen_erkundet = []
     start()
     while 1:

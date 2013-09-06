@@ -3,7 +3,9 @@ from ..images import pil2tkinter_image
 from .. import config
 import collections
 import mousemove.constants
+from .programm import configuration
 
+@configuration
 def configure_bankett():
     t = Tk()
     t.title('Welche Bankette sollen abgehalten werden?')

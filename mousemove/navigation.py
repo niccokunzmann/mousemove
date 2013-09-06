@@ -196,7 +196,6 @@ def öffne_bankett():
 def öffne_vasallen():
     öffne_dorf()
     click(*rechts(1345, 123))
-    
 
 __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' öffne_karte öffne_dorf öffne_gemeinde öffne_forschung öffne_rang'\

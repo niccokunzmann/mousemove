@@ -30,7 +30,7 @@ def pil2tkinter_image(img, master = None):
     for y in range(y0, height):
         l.append('{')
         for x in range(x0, width):
-            l.append('#%02X%02X%02X' % img.getpixel((x, y)))
+            l.append('#%02X%02X%02X' % img.getpixel((x, y))[:3])
         l.append('}')
     data = ' '.join(l)
     pi = PhotoImage(master = master)

@@ -124,7 +124,7 @@ class Ressource(Ressource):
                                                       self.sortier_priorität,
                                                       ' '.join(map(str, args)),\
                                                       self)
-
+@im_menu('karte')
 def sichte_ressourcen(zahl = 1000):
     res = set()
     h = höhe_der_karte() - 20
