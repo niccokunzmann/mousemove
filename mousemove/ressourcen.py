@@ -6,6 +6,7 @@ from .positionen import *
 from .navigation import *
 from . import mouse
 from . screenshot import last_screenshot_file_name
+import time
 
 Ressource = collections.namedtuple('Ressource', ['name', 'x', 'y', 'pos'])
 
