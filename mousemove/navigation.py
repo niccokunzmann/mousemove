@@ -203,7 +203,9 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' öffne_quests öffne_angriffe öffne_berichte öffne_fraktion'\
           ' öffne_forschungsliste öffne_gewerbe öffne_militär öffne_landwirtschaft'\
           ' öffne_bildung scrolle_um starte_kartenpositionsbestimmung'\
-          ' zerstöre_positionsbestimmung dorf im_menu pos beep'.split()
+          ' zerstöre_positionsbestimmung dorf im_menu pos beep öffne_dorfkarte'\
+          ' öffne_burgkarte öffne_ressourcen öffne_handel öffne_truppen'\
+          ' öffne_einheiten öffne_bankett öffne_vasallen'.split()
 
 __all__.extend(_names)
 

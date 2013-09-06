@@ -29,5 +29,8 @@ def error_report_file():
     file.write('\ufeff')
     return file
 
+def tesser_exe():
+    return constants.tesser_exe()
+
 __all__ = 'tempfilename image_folder forschungsordner config_file_name '\
           'error_report_file'.split()

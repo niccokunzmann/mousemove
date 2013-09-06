@@ -5,6 +5,7 @@ import mousemove.constants
 from .positionen import *
 from .navigation import *
 from . import mouse
+from . screenshot import last_screenshot_file_name
 
 Ressource = collections.namedtuple('Ressource', ['name', 'x', 'y', 'pos'])
 

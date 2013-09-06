@@ -1,6 +1,9 @@
 
 Scripte, die benutzt werden können, habe ich in den ordner main getan
 
+- ressourcen erkunden
+	 - wenn ressource weg ist reagieren
+
 - autorekrutieren
 - bergfried reparieren/herstellen/truppen hinstellen
 - kundschafter auf karte erkennen

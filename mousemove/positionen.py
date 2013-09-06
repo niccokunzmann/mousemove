@@ -52,8 +52,8 @@ def spiel_koordinaten():
 
 def spiel_bbox():
     x, y, right, bottom = spiel_koordinaten()
-    assert x < 0 # wir brauchen einen rand!
-    assert y < 0
+    assert x < 0, (x, y, right, bottom) # wir brauchen einen rand!
+    assert y < 0, (x, y, right, bottom)
     width = right + x # eigentlich - x aber wir ziehen den rand ab
     height = bottom + y
     x = 0
