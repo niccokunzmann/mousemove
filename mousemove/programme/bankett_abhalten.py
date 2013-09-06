@@ -29,6 +29,7 @@ def bankett_abhalten():
         for qualität, x, y in positionen:
             if config.bankett_optionen[qualität]:
                 click(*mitte(x, y))
+                print('Halte Bankett ab', qualität)
         yield 2 * 60 * 60
 
 
