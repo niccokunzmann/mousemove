@@ -32,8 +32,9 @@ def ressource_erkunden(x, y):
     if i > 1:
         print(i, 'mal gebraucht, um den kundschafter auf 1 zu setzen', last_screenshot_file_name())
     ressource_erkunden_ausführen()
-    if karten_positionen('ein_kundschafter'):
+    if ein_kundschafter():
         # ausführen is fehlgeschlagen
+        print('ressource erkunden fehlgeschlagen')
         ressource_erkunden_abbrechen()
         return False
     return True
@@ -54,7 +55,7 @@ class Ressource(Ressource):
     
     def scrolle_hin(self):
         assert pos(), 'starte_kartenpositionsbestimmung() vorher'
-        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
+        assert self.pos, 'Die ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         p = pos()
         scrolle_um(p[0] - self.pos[0], p[1] - self.pos[1])
 
@@ -124,7 +125,6 @@ class Ressource(Ressource):
                                                       self.sortier_priorität,
                                                       ' '.join(map(str, args)),\
                                                       self)
-@im_menu('karte')
 def sichte_ressourcen(zahl = 1000):
     res = set()
     h = höhe_der_karte() - 20
