@@ -19,6 +19,10 @@ def screenshot():
         filename = _screenshot[0]
     return PIL.Image.open(filename)
 
+def screenshot_with_size(left, top, width, height):
+    from .screenshot import screenshot_with_size
+    return PIL.Image.open(screenshot_with_size(left, top, width, height))
+
 def last_screenshot_file_name():
     return _screenshot[0]
 
@@ -71,7 +75,7 @@ def bild_positionen(*args, **kw):
     return bild_positionen(*args, **kw)
 
 __all__ = 'screenshot last_screenshot_file_name pil2tkinter_image open_image'\
-          ' bild_positionen'.split()
+          ' bild_positionen screenshot_with_size'.split()
 
 
 

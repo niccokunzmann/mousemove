@@ -93,21 +93,20 @@ def bild_positionen(minx, miny, maxx, maxy, namen):
     from .ressourcen import Ressource
     from . import karte
     bilder = [images.open_image(name) for name in namen]
-    s = images.screenshot()
+    s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
     s_getpixel = s.getpixel
     x0, y0, maxx, maxy = s.getbbox()
     assert x0 == 0, x0
     assert y0 == 0, y0
-    assert maxx == screen_width() #1
-    assert maxy == screen_height() #2
+##    assert maxx == screen_width() #1
+##    assert maxy == screen_height() #2
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
-    maxx -= min([img[2][2] for img in ps1])
-    maxy -= min([img[2][3] for img in ps1])
+    xrange = maxx - min([img[2][2] for img in ps1]) + 1
+    yrange = maxy - min([img[2][3] for img in ps1]) + 1
     positions = []
     matches = {img : 0 for img in ps1}
-##    print(minx, '-->',maxx, '|', miny, '-->', maxy)
-    for x in range(minx, maxx):
-        for y in range(miny, maxy):
+    for x in range(xrange):
+        for y in range(yrange):
             match = True
             px = s_getpixel((x, y))[:3]
             for img in ps1:
@@ -127,8 +126,8 @@ def bild_positionen(minx, miny, maxx, maxy, namen):
                     if not match: break
                 if match:
                     positions.append(Ressource(namen[ps1.index(img)],
-                                      x + bbox[2] // 2,
-                                      y + bbox[3] // 2,
+                                      minx + x + bbox[2] // 2,
+                                      miny + y + bbox[3] // 2,
                                       karte.pos()))
     for img, _matches in matches.items():
         if _matches > 20:

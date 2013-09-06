@@ -15,8 +15,8 @@ ressource_erkunden_abbrechen = lambda: mouse.click(*karte_mitte(910, 210))
 
 def ein_kundschafter():
     """=> ob ein kundschafter ausgewaehlt ist."""
-    x, y = karte_mitte(309, 582)
-    return bild_positionen(x - 50, y - 50, x + 50, y + 50, ('ein_kundschafter',))
+    x, y = karte_mitte(306, 582)
+    return bild_positionen(x - 20, y -20, x + 20, y + 20, ('ein_kundschafter',))
 
 @im_menu('karte')
 def ressource_erkunden(x, y):
@@ -32,9 +32,10 @@ def ressource_erkunden(x, y):
     if i > 1:
         print(i, 'mal gebraucht, um den kundschafter auf 1 zu setzen', last_screenshot_file_name())
     ressource_erkunden_ausführen()
+    time.sleep(0.5) # wegen netzwerklatzenz kann das hier schon mal schiefgehen
     if ein_kundschafter():
-        # ausführen is fehlgeschlagen
-        print('ressource erkunden fehlgeschlagen')
+        # ausführen ist fehlgeschlagen
+##        print('ressource erkunden fehlgeschlagen')
         ressource_erkunden_abbrechen()
         return False
     return True
@@ -130,7 +131,7 @@ def sichte_ressourcen(zahl = 1000):
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]:
+    for dx, dy in [(0,0)]:#,(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]:
         if last != (0,0):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
