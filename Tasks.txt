@@ -11,3 +11,4 @@ Scripte, die benutzt werden können, habe ich in den ordner main getan
 	- zahlen auf bildschirm erkennen
 	
 - automatisches Bankett (höchste Stufe zuerst) (ist in Arbeit)
+	- zeit einstellen in minuten
