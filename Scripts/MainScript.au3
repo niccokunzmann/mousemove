@@ -21,7 +21,7 @@ $v2 = 0
 $count = 0
 
 Func startServer()
-	ShellExecute(@WorkingDir & "\..\schedule.py")
+	ShellExecute(@WorkingDir & "\..\mousemove\schedule.py")
 	If WinExists("C:\Windows\py.exe") Then
 		Return True
 	EndIf
