@@ -1,0 +1,19 @@
+
+Scripte, die benutzt werden können, habe ich in den ordner main getan
+
+- ressourcen erkunden
+	 - wenn ressource weg ist reagieren
+
+- autorekrutieren
+- bergfried reparieren/herstellen/truppen hinstellen
+- kundschafter auf karte erkennen
+	- kundschafter abbrechen wenn ressource erkundet
+	
+- automatisch stufen aufsteigen (vl mit forschung)
+- ressourcen verkaufen
+	- zahlen auf bildschirm erkennen
+	
+- automatisches Bankett (höchste Stufe zuerst) (ist in Arbeit)
+	- zeit einstellen in minuten
+	
+	5 + 3, 6, 

@@ -216,10 +216,16 @@ pip-log.txt
 
 ## unser zeug
 
-/*.out
+/*/config.cfg
+
+/Ressourcen.png
+/*/*.out
 /Scripts/r0.PNG
 /Scripts/r1.PNG
 /Scripts/r2.PNG
 /Scripts/r3.PNG
 /Scripts/r4.PNG
+/temp
 
+
+/main/*.cfg
