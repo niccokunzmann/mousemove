@@ -139,7 +139,7 @@ Func defineResearch()
 	Next
 	If $name Then
 		ClipPut(@WorkingDir&"\"&$name)
-		Send(ClipGet())
+		Send("^v")
 		Sleep(500)
 		Send("{ENTER}")
 		Sleep(500)
@@ -178,11 +178,11 @@ EndFunc
 
 Func levelUp()
 	Local $x, $y
-	$result = searchForImage("ableForLevel.png", $x, $y, 0)
+	$result = searchForImage("ableForLevel.png", $x, $y, 100)
 	If $result = 1 Then
 		MouseClick("LEFT", $x, $y)
 		Sleep(500)
-		$result = searchForImage("levelUp.png", $x, $y, 0)
+		$result = searchForImage("levelUp.png", $x, $y, 100)
 		If $result = 1 Then
 			MouseClick("LEFT", $x, $y)
 			Sleep(500)
