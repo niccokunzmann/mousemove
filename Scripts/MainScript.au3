@@ -1,9 +1,10 @@
 #include<ImageSearch.au3>
+#include <Clipboard.au3>
 
 ;HotKeySet("p", "capture")
-HotKeySet("f", "defineResearch")
-HotKeySet("a", "algorithm")
-HotKeySet("q", "quit")
+HotKeySet("^!f", "defineResearch")
+HotKeySet("^!a", "algorithm")
+HotKeySet("^!q", "quit")
 Opt("MouseClickDownDelay", 100)
 Dim $queueSize = 5
 Dim $queue[$queueSize]= [""]
@@ -20,7 +21,7 @@ $v2 = 0
 $count = 0
 
 Func startServer()
-	ShellExecute(@HomePath & "\Documents\GitHub\mousemove\schedule.py")
+	ShellExecute(@WorkingDir & "\..\schedule.py")
 	If WinExists("C:\Windows\py.exe") Then
 		Return True
 	EndIf
@@ -137,13 +138,11 @@ Func defineResearch()
 		EndIf
 	Next
 	If $name Then
-		Send(@WorkingDir)
+		ClipPut(@WorkingDir&"\"&$name)
+		Send("^v")
 		Sleep(500)
 		Send("{ENTER}")
 		Sleep(500)
-		Send($name)
-		Sleep(500)
-		Send("{ENTER}")
 		WinWaitActive("Speichern unter bestätigen", "Ja", 3)
 		If WinActive("Speichern unter bestätigen", "Ja") Then
 			Send("!j")
@@ -176,6 +175,21 @@ Func executeResearch()
 		EndIf
 	EndIf
 EndFunc
+
+Func levelUp()
+	Local $x, $y
+	$result = searchForImage("ableForLevel.png", $x, $y, 100)
+	If $result = 1 Then
+		MouseClick("LEFT", $x, $y)
+		Sleep(500)
+		$result = searchForImage("levelUp.png", $x, $y, 100)
+		If $result = 1 Then
+			MouseClick("LEFT", $x, $y)
+			Sleep(500)
+		EndIf
+	EndIf
+EndFunc
+
 
 Func startResearch()
 	Local $x, $y
@@ -259,9 +273,10 @@ EndFunc
 
 Func algorithm()
 	While 1
-		executeResearch()
-		Sleep(6000)
 		schedule()
+		executeResearch()
+		levelUp()
+		Sleep(6000)
 	WEnd
 EndFunc
 
