@@ -123,5 +123,10 @@ def kornspeicher():
     max = maximalzahl_in_klammern(*mitte(442, 412))
     return Kornspeicher(*ressources, max = max)
 
+def erkundungszeit():
+    s = heller_text(482, 528, 590-482, 559-528)
+    s.replace('D', '0') # 0 wird manchmal als D erkannt
+    
+
 __all__ = 'Lager lager Kornspeicher kornspeicher'\
-          ' dorfhalle Dorfhalle'.split()
+          ' dorfhalle Dorfhalle schwarzer_text heller_text'.split()

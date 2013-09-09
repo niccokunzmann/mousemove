@@ -36,7 +36,6 @@ def ressource_erkunden(x, y):
     time.sleep(0.5) # wegen netzwerklatzenz kann das hier schon mal schiefgehen
     if ein_kundschafter():
         # ausführen ist fehlgeschlagen
-##        print('ressource erkunden fehlgeschlagen')
         ressource_erkunden_abbrechen()
         return False
     return True
@@ -128,7 +127,7 @@ class Ressource(Ressource):
                                                       ' '.join(map(str, args)),\
                                                       self)
 def sichte_ressourcen(zahl = 1000):
-    res = set()
+    res = []
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     last = None
@@ -137,12 +136,15 @@ def sichte_ressourcen(zahl = 1000):
             starte_kartenpositionsbestimmung()
         last = (dx, dy)
         scrolle_um(dx, dy)
-        res.update(ressourcen_positionen())
+        res.append(ressourcen_positionen())
         if len(res) >= zahl:
             break
-    res = list(res)
-    res.sort()
-    return res
+    result = set()
+    for rs in res:
+        result.update(rs)
+    result = list(result)
+    result.sort()
+    return result
     
 
 

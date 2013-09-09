@@ -1,5 +1,6 @@
 from tkinter import *
-
+from concurrent.futures import ThreadPoolExecutor
+from .lazy import FutureList
 import win32gui
 
 from . import images
@@ -89,11 +90,20 @@ def karten_positionen(*bilder):
     minx, miny, maxx, maxy, *x = karten_koordinaten()
     return bild_positionen(minx, miny, maxx, maxy, bilder)
 
+_search_executor = ThreadPoolExecutor(1)
+
+submit_worker = _search_executor.submit
+
 def bild_positionen(minx, miny, maxx, maxy, namen):
+    s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
+    future = submit_worker(_bild_positionen, minx, miny, maxx, maxy, namen, s)
+    return FutureList(future)
+
+def _bild_positionen(minx, miny, maxx, maxy, namen, s):
     from .ressourcen import Ressource
     from . import karte
+    print('bildpositionen start')
     bilder = [images.open_image(name) for name in namen]
-    s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
     s_getpixel = s.getpixel
     x0, y0, maxx, maxy = s.getbbox()
     assert x0 == 0, x0
@@ -131,7 +141,8 @@ def bild_positionen(minx, miny, maxx, maxy, namen):
                                       karte.pos()))
     for img, _matches in matches.items():
         if _matches > 20:
-            print('many matches', _matches, 'for', bilder[ps1.index(img)])
+            print('[many matches', _matches, 'for', bilder[ps1.index(img)], ']')
+    print('bildpositionen ende')
     return positions
 
 def beep():
@@ -143,4 +154,4 @@ __all__ = 'screen_width screen_height spiel_height spiel_width '\
           'start_der_karte_y höhe_der_karte breite_der_karte '\
           'rechts unten karte_mitte spiel_koordinaten spiel_bbox '\
           'karten_koordinaten beep ressourcen_positionen '\
-          'karten_positionen bild_positionen'.split()
+          'karten_positionen bild_positionen submit_worker'.split()

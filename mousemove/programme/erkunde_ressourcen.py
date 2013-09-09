@@ -3,7 +3,7 @@ from ..navigation import *
 from ..ressourcen import *
 
 @programm
-def erkunde_ressourcen(kundschafter = 3):
+def erkunde_ressourcen(kundschafter = 4):
     def start():
         öffne_spiel()
     ressourcen_erkundet = []
