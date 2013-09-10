@@ -104,10 +104,11 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s):
     from . import karte
     print('bildpositionen start')
     bilder = [images.open_image(name) for name in namen]
-    s_getpixel = s.getpixel
+    _s_getpixel = s.getpixel 
+    s_getpixel = lambda x, y: _s_getpixel((x0 + x, y0 + y))
+##    assert x0 == 0, x0
+##    assert y0 == 0, y0
     x0, y0, maxx, maxy = s.getbbox()
-    assert x0 == 0, x0
-    assert y0 == 0, y0
 ##    assert maxx == screen_width() #1
 ##    assert maxy == screen_height() #2
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
@@ -118,7 +119,7 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s):
     for x in range(xrange):
         for y in range(yrange):
             match = True
-            px = s_getpixel((x, y))[:3]
+            px = s_getpixel(x, y)[:3]
             for img in ps1:
                 if img[0] != px: continue
                 matches[img] += 1
@@ -127,10 +128,11 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s):
                 if maxx - x < bbox[2] or maxy - y < bbox[3]:
                     continue
                 image_getpixel = img[1].getpixel
+                i_x0, i_y0 = bbox[:2]
                 for dx in range(bbox[2]):
                     for dy in range(bbox[3]):
-                        if s_getpixel((x + dx, y + dy))[:3] != \
-                           image_getpixel((dx, dy))[:3]:
+                        if s_getpixel(x + dx, y + dy)[:3] != \
+                           image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
                             match = False
                             break
                     if not match: break

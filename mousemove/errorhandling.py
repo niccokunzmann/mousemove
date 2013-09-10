@@ -2,6 +2,7 @@ import sys
 import traceback
 import tkinter.messagebox
 from .files import error_report_file
+import subprocess
 
 def report_exc():
     return report_exception(*sys.exc_info())
@@ -12,6 +13,7 @@ def report_exception(ty, err, tb):
     tkinter.messagebox.showerror(ty.__name__, str(err) + \
                                  '\nThe full error was saved to\n' +
                                  file.name)
+    p = subprocess.Popen(['notepad', file.name], shell = True)
     return err.with_traceback(tb)
 
 class ErrorHandling:
