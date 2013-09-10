@@ -274,6 +274,7 @@ EndFunc
 Func algorithm()
 	While 1
 		schedule()
+		MouseMove(0, 0, 0)
 		executeResearch()
 		levelUp()
 		Sleep(6000)
