@@ -95,13 +95,14 @@ _search_executor = ThreadPoolExecutor(1)
 submit_worker = _search_executor.submit
 
 def bild_positionen(minx, miny, maxx, maxy, namen):
+    from . import karte
     s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
-    future = submit_worker(_bild_positionen, minx, miny, maxx, maxy, namen, s)
+    karte_pos = karte.pos()
+    future = submit_worker(_bild_positionen, minx, miny, maxx, maxy, namen, s, karte_pos)
     return FutureList(future)
 
-def _bild_positionen(minx, miny, maxx, maxy, namen, s):
+def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos):
     from .ressourcen import Ressource
-    from . import karte
 ##    print('bildpositionen start')
     bilder = [images.open_image(name) for name in namen]
     _s_getpixel = s.getpixel 
@@ -140,7 +141,7 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s):
                     positions.append(Ressource(namen[ps1.index(img)],
                                       minx + x + bbox[2] // 2,
                                       miny + y + bbox[3] // 2,
-                                      karte.pos()))
+                                      karte_pos))
     for img, _matches in matches.items():
         if _matches > 20:
             print('[many matches', _matches, 'for', bilder[ps1.index(img)], ']')
