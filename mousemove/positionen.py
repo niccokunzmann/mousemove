@@ -102,7 +102,7 @@ def bild_positionen(minx, miny, maxx, maxy, namen):
 def _bild_positionen(minx, miny, maxx, maxy, namen, s):
     from .ressourcen import Ressource
     from . import karte
-    print('bildpositionen start')
+##    print('bildpositionen start')
     bilder = [images.open_image(name) for name in namen]
     _s_getpixel = s.getpixel 
     s_getpixel = lambda x, y: _s_getpixel((x0 + x, y0 + y))
@@ -144,7 +144,7 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s):
     for img, _matches in matches.items():
         if _matches > 20:
             print('[many matches', _matches, 'for', bilder[ps1.index(img)], ']')
-    print('bildpositionen ende')
+##    print('bildpositionen ende')
     return positions
 
 def beep():

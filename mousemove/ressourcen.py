@@ -61,6 +61,7 @@ class Ressource(Ressource):
         scrolle_um(p[0] - self.pos[0], p[1] - self.pos[1])
 
     def erkunde(self):
+        print("erkunde", self)
         self.scrolle_hin()
         v = ressource_erkunden(self.x, self.y)
         starte_kartenpositionsbestimmung()
