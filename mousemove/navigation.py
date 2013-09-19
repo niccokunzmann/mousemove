@@ -73,10 +73,15 @@ def öffne_dorf_auf_karte(name = ''):
     from .auslesen import dorfname
     assert name is not None
     _dorfname = None
+    dorfnamen = set()
     while name != _dorfname:
         click(*rechts(933, 61))
         t = time.time()
         _dorfname = dorfname()
+        if _dorfname in dorfnamen:
+            raise ValueError('Dorf {} konnte nicht unter den Dörfern {} '\
+                             'gefunden werden.'.format(repr(name), dorfnamen))
+        dorfnamen.add(_dorfname)
         if not name: break
     s = 1.8 - time.time() + t
     if s > 0: time.sleep(s) # warten bis er zum dorf gescrollt hat

@@ -9,6 +9,7 @@ import traceback
 
 PORT = 5083
 ADDRESS = ('localhost', PORT)
+print_to_stdout = False
 
 def debug_file():
     f = open('server.out', 'a', encoding = 'utf8')
@@ -17,7 +18,8 @@ def debug_file():
     return f
 
 def debug(*args):
-##    print(*args)
+    if print_to_stdout:
+        print(*args)
     with debug_file() as f:
         print(*args, file = f)
 
@@ -139,7 +141,9 @@ def schedule():
                 ich_bin_dran = True
                 break
 
-def main():
+def main(_print_to_stdout = False):
+    global print_to_stdout
+    print_to_stdout = _print_to_stdout
     try:
         serve()
     except:
