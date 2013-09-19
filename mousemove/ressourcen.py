@@ -6,6 +6,7 @@ from .positionen import *
 from .navigation import *
 from . import mouse
 from . screenshot import last_screenshot_file_name
+from . import config
 import time
 
 Ressource = collections.namedtuple('Ressource', ['name', 'x', 'y', 'pos'])
@@ -50,13 +51,14 @@ class Ressource(Ressource):
         if not isinstance(self.x, int): raise TypeError('x is {} but should be an int'.format(self.x))
         if not isinstance(self.y, int): raise TypeError('y is {} but should be an int'.format(self.y))
         if not isinstance(self.pos, list): raise TypeError('pos is {} but should be a list'.format(self.pos))
-        if len(self.pos) not in (0, 2): raise TypeError('pos is {} but should be of length 0 or 2'.format(self.pos))
+        if len(self.pos) not in (0, 3): raise TypeError('pos is {} but should be of length 0 or 2'.format(self.pos))
         if self.pos and not isinstance(self.pos[0], int): raise TypeError('pos[0] is {} but should be an int'.format(self.pos[0]))
         if self.pos and not isinstance(self.pos[1], int): raise TypeError('pos[1] is {} but should be an int'.format(self.pos[1]))
     
     def scrolle_hin(self):
         assert pos(), 'starte_kartenpositionsbestimmung() vorher'
         assert self.pos, 'Die ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
+        starte_kartenpositionsbestimmung(self.dorfname)
         p = pos()
         scrolle_um(p[0] - self.pos[0], p[1] - self.pos[1])
 
@@ -64,7 +66,6 @@ class Ressource(Ressource):
         print("erkunde", self)
         self.scrolle_hin()
         v = ressource_erkunden(self.x, self.y)
-        starte_kartenpositionsbestimmung()
         return v
 
     @property
@@ -118,8 +119,17 @@ class Ressource(Ressource):
         u = ((a.relx - self.relx) * dy + (self.rely - a.rely) * dx) / (dy*dy + dx*dx)
         return abs(u) * (dy*dy + dx*dx)**0.5
 
-    def gibt_ehre_beim_erkunden(self):
+    def ist_unbekannt(self):
         return self.name.lower() == 'ressourcen'
+
+    def gibt_ehre_beim_erkunden(self):
+        # 768 ist die groesse des radius in dem es ehre gibt
+        return self.ist_unbekannt() and self.abstand_zum_dorf <= 768
+
+    def soll_zuerst_erkundet_werden(self):
+        if config.erkunde_alle_unbekannten_ressourcen:
+            return self.ist_unbekannt()
+        return self.gibt_ehre_beim_erkunden()
 
     def format_for_print(self, *args):
         return '{:<15} {:4.0f}({:4.2f}) {} {}'.format(self.name, \
@@ -127,19 +137,31 @@ class Ressource(Ressource):
                                                       self.sortier_priorität,
                                                       ' '.join(map(str, args)),\
                                                       self)
-def sichte_ressourcen(zahl = 1000):
+    @property
+    def dorfname(self):
+        return self.pos[2]
+    
+def sichte_ressourcen():
     res = []
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
-    last = None
-    for dx, dy in [(0,0),(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]:
-        if last != (0,0):
-            starte_kartenpositionsbestimmung()
-        last = (dx, dy)
-        scrolle_um(dx, dy)
+    dörfer = {}
+    # Positionen (0,0) machen
+    while 1:
+        starte_kartenpositionsbestimmung()
+        if dorfname() in dörfer: break
+        dörfer[dorfname()] = [(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]
         res.append(ressourcen_positionen())
-        if len(res) >= zahl:
-            break
+    # andere positionen machen
+    while dörfer:
+        starte_kartenpositionsbestimmung()
+        positionen = dörfer.get(dorfname(), None)
+        if positionen:
+            dx, dy = positionen.pop(0)
+            scrolle_um(dx, dy)
+            res.append(ressourcen_positionen())
+            if not positionen:
+                dörfer.pop(dorfname())
     result = set()
     for rs in res:
         result.update(rs)

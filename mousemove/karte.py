@@ -1,5 +1,6 @@
 from .navigation import *
 from .positionen import *
+from .auslesen import dorfname
 
 def ressourcen_positionen(*args):
     from . import ressourcen
@@ -16,15 +17,16 @@ def zerstöre_positionsbestimmung():
 zerstöre_positionsbestimmung()
 _dorf = None
 
-def starte_kartenpositionsbestimmung():
+def starte_kartenpositionsbestimmung(_dorfname = ''):
     global _pos, _dorf
     from .ressourcen import Ressource
     öffne_karte()
-    öffne_dorf_auf_karte()
+    öffne_dorf_auf_karte(_dorfname)
     x = breite_der_karte() // 2
     y = höhe_der_karte() // 2
-    _dorf = Ressource('Dorf', x, y, [x, y])
-    _pos = [dorf().x, dorf().y]
+    _dorfname = dorfname()
+    _dorf = Ressource('Dorf', x, y, [x, y, _dorfname])
+    _pos = [dorf().x, dorf().y, _dorfname]
 
 @im_menu('karte')
 def scrolle_um(x, y):

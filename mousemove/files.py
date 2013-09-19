@@ -13,7 +13,7 @@ if os.path.isdir(path):
     try: shutil.rmtree(path)
     except PermissionError: pass
 try: os.mkdir(path)
-except PermissionError: pass
+except (PermissionError, FileExistsError): pass
 
 image_folder = os.path.join(os.path.dirname(__file__), 'images')
 if not os.path.isdir(image_folder):

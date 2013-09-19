@@ -1,6 +1,6 @@
 from .screenshot import screenshot_with_size
 from .navigation import *
-from .positionen import mitte
+from .positionen import mitte, rechts
 from . import files
 import subprocess
 import time
@@ -24,14 +24,14 @@ def text(x, y, width, height):
     image_name = screenshot_with_size(x, y, width, height)
     return text_from_image_file(image_name)
 
-def schwarzer_text(x, y, width, height):
+def schwarzer_text(x, y, width, height, schwelle = 200):
     image_name = screenshot_with_size(x, y, width, height)
     img = PIL.Image.open(image_name)
     x0, y0, width, height = img.getbbox()
     for x in range(x0, width + x0):
         for y in range(y0, height + y0):
             rgba = img.getpixel((x, y))
-            if sum(rgba[:3]) > 200:
+            if sum(rgba[:3]) > schwelle:
                 img.putpixel((x, y), (255,255,255) + rgba[3:])
             else:
                 img.putpixel((x, y), (0, 0, 0) + rgba[3:])
@@ -127,6 +127,15 @@ def erkundungszeit():
     s = heller_text(482, 528, 590-482, 559-528)
     s.replace('D', '0') # 0 wird manchmal als D erkannt
     
+def _dorfname():
+    x, y = rechts(970, 56)
+    return schwarzer_text(x, y, 1340 - 970, 69 - 56, schwelle = 330).strip()
+
+def dorfname():
+    from .navigation import dorfname_ist_bekannt, dorfname
+    if dorfname_ist_bekannt():
+        return dorfname()
+    return _dorfname()
 
 __all__ = 'Lager lager Kornspeicher kornspeicher'\
-          ' dorfhalle Dorfhalle schwarzer_text heller_text'.split()
+          ' dorfhalle Dorfhalle schwarzer_text heller_text dorfname'.split()

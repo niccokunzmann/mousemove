@@ -13,6 +13,10 @@ def configure_ressources():
     l.pack()
     b = Button(t, command = t.quit, text = 'OK')
     b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+    c_value = BooleanVar(t, value = config.erkunde_alle_unbekannten_ressourcen)
+    c = Checkbutton(t, text = 'Ressourcen ohne Ehre aufdecken', \
+                    variable = c_value, onvalue = True, offvalue = False)
+    c.place(x = 5, rely = 0.5, anchor = W)
     t.resizable(width=FALSE, height=FALSE)
     entry1 = lambda x: entry(x, 109)
     entry2 = lambda x: entry(x, 270)
@@ -57,6 +61,7 @@ def configure_ressources():
     try:
         t.mainloop()
         config.load()
+        config.erkunde_alle_unbekannten_ressourcen = bool(c_value.get())
         for name, var in entries.items():
             config.ressourcen_prioritäten[name] = var.get()
         config.save()

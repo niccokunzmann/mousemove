@@ -17,7 +17,7 @@ def DEFAULT_BANKETT_OPTION():
 def default_configuration():
     return dict(bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
                 ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
-                )    
+                erkunde_alle_unbekannten_ressourcen = False)
 
 def tesser_exe():
     path = os.path.join(os.environ['Programfiles'], 'Tesseract-OCR', 'tesseract.exe')
