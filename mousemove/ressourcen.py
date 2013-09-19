@@ -101,11 +101,12 @@ class Ressource(Ressource):
 
     def __eq__(self, other):
         differenz_pixel = 70 # 100 vielleicht?
-        return (self.relx - other.relx)**2 + (self.rely - other.rely)**2 < \
+        return self.dorfname == other.dorfname and \
+               (self.relx - other.relx)**2 + (self.rely - other.rely)**2 < \
                differenz_pixel**2
 
     def __hash__(self):
-        return 1
+        return hash(self.dorfname)
 
     def set_pos(self, pos):
         while self.pos:
