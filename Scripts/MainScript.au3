@@ -10,7 +10,7 @@ Dim $queueSize = 5
 Dim $queue[$queueSize]= [""]
 Dim $lastCheck
 Dim $connection
-Dim $myTurn
+Dim $myTurn = False
 TCPStartup()
 
 
@@ -21,8 +21,8 @@ $v2 = 0
 $count = 0
 
 Func startServer()
-	ShellExecute(@WorkingDir & "\..\mousemove\schedule.py")
-	If WinExists("C:\Windows\py.exe") Then
+	$result = ShellExecute(@WorkingDir & "\..\mousemove\schedule.py")
+	If $result Then
 		Return True
 	EndIf
 	Return False
@@ -275,7 +275,9 @@ Func algorithm()
 	While 1
 		schedule()
 		MouseMove(0, 0, 0)
+		Sleep(100)
 		executeResearch()
+		Sleep(500)
 		levelUp()
 		Sleep(6000)
 	WEnd
