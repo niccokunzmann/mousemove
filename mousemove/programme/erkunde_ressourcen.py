@@ -4,7 +4,7 @@ from ..ressourcen import *
 from .. import config
 
 @programm
-def erkunde_ressourcen(kundschafter = 4):
+def erkunde_ressourcen(kundschafter_pro_dorf = 4):
     # mit Keyboardinterrupt pausieren
     # anzahl der Kundschafter merken
     # wenn eine unerkannte ressource gefunden wird sofort losschicken
@@ -16,6 +16,7 @@ def erkunde_ressourcen(kundschafter = 4):
     while 1:
         try:
             res = sichte_ressourcen()
+            kundschafter = len(dorfnamen()) * kundschafter_pro_dorf
             if res:
                 print(len(res), 'ressourcen gefunden:')
                 for r in res:

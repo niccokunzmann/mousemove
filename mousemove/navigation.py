@@ -62,7 +62,7 @@ def zoom_raus():
         right_click(378, 367)
         time.sleep(0.5)
 
-
+_dorfnamen = set()
 _dorfname = None
 def dorfname_ist_bekannt():
     return _dorfname is not None
@@ -86,7 +86,11 @@ def dorfname():
     from .auslesen import dorfname
     if not dorfname_ist_bekannt():
         _dorfname = dorfname()
+    _dorfnamen.add(_dorfname)
     return _dorfname
+
+def dorfnamen():
+    return _dorfnamen.copy()
 
 @öffnen
 def öffne_karte():
@@ -178,9 +182,9 @@ def scrolle_um(x, y):
     from . import karte
     return karte.scrolle_um(x, y)
 
-def starte_kartenpositionsbestimmung():
+def starte_kartenpositionsbestimmung(*args, **kw):
     from . import karte
-    return karte.starte_kartenpositionsbestimmung()
+    return karte.starte_kartenpositionsbestimmung(*args, **kw)
 
 def zerstöre_positionsbestimmung():
     from . import karte
@@ -226,7 +230,7 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' zerstöre_positionsbestimmung dorf im_menu pos beep öffne_dorfkarte'\
           ' öffne_burgkarte öffne_ressourcen öffne_handel öffne_truppen'\
           ' öffne_einheiten öffne_bankett öffne_vasallen dorfname_ist_bekannt'\
-          ' dorfname'.split()
+          ' dorfname dorfnamen'.split()
 
 __all__.extend(_names)
 

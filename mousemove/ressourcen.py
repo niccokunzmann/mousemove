@@ -56,9 +56,9 @@ class Ressource(Ressource):
         if self.pos and not isinstance(self.pos[1], int): raise TypeError('pos[1] is {} but should be an int'.format(self.pos[1]))
     
     def scrolle_hin(self):
-        assert pos(), 'starte_kartenpositionsbestimmung() vorher'
         assert self.pos, 'Die ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         starte_kartenpositionsbestimmung(self.dorfname)
+        assert pos(), 'starte_kartenpositionsbestimmung() vorher'
         p = pos()
         scrolle_um(p[0] - self.pos[0], p[1] - self.pos[1])
 
