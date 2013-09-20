@@ -340,6 +340,7 @@ EndFunc
 
 Func pause()
 	While 1
+		schedule()
 		Sleep(100)
 	WEnd
 EndFunc
