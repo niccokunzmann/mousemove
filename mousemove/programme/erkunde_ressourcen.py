@@ -15,35 +15,39 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
     start()
     while 1:
         try:
-            res = sichte_ressourcen()
-            kundschafter = len(dorfnamen()) * kundschafter_pro_dorf
-            if res:
-                print(len(res), 'ressourcen gefunden:')
-                for r in res:
-                    if r in ressourcen_erkundet: erk = '(erkundet)'
-                    else: erk = ''
-                    print(r.format_for_print(erk))
-            unbekannte = [r for r in res if r.soll_zuerst_erkundet_werden() and \
-                                            r not in ressourcen_erkundet]
-            i = 0
-            kein_kundschater_mehr = False
-            for unbekannt in unbekannte:
-                if unbekannt.erkunde():
-                    ressourcen_erkundet.append(unbekannt)
-                    print('erkunde unbekanntes', unbekannt)
-                else:
-                    kein_kundschater_mehr = True
-                    break
-                i += 1
-            if res and not kein_kundschater_mehr:
-                r = res[0]
-                for i in range(i, kundschafter):
-                    if r.erkunde():
-                        ressourcen_erkundet.append(r)
-                        print('erkunde', r)
+            alle_ressourcen = sichte_ressourcen()
+            alle_dörfer = dorfnamen()
+            for dorfname in alle_dörfer:
+                res = [r for r in alle_ressourcen if r.dorfname == dorfname]
+                kundschafter = kundschafter_pro_dorf
+                if res:
+                    print(len(res), 'ressourcen gefunden:')
+                    for r in res:
+                        if r in ressourcen_erkundet: erk = '(erkundet)'
+                        else: erk = ''
+                        print(r.format_for_print(erk))
+                unbekannte = [r for r in res if r.soll_zuerst_erkundet_werden() and \
+                                                r not in ressourcen_erkundet]
+                i = 0
+                kein_kundschater_mehr = False
+                for unbekannt in unbekannte:
+                    if unbekannt.erkunde():
+                        ressourcen_erkundet.append(unbekannt)
+                        print('erkunde unbekanntes', unbekannt)
                     else:
+                        kein_kundschater_mehr = True
                         break
-            print('kein Kundschafter mehr')
+                    i += 1
+                if res and not kein_kundschater_mehr:
+                    r = res[0]
+                    for i in range(i, kundschafter):
+                        if r.erkunde():
+                            ressourcen_erkundet.append(r)
+                            print('erkunde', r)
+                        else:
+                            break
+                
+                print('kein Kundschafter mehr in {}'.format(dorfname))
             yield 60
         except KeyboardInterrupt:
             while 1:
