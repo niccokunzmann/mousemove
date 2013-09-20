@@ -1,4 +1,4 @@
-from .. import schedule, disconnect
+from .. import schedule
 from ..navigation import beep
 from ..errorhandling import report_exc, error_handling
 from .. import config
@@ -36,7 +36,7 @@ def programm(funktion):
                         raise report_exc()
                     else: break
         finally:
-            disconnect()
+            schedule.disconnect()
     f.__name__ = funktion.__name__
     f.__doc__ = funktion.__doc__
     return f
