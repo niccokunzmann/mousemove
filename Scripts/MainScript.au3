@@ -3,26 +3,23 @@
 #include <WindowsConstants.au3>
 
 HotKeySet("^!p", "pause")
+HotKeySet("^!c", "capture")
+HotKeySet("^!r", "configureRecruiting")
 HotKeySet("^!f", "defineResearch")
 HotKeySet("^!a", "algorithm")
 HotKeySet("^!q", "quit")
 Opt("MouseClickDownDelay", 100)
-Dim $queueSize = 5
+Dim $priorityRecruiting[5] = [0,0,0,0,0]
+$queueSize=10
 Dim $queue[$queueSize]= [""]
 Dim $priorityRecruiting[5]
 Dim $lastCheck
 Dim $connection
 Dim $myTurn = False
 Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5
+Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019
+Dim $NUMBEROFVILLAGES = 2
 TCPStartup()
-
-
-
-$c1 = 0
-$v1 = 0
-$c2 = 0
-$v2 = 0
-$count = 0
 
 Func startServer()
 	$result = ShellExecute(@WorkingDir & "\..\mousemove\schedule.py")
@@ -84,19 +81,14 @@ Func schedule()
 EndFunc
 
 
+
+$c2 = 0
+$v2 = 0
 Func capture()
 	$pos = MouseGetPos()
-
-	$count = $count +1
-	If $count = 2 Then
-		$c2 = $pos[0]
-		$v2 = $pos[1]
-		MsgBox(0, "Positions", "First: " & $c1 & "@" & $v1 & " Second: " & $c2 & "@" & $v2)
-		$count = 0
-	Else
-		$c1 = $pos[0]
-		$v1 = $pos[1]
-	EndIf
+	$c2 = $pos[0]
+	$v2 = $pos[1]
+	MsgBox(0, "Positions", "First: " & $c2 & "@" & $v2)
 EndFunc
 
 
@@ -163,6 +155,7 @@ Func configureRecruiting()
 				ExitLoop
 		EndSelect
 	WEnd
+	GUIDelete()
 EndFunc
 
 Func defineResearch()
@@ -209,9 +202,57 @@ Func defineResearch()
 EndFunc
 
 Func executeRecruiting()
+	Local $x, $y
 	If not $priorityRecruiting[0] Then Return
+	For $i=1 To $NUMBEROFVILLAGES
+		MouseClick("LEFT", 1167, 60)
+		Sleep(200)
+		MouseMove(0,0, 0)
+		$result = searchForImage("MnDorf.png", $x, $y, 0)
+		If $result Then
+			MouseClick("LEFT", $x, $y)
+		EndIf
+		MouseMove(0,0, 0)
+		$result = searchForImage("MnArmee.png", $x, $y, 0)
+		If $result Then
+			MouseClick("LEFT", $x, $y)
+		EndIf
+		startRecruiting()
+	Next
+EndFunc
 
-
+Func startRecruiting()
+	Local $x, $y
+	For $type In $priorityRecruiting
+		Select
+			Case $type = $MILIZ
+				While searchForImageInArea("RkEins.png", $MilizTopX, 481, $MilizTopX+46, 509, $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $BOGEN
+				While searchForImageInArea("RkEins.png", $BogenTopX, 481, $BogenTopX+46, 509, $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $PIKE
+				While searchForImageInArea("RkEins.png", $PikeTopX, 481, $PikeTopX+46, 509, $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $SCHWERT
+				While searchForImageInArea("RkEins.png", $SchwertTopX, 481, $SchwertTopX+46, 509, $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $KATAPULT
+				While searchForImageInArea("RkEins.png", $KatapultTopX, 481, $KatapultTopX+46, 509, $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $NICHTS
+		EndSelect
+	Next
 EndFunc
 
 Func executeResearch()
@@ -240,7 +281,7 @@ Func levelUp()
 		$result = searchForImage("levelUp.png", $x, $y, 100)
 		If $result = 1 Then
 			MouseClick("LEFT", $x, $y)
-			Sleep(500)
+			Sleep(10000)
 		EndIf
 	EndIf
 EndFunc
@@ -260,7 +301,17 @@ Func startResearch()
 		$result = searchForImage("FrSchieber.png", $x1, $y1, 0)
 		$count = 0
 		If $result = 1 Then
-			While Not searchForImage("FrSchieberUnten.png", $x, $y, 85) And $count <= 10
+			While $count <= 10
+				If searchForImage("FrSchieberUnten.png", $x, $y, 75) Then
+					$result = searchForImage($queue[0], $x, $y, 0)
+					If $result = 1 Then
+						MouseClick("LEFT", $x, $y)
+						Sleep(500)
+						updateQueue()
+						Return
+					EndIf
+					ExitLoop
+				EndIf
 				$result = searchForImage($queue[0], $x, $y, 0)
 				If $result = 1 Then
 					MouseClick("LEFT", $x, $y)
@@ -289,6 +340,14 @@ EndFunc
 
 Func searchForImage($fileName, ByRef $x, ByRef $y, $tolerance)
 	$result = _WaitForImageSearch($fileName, 1, 1, $x, $y, $tolerance)
+	If $result = 1 Then
+		Return 1
+	EndIf
+	Return 0
+EndFunc
+
+Func searchForImageInArea($fileName, $x1, $y1, $right, $bottom, ByRef $x, ByRef $y, $tolerance)
+	$result = _WaitForImageSearchArea($fileName, 1,1, $x1, $y1, $right, $bottom, $x, $y,$tolerance)
 	If $result = 1 Then
 		Return 1
 	EndIf
@@ -334,6 +393,8 @@ Func algorithm()
 		executeResearch()
 		Sleep(500)
 		levelUp()
+		Sleep(500)
+		executeRecruiting()
 		Sleep(6000)
 	WEnd
 EndFunc
