@@ -114,11 +114,15 @@ def connect():
             raise Exception('Could not connect to server at', ADDRESS)
 
 def reconnect():
+    disconnect()
+    connect()
+
+def disconnect():
     global connection
     if connection:
         connection.close()
     connection = None
-    connect()
+    
 
 def schedule():
     global ich_bin_dran
@@ -148,6 +152,9 @@ def main(_print_to_stdout = False):
         serve()
     except:
         traceback.print_exc(file = debug_file())
+
+__all__ = 'connect disconnect reconnect main schedule serve debug_file debug '\
+          'ADDRESS PORT start_dedicated_server'.split()
 
 if __name__ == '__main__':
     main()
