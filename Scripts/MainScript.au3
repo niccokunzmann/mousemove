@@ -1,17 +1,21 @@
 #include<ImageSearch.au3>
-#include <Clipboard.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
 
-;HotKeySet("p", "capture")
+HotKeySet("^!p", "pause")
 HotKeySet("^!f", "defineResearch")
 HotKeySet("^!a", "algorithm")
 HotKeySet("^!q", "quit")
 Opt("MouseClickDownDelay", 100)
 Dim $queueSize = 5
 Dim $queue[$queueSize]= [""]
+Dim $priorityRecruiting[5]
 Dim $lastCheck
 Dim $connection
 Dim $myTurn = False
+Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5
 TCPStartup()
+
 
 
 $c1 = 0
@@ -66,14 +70,14 @@ Func schedule()
 			EndIf
 		Else
 			$result = TCPRecv($connection, 1)
-			If @error = 0 Then
+			If $result And Not @error Then
 				$myTurn = True
 				Return
-			ElseIf @error = -1 Then
-				ContinueLoop
-			Else
-				;MsgBox(0, "Info", "error" & @error)
+			Elseif @error Then
+				MsgBox(0, "Info", "Something went wrong: error" & @error, 1)
 				reconnect()
+			Else
+				ContinueLoop
 			EndIf
 		EndIf
 	WEnd
@@ -114,6 +118,52 @@ Func isResearching()
 	EndIf
 EndFunc
 
+Func configureRecruiting()
+	Local $b1, $b2, $b3, $b4, $b5, $b6
+	$width = 100
+	GUICreate("Autorekrutierung", $width *6+20, 200)
+	Opt("GUICoordMode", 2)
+
+	$b1 = GUICtrlCreateButton("Bauernmiliz", 10, 150, $width)
+	$b2 = GUICtrlCreateButton("Bogenschütze", 0, -1, $width)
+	$b3 = GUICtrlCreateButton("Pikenier", 0, -1, $width)
+	$b4 = GUICtrlCreateButton("Schwertkämpfer", 0, -1, $width)
+	$b5 = GUICtrlCreateButton("Katapult", 0, -1, $width)
+	$b6 = GUICtrlCreateButton("Fertig", 0, -1, $width)
+	$currentIndex = 0
+
+	GUISetState()
+	While 1
+		$msg = GUIGetMsg()
+		Select
+			Case $msg = $GUI_EVENT_CLOSE
+				ExitLoop
+			Case $msg = $b1
+				GUICtrlDelete($b1)
+				$priorityRecruiting[$currentIndex] = $MILIZ
+				$currentIndex += 1
+			Case $msg = $b2
+				GUICtrlDelete($b2)
+				$priorityRecruiting[$currentIndex] = $BOGEN
+				$currentIndex += 1
+			Case $msg = $b3
+				GUICtrlDelete($b3)
+				$priorityRecruiting[$currentIndex] = $PIKE
+				$currentIndex += 1
+			Case $msg = $b4
+				GUICtrlDelete($b4)
+				$priorityRecruiting[$currentIndex] = $SCHWERT
+				$currentIndex += 1
+			Case $msg = $b5
+				GUICtrlDelete($b5)
+				$priorityRecruiting[$currentIndex] = $KATAPULT
+				$currentIndex += 1
+			Case $msg = $b6
+				MsgBox(0, 'Testing', $priorityRecruiting[0] & "," & $priorityRecruiting[1]& "," & $priorityRecruiting[2]& "," & $priorityRecruiting[3]& "," & $priorityRecruiting[4])
+				ExitLoop
+		EndSelect
+	WEnd
+EndFunc
 
 Func defineResearch()
 	Dim $x1, $x2
@@ -158,6 +208,11 @@ Func defineResearch()
 	EndIf
 EndFunc
 
+Func executeRecruiting()
+	If not $priorityRecruiting[0] Then Return
+
+
+EndFunc
 
 Func executeResearch()
 	If $queue[0] = "" Then Return
@@ -205,7 +260,7 @@ Func startResearch()
 		$result = searchForImage("FrSchieber.png", $x1, $y1, 0)
 		$count = 0
 		If $result = 1 Then
-			While Not searchForImage("FrSchieberUnten.png", $x, $y, 75) And $count <= 10
+			While Not searchForImage("FrSchieberUnten.png", $x, $y, 85) And $count <= 10
 				$result = searchForImage($queue[0], $x, $y, 0)
 				If $result = 1 Then
 					MouseClick("LEFT", $x, $y)
@@ -274,12 +329,18 @@ EndFunc
 Func algorithm()
 	While 1
 		schedule()
-		MouseMove(0, 0, 0)
+		MouseMove(100, 100, 0)
 		Sleep(100)
 		executeResearch()
 		Sleep(500)
 		levelUp()
 		Sleep(6000)
+	WEnd
+EndFunc
+
+Func pause()
+	While 1
+		Sleep(100)
 	WEnd
 EndFunc
 
