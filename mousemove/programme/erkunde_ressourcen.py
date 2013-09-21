@@ -9,6 +9,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
     # anzahl der Kundschafter merken
     # wenn eine unerkannte ressource gefunden wird sofort losschicken
     # waren nur aufdecken, wenn es ehre gibt
+    # wenn unerkannte ressource erneut erschient wird sie erkundet
     def start():
         öffne_spiel()
     ressourcen_erkundet = []
@@ -26,8 +27,8 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                         if r in ressourcen_erkundet: erk = '(erkundet)'
                         else: erk = ''
                         print(r.format_for_print(erk))
-                unbekannte = [r for r in res if r.soll_zuerst_erkundet_werden() and \
-                                                r not in ressourcen_erkundet]
+                unbekannte = [r for r in res if r.soll_zuerst_erkundet_werden() \
+                                            and r not in ressourcen_erkundet]
                 i = 0
                 kein_kundschater_mehr = False
                 for unbekannt in unbekannte:
