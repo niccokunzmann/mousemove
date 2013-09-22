@@ -1,6 +1,6 @@
 import os
 import PIL.Image
-from tkinter import PhotoImage
+import tkinter
 import time
 
 from . import files
@@ -26,7 +26,7 @@ def screenshot_with_size(left, top, width, height):
 def last_screenshot_file_name():
     return _screenshot[0]
 
-def pil2tkinter_image(img, master = None):
+def pil2tkinter_image(img, *args, **kw):
     if isinstance(img, str):
         img = open_image(img)
     x0, y0, width, height = img.getbbox()
@@ -37,7 +37,7 @@ def pil2tkinter_image(img, master = None):
             l.append('#%02X%02X%02X' % img.getpixel((x, y))[:3])
         l.append('}')
     data = ' '.join(l)
-    pi = PhotoImage(master = master)
+    pi = tkinter.PhotoImage(*args, **kw)
     pi.put(data, (0,0))
     return pi
 
