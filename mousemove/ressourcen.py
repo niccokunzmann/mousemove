@@ -20,11 +20,25 @@ def ein_kundschafter():
     x, y = karte_mitte(306, 582)
     return bild_positionen(x - 20, y -20, x + 20, y + 20, ('ein_kundschafter',))
 
+def kann_nur_erkundet_werden():
+    """=> ob nur die Erkundungsoption zur Verfügung steht.
+Best benutzt, wenn die Ressource angewählt wurde"""
+##    click(1184, 178)
+##    # 166x38
+    x1, y1 = rechts(1184, 178)
+    x2, y2 = rechts(1350, 216)
+    return bild_positionen(x1-2, y1-2, x2+2, y2+2, ('nur Kundschafterbutton',))
+
+class RessourceVerschwunden(Exception):
+    pass
+
 @im_menu('karte')
 def ressource_erkunden(x, y):
     """erkunde eine ressource => ob geklappt"""
     zerstöre_positionsbestimmung()
     mouse.click(x, y)
+    if not kann_nur_erkundet_werden():
+        raise RessourceVerschwunden('Ressource an der Stelle ({},{}) nicht gefunden.'.format(x, y))
     ressource_erkunden_click()
     for i in range(10):
         if not ein_kundschafter():
@@ -123,6 +137,9 @@ class Ressource(Ressource):
     def ist_unbekannt(self):
         return self.name.lower() == 'ressourcen'
 
+    def ist_bekannt(self):
+        return not self.ist_unbekannt()
+
     def gibt_ehre_beim_erkunden(self):
         # 768 ist die groesse des radius in dem es ehre gibt
         return self.ist_unbekannt() and self.abstand_zum_dorf <= 768
@@ -175,4 +192,4 @@ def sichte_ressourcen():
 
 
 __all__ = 'ressourcen_positionen Ressource sichte_ressourcen ein_kundschafter'\
-          ''.split()
+          ' RessourceVerschwunden kann_nur_erkundet_werden'.split()

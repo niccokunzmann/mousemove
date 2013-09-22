@@ -12,17 +12,21 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
     # wenn unerkannte ressource erneut erschient wird sie erkundet
     def start():
         öffne_spiel()
-    ressourcen_erkundet = []
+    ressourcen_erkundet = set()
     start()
     while 1:
         try:
             alle_ressourcen = sichte_ressourcen()
+            for ressource in alle_ressourcen:
+                if ressource.ist_bekannt() and ressource in ressourcen_erkundet:
+                    ressourcen_erkundet.remove(ressource)
+                    print(ressource, 'wurde erkundet.')
             alle_dörfer = dorfnamen()
             for dorfname in alle_dörfer:
                 res = [r for r in alle_ressourcen if r.dorfname == dorfname]
                 kundschafter = kundschafter_pro_dorf
                 if res:
-                    print(len(res), 'ressourcen gefunden:')
+                    print(len(res), 'Ressourcen gefunden:')
                     for r in res:
                         if r in ressourcen_erkundet: erk = '(erkundet)'
                         else: erk = ''
@@ -32,21 +36,27 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                 i = 0
                 kein_kundschater_mehr = False
                 for unbekannt in unbekannte:
-                    if unbekannt.erkunde():
-                        ressourcen_erkundet.append(unbekannt)
-                        print('erkunde unbekanntes', unbekannt)
-                    else:
-                        kein_kundschater_mehr = True
-                        break
+                    try:
+                        if unbekannt.erkunde():
+                            ressourcen_erkundet.add(unbekannt)
+                            print('erkunde unbekanntes', unbekannt)
+                        else:
+                            kein_kundschater_mehr = True
+                            break
+                    except RessourceVerschwunden:
+                        print('Ressource verschwunden!')
+                        continue
                     i += 1
                 if res and not kein_kundschater_mehr:
                     r = res[0]
                     for i in range(i, kundschafter):
-                        if r.erkunde():
-                            ressourcen_erkundet.append(r)
-                            print('erkunde', r)
-                        else:
-                            break
+                        try:
+                            if r.erkunde():
+                                print('erkunde', r)
+                            else:
+                                break
+                        except RessourceVerschwunden:
+                            print('Ressource verschwunden!')
                 
                 print('kein Kundschafter mehr in {}'.format(dorfname))
             yield 60
