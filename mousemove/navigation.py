@@ -35,7 +35,7 @@ windowhandle = None
 def öffne_spiel():
     global windowhandle
     # GetWindowRect(handle) # koordinaten des spieles
-    name = "Stronghold Kingdoms"
+    name = "Stronghold Kingdoms - Welt"
     handles = []
     def append_handle(handle, handles):
         handles.append(handle)
