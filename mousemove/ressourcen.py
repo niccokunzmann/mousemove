@@ -147,13 +147,15 @@ def sichte_ressourcen():
     h = höhe_der_karte() - 20
     b = breite_der_karte() - 20
     dörfer = {}
-    # Positionen (0,0) machen
+    # erste Positionen abarbeiten um die Dorfzalh heauszufinden
     while 1:
         starte_kartenpositionsbestimmung()
         if dorfname() in dörfer: break
-        dörfer[dorfname()] = [(0,h),(0,-h),(-b,0),(b,0),(b,h),(-b,h),(b,-h),(-b,-h)]
+        dörfer[dorfname()] = positionen = config.erkundungsbereich()
+        dx, dy = positionen.pop(0)
+        scrolle_um(dx, dy)
         res.append(ressourcen_positionen())
-    # andere positionen machen
+    # andere Positionen abarbeiten
     while dörfer:
         starte_kartenpositionsbestimmung()
         positionen = dörfer.get(dorfname(), None)
