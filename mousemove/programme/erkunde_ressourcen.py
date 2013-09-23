@@ -55,13 +55,13 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                     gesendete_kundschafter = 0
                     while gesendete_kundschafter < kundschafter and res:
                         # roulette wheel
-                        chosen_index = random.random() * all_preferences_sum 
+                        chosen_index0 = chosen_index = random.random() * all_preferences_sum 
                         i = 0
                         while chosen_index > all_preferences[i]:
                             chosen_index -= all_preferences[i]
                             i += 1
                         r = res[i]
-                        print(chosen_index, i, all_preferences, r)
+                        print(chosen_index0, i, all_preferences, r)
                         # erkunden
                         try:
                             if r.erkunde():
