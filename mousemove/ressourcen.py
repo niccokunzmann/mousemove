@@ -27,7 +27,8 @@ Best benutzt, wenn die Ressource angewählt wurde"""
 ##    # 166x38
     x1, y1 = rechts(1184, 178)
     x2, y2 = rechts(1350, 216)
-    return bild_positionen(x1-2, y1-2, x2+2, y2+2, ('nur Kundschafterbutton',))
+    return bild_positionen(x1-2, y1-2, x2+2, y2+2, ('nur Kundschafterbutton',), \
+                           debug_many_matches = False)
 
 class RessourceVerschwunden(Exception):
     pass
@@ -45,7 +46,7 @@ def ressource_erkunden(x, y):
             mouse.click(*karte_mitte(309, 582))
         else:
             break
-    if i > 1:
+    if i >= 9:
         print(i, 'mal gebraucht, um den kundschafter auf 1 zu setzen', last_screenshot_file_name())
     ressource_erkunden_ausführen()
     time.sleep(0.5) # wegen netzwerklatzenz kann das hier schon mal schiefgehen
@@ -180,8 +181,8 @@ def sichte_ressourcen():
             dx, dy = positionen.pop(0)
             scrolle_um(int(dx * width), int(dy * height))
             res.append(ressourcen_positionen())
-            if not positionen:
-                dörfer.pop(dorfname())
+        if not positionen:
+            dörfer.pop(dorfname())
     result = set()
     for rs in res:
         result.update(rs)

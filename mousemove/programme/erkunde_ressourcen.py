@@ -52,14 +52,16 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                 if res and not kein_kundschater_mehr:
                     all_preferences = [1 / r.sortier_priorität for r in res]
                     all_preferences_sum = sum(all_preferences)
-                    i = 0
-                    while i < kundschafter and res:
+                    gesendete_kundschafter = 0
+                    while gesendete_kundschafter < kundschafter and res:
                         # roulette wheel
                         chosen_index = random.random() * all_preferences_sum 
                         i = 0
                         while chosen_index > all_preferences[i]:
                             chosen_index -= all_preferences[i]
                             i += 1
+                        r = res[i]
+                        print(chosen_index, i, all_preferences, r)
                         # erkunden
                         try:
                             if r.erkunde():
@@ -72,7 +74,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                             all_preferences_sum -= r.sortier_priorität
                             print('Ressource verschwunden!')
                         else:
-                            i += 1
+                            gesendete_kundschafter += 1
                 
                 print('kein Kundschafter mehr in {}'.format(dorfname))
             yield 60

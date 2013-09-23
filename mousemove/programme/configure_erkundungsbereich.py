@@ -35,7 +35,7 @@ def configure_erkundungsbereich():
     try:
         t.mainloop()
         config.load()
-        if chosen_index.get() > 0:
+        if chosen_index.get() != -1:
             config.erkundungsmuster(einträge[chosen_index.get()][0])
         config.save()
     finally:
