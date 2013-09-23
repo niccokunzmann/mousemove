@@ -19,6 +19,8 @@ Dim $myTurn = False
 Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5
 Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019
 Dim $NUMBEROFVILLAGES = 2
+Dim $MyWinCenterY = 878/2
+Dim $MyWinCenterX =1600/2
 TCPStartup()
 
 Func startServer()
@@ -205,14 +207,17 @@ Func executeRecruiting()
 	Local $x, $y
 	If not $priorityRecruiting[0] Then Return
 	For $i=1 To $NUMBEROFVILLAGES
-		MouseClick("LEFT", 1167, 60)
-		Sleep(200)
-		MouseMove(0,0, 0)
+		$result = searchForImage("MnPfeil.png", $x, $y, 0)
+		If $result Then
+			MouseClick("LEFT", $x, $y)
+			Sleep(200)
+		EndIf
+		MouseMove(100,100, 0)
 		$result = searchForImage("MnDorf.png", $x, $y, 0)
 		If $result Then
 			MouseClick("LEFT", $x, $y)
 		EndIf
-		MouseMove(0,0, 0)
+		MouseMove(100,100, 0)
 		$result = searchForImage("MnArmee.png", $x, $y, 0)
 		If $result Then
 			MouseClick("LEFT", $x, $y)
@@ -226,27 +231,27 @@ Func startRecruiting()
 	For $type In $priorityRecruiting
 		Select
 			Case $type = $MILIZ
-				While searchForImageInArea("RkEins.png", $MilizTopX, 481, $MilizTopX+46, 509, $x, $y, 50)
+				While searchForImageInArea("RkEins.png", getCoordX($MilizTopX), getCoordY(481), getCoordX($MilizTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
 			Case $type = $BOGEN
-				While searchForImageInArea("RkEins.png", $BogenTopX, 481, $BogenTopX+46, 509, $x, $y, 50)
+				While searchForImageInArea("RkEins.png", getCoordX($BogenTopX), getCoordY(481), getCoordX($BogenTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
 			Case $type = $PIKE
-				While searchForImageInArea("RkEins.png", $PikeTopX, 481, $PikeTopX+46, 509, $x, $y, 50)
+				While searchForImageInArea("RkEins.png", getCoordX($PikeTopX), getCoordY(481), getCoordX($PikeTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
 			Case $type = $SCHWERT
-				While searchForImageInArea("RkEins.png", $SchwertTopX, 481, $SchwertTopX+46, 509, $x, $y, 50)
+				While searchForImageInArea("RkEins.png", getCoordX($SchwertTopX), getCoordY(481), getCoordX($SchwertTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
 			Case $type = $KATAPULT
-				While searchForImageInArea("RkEins.png", $KatapultTopX, 481, $KatapultTopX+46, 509, $x, $y, 50)
+				While searchForImageInArea("RkEins.png", getCoordX($KatapultTopX), getCoordY(481), getCoordX($KatapultTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
@@ -286,6 +291,17 @@ Func levelUp()
 	EndIf
 EndFunc
 
+Func getCoordX( $x)
+	$result = WinGetClientSize("Stronghold Kingdoms - Welt 3")
+	$newX = $x -$MyWinCenterX + $result[0]/2
+	Return $newX
+EndFunc
+
+Func getCoordY( $y)
+	$result = WinGetClientSize("Stronghold Kingdoms - Welt 3")
+	$newY = $y - $MyWinCenterY + $result[1]/2
+	Return $newY
+EndFunc
 
 Func startResearch()
 	Local $x, $y
