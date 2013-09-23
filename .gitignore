@@ -226,7 +226,7 @@ pip-log.txt
 /Scripts/r3.PNG
 /Scripts/r4.PNG
 /temp
-
+*.out
 
 /main/*.cfg
 /Scripts/r2.PNG
