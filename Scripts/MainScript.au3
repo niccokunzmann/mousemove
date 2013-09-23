@@ -9,15 +9,14 @@ HotKeySet("^!f", "defineResearch")
 HotKeySet("^!a", "algorithm")
 HotKeySet("^!q", "quit")
 Opt("MouseClickDownDelay", 100)
-Dim $priorityRecruiting[5] = [0,0,0,0,0]
+Dim $priorityRecruiting[6] = [0,0,0,0,0,0]
 $queueSize=10
 Dim $queue[$queueSize]= [""]
-Dim $priorityRecruiting[5]
 Dim $lastCheck
 Dim $connection
 Dim $myTurn = False
-Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5
-Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019
+Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5, $KUNDSCHAFTER =6
+Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019, $KundschafterTopX=995
 Dim $NUMBEROFVILLAGES = 2
 Dim $MyWinCenterY = 878/2
 Dim $MyWinCenterX =1600/2
@@ -113,7 +112,7 @@ Func isResearching()
 EndFunc
 
 Func configureRecruiting()
-	Local $b1, $b2, $b3, $b4, $b5, $b6
+	Local $b1, $b2, $b3, $b4, $b5, $b6, $b7
 	$width = 100
 	GUICreate("Autorekrutierung", $width *6+20, 200)
 	Opt("GUICoordMode", 2)
@@ -123,7 +122,8 @@ Func configureRecruiting()
 	$b3 = GUICtrlCreateButton("Pikenier", 0, -1, $width)
 	$b4 = GUICtrlCreateButton("Schwertkämpfer", 0, -1, $width)
 	$b5 = GUICtrlCreateButton("Katapult", 0, -1, $width)
-	$b6 = GUICtrlCreateButton("Fertig", 0, -1, $width)
+	$b7 = GUICtrlCreateButton("Kundschafter", 0, -1, $width)
+	$b6 = GUICtrlCreateButton("Fertig",-1, 0, $width)
 	$currentIndex = 0
 
 	GUISetState()
@@ -152,8 +152,11 @@ Func configureRecruiting()
 				GUICtrlDelete($b5)
 				$priorityRecruiting[$currentIndex] = $KATAPULT
 				$currentIndex += 1
+			Case $msg = $b7
+				GUICtrlDelete($b7)
+				$priorityRecruiting[$currentIndex] = $KUNDSCHAFTER
+				$currentIndex += 1
 			Case $msg = $b6
-				MsgBox(0, 'Testing', $priorityRecruiting[0] & "," & $priorityRecruiting[1]& "," & $priorityRecruiting[2]& "," & $priorityRecruiting[3]& "," & $priorityRecruiting[4])
 				ExitLoop
 		EndSelect
 	WEnd
@@ -218,10 +221,6 @@ Func executeRecruiting()
 			MouseClick("LEFT", $x, $y)
 		EndIf
 		MouseMove(100,100, 0)
-		$result = searchForImage("MnArmee.png", $x, $y, 0)
-		If $result Then
-			MouseClick("LEFT", $x, $y)
-		EndIf
 		startRecruiting()
 	Next
 EndFunc
@@ -229,6 +228,11 @@ EndFunc
 Func startRecruiting()
 	Local $x, $y
 	For $type In $priorityRecruiting
+		$result = searchForImage("MnArmee.png", $x, $y, 0)
+		If $result Then
+			MouseClick("LEFT", $x, $y)
+			Sleep(100)
+		EndIf
 		Select
 			Case $type = $MILIZ
 				While searchForImageInArea("RkEins.png", getCoordX($MilizTopX), getCoordY(481), getCoordX($MilizTopX)+46, getCoordY(509), $x, $y, 50)
@@ -252,6 +256,16 @@ Func startRecruiting()
 				WEnd
 			Case $type = $KATAPULT
 				While searchForImageInArea("RkEins.png", getCoordX($KatapultTopX), getCoordY(481), getCoordX($KatapultTopX)+46, getCoordY(509), $x, $y, 50)
+					MouseClick("LEFT",$x, $y)
+					Sleep(200)
+				WEnd
+			Case $type = $KUNDSCHAFTER
+				$result = searchForImage("MnReiter.png", $x, $y, 0)
+				If $result Then
+					MouseClick("LEFT", $x, $y)
+					Sleep(300)
+				EndIf
+				While searchForImageInArea("RkEins.png", getCoordX($KundschafterTopX), getCoordY(481), getCoordX($KundschafterTopX)+46, getCoordY(509), $x, $y, 50)
 					MouseClick("LEFT",$x, $y)
 					Sleep(200)
 				WEnd
