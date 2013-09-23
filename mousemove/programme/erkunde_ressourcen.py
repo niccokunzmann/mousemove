@@ -2,6 +2,7 @@ from .programm import programm
 from ..navigation import *
 from ..ressourcen import *
 from .. import config
+import random
 
 @programm
 def erkunde_ressourcen(kundschafter_pro_dorf = 4):
@@ -39,6 +40,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                     try:
                         if unbekannt.erkunde():
                             ressourcen_erkundet.add(unbekannt)
+                            kundschafter -= 1
                             print('erkunde unbekanntes', unbekannt)
                         else:
                             kein_kundschater_mehr = True
@@ -48,15 +50,29 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                         continue
                     i += 1
                 if res and not kein_kundschater_mehr:
-                    r = res[0]
-                    for i in range(i, kundschafter):
+                    all_preferences = [1 / r.sortier_priorität for r in res]
+                    all_preferences_sum = sum(all_preferences)
+                    i = 0
+                    while i < kundschafter and res:
+                        # roulette wheel
+                        chosen_index = random.random() * all_preferences_sum 
+                        i = 0
+                        while chosen_index > all_preferences[i]:
+                            chosen_index -= all_preferences[i]
+                            i += 1
+                        # erkunden
                         try:
                             if r.erkunde():
                                 print('erkunde', r)
                             else:
                                 break
                         except RessourceVerschwunden:
+                            all_preferences.pop(res.index(r))
+                            res.remove(r)
+                            all_preferences_sum -= r.sortier_priorität
                             print('Ressource verschwunden!')
+                        else:
+                            i += 1
                 
                 print('kein Kundschafter mehr in {}'.format(dorfname))
             yield 60
