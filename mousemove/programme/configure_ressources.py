@@ -8,7 +8,7 @@ from .programm import configuration
 def configure_ressources():
     t = Tk()
     t.title('Ressourcenprioritäten beim Erkunden')
-    image = pil2tkinter_image('RessourcenKonfigurationHintergrund', t)
+    image = pil2tkinter_image('RessourcenKonfigurationHintergrund', master = t)
     l = Label(t, image = image, border = 0)
     l.pack()
     b = Button(t, command = t.quit, text = 'OK')

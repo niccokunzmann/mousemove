@@ -9,7 +9,7 @@ from .programm import configuration
 def configure_bankett():
     t = Tk()
     t.title('Welche Bankette sollen abgehalten werden?')
-    image = pil2tkinter_image('BankettKonfigurationHintergrund', t)
+    image = pil2tkinter_image('BankettKonfigurationHintergrund', master = t)
     l = Label(t, image = image, border = 0)
     l.pack()
     b = Button(t, command = t.quit, text = 'OK')
