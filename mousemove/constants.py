@@ -14,10 +14,22 @@ def DEFAULT_RESSOURCEN_PRIORITÄT():
 def DEFAULT_BANKETT_OPTION():
     return False
 
+
+class _erkundungsmusterClass:
+    def __init__(self):
+        self.muster = [(.5, .5), (.5, -.5), (-.5, .5), (-.5, -.5)]
+        
+    def __call__(self, wert = None):
+        if wert is None:
+            return self.muster[:]
+        self.muster = wert
+
 def default_configuration():
     return dict(bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
                 ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
-                erkunde_alle_unbekannten_ressourcen = False)
+                erkunde_alle_unbekannten_ressourcen = False,
+                erkundungsmuster = _erkundungsmusterClass(),
+                )
 
 def tesser_exe():
     path = os.path.join(os.environ['Programfiles'], 'Tesseract-OCR', 'tesseract.exe')

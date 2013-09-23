@@ -5,7 +5,7 @@ import win32con
 from .constants import wait
 from .positionen import *
 
-mouse_speed = 4
+mouse_speed = 8
 
 def move(x, y):
     posx, posy = win32api.GetCursorPos()

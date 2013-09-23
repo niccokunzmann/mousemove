@@ -130,13 +130,15 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos):
                     continue
                 image_getpixel = img[1].getpixel
                 i_x0, i_y0 = bbox[:2]
-                for dx in range(bbox[2]):
-                    for dy in range(bbox[3]):
-                        if s_getpixel(x + dx, y + dy)[:3] != \
-                           image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
-                            match = False
-                            break
-                    if not match: break
+                try:
+                    for dx in range(bbox[2]):
+                        for dy in range(bbox[3]):
+                            if s_getpixel(x + dx, y + dy)[:3] != \
+                               image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
+                                match = False
+                                break
+                        if not match: break
+                except IndexError: pass # image index out of range
                 if match:
                     positions.append(Ressource(namen[ps1.index(img)],
                                       minx + x + bbox[2] // 2,
