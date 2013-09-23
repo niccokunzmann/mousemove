@@ -146,7 +146,7 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos):
                                       karte_pos))
     for img, _matches in matches.items():
         if _matches > 20:
-            print('[many matches', _matches, 'for', bilder[ps1.index(img)], ']')
+            print('[many matches', _matches, 'for', namen[ps1.index(img)], ']')
 ##    print('bildpositionen ende')
     return positions
 
