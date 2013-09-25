@@ -104,18 +104,17 @@ def bild_positionen(minx, miny, maxx, maxy, namen, debug_many_matches = True):
 
 def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos, debug_many_matches):
     from .ressourcen import Ressource
-##    print('bildpositionen start')
     bilder = [images.open_image(name) for name in namen]
     _s_getpixel = s.getpixel 
-    s_getpixel = lambda x, y: _s_getpixel((x0 + x, y0 + y))
-##    assert x0 == 0, x0
-##    assert y0 == 0, y0
+    def s_getpixel(x, y):
+        try:
+            return _s_getpixel((x0 + x, y0 + y))
+        except IndexError as e:
+            raise IndexError('x0={}, y0={}, x={}, y={}, maxx, maxy={}, xrange={}, yrange={}'.format(x0, y0, x, y, maxx, maxy, xrange, yrange))
     x0, y0, maxx, maxy = s.getbbox()
-##    assert maxx == screen_width() #1
-##    assert maxy == screen_height() #2
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
-    xrange = maxx - min([img[2][2] for img in ps1]) + 1
-    yrange = maxy - min([img[2][3] for img in ps1]) + 1
+    xrange = maxx - min([img[2][2] for img in ps1])
+    yrange = maxy - min([img[2][3] for img in ps1])
     positions = []
     matches = {img : 0 for img in ps1}
     for x in range(xrange):
