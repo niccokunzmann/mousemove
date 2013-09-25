@@ -159,6 +159,10 @@ class Ressource(Ressource):
     @property
     def dorfname(self):
         return self.pos[2]
+
+    @property
+    def preferenz(self):
+        return 1 / self.sortier_priorität
     
 def sichte_ressourcen():
     res = []

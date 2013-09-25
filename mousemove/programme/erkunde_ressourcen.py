@@ -50,7 +50,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                         continue
                     i += 1
                 if res and not kein_kundschater_mehr:
-                    all_preferences = [1 / r.sortier_priorität for r in res]
+                    all_preferences = [r.preferenz for r in res]
                     all_preferences_sum = sum(all_preferences)
                     gesendete_kundschafter = 0
                     while gesendete_kundschafter < kundschafter and res:
@@ -61,7 +61,6 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                             chosen_index -= all_preferences[i]
                             i += 1
                         r = res[i]
-                        print(chosen_index0, i, all_preferences, r)
                         # erkunden
                         try:
                             if r.erkunde():
@@ -71,7 +70,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                         except RessourceVerschwunden:
                             all_preferences.pop(res.index(r))
                             res.remove(r)
-                            all_preferences_sum -= r.sortier_priorität
+                            all_preferences_sum -= r.preferenz
                             print('Ressource verschwunden!')
                         else:
                             gesendete_kundschafter += 1
