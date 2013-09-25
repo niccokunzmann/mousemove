@@ -5,26 +5,24 @@ import time
 
 from . import files
 
-_screenshot = (None, 0) # filename, time
+_screenshot = None # filename
 
 def screenshot():
     from . import screenshot
     global _screenshot
-    now = time.time()
-    if now - 0.05 > _screenshot[1]:
-        from . import screenshot
-        filename = screenshot.screenshot()
-        _screenshot = filename, now
-    else:
-        filename = _screenshot[0]
+    filename = screenshot.screenshot()
+    _screenshot = filename
     return PIL.Image.open(filename)
 
 def screenshot_with_size(left, top, width, height):
+    global _screenshot
     from .screenshot import screenshot_with_size
-    return PIL.Image.open(screenshot_with_size(left, top, width, height))
+    filename = screenshot_with_size(left, top, width, height)
+    _screenshot = filename
+    return PIL.Image.open(filename)
 
 def last_screenshot_file_name():
-    return _screenshot[0]
+    return _screenshot
 
 def pil2tkinter_image(img, *args, **kw):
     if isinstance(img, str):

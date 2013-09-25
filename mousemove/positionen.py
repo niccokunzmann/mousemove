@@ -110,11 +110,14 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos, debug_many_mat
         try:
             return _s_getpixel((x0 + x, y0 + y))
         except IndexError as e:
-            raise IndexError('x0={}, y0={}, x={}, y={}, maxx, maxy={}, xrange={}, yrange={}'.format(x0, y0, x, y, maxx, maxy, xrange, yrange))
+            raise IndexError('x0={}, y0={}, x={}, y={}, maxx={}, maxy={},'\
+                             ' xrange={}, yrange={}, in file {}'\
+                             ''.format(x0, y0, x, y, maxx, maxy, xrange, yrange,
+                                       images.last_screenshot_file_name()))
     x0, y0, maxx, maxy = s.getbbox()
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
-    xrange = maxx - min([img[2][2] for img in ps1])
-    yrange = maxy - min([img[2][3] for img in ps1])
+    xrange = maxx - min([img[2][2] for img in ps1]) - x0
+    yrange = maxy - min([img[2][3] for img in ps1]) - y0
     positions = []
     matches = {img : 0 for img in ps1}
     for x in range(xrange):
