@@ -20,6 +20,8 @@ Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTo
 Dim $NUMBEROFVILLAGES = 2
 Dim $MyWinCenterY = 878/2
 Dim $MyWinCenterX =1600/2
+Dim $ScrollerX = 1554
+Dim $ScrollerY =379
 TCPStartup()
 
 Func startServer()
@@ -319,7 +321,6 @@ EndFunc
 
 Func startResearch()
 	Local $x, $y
-	Dim $x1, $y1
 	Dim $Fields[4] = ["FrGewerbe.png", "FrMilitär.png", "FrLandwirtschaft.png", "FrBildung.png"]
 	For $field in $Fields
 		$result = searchForImage($field, $x, $y, 0)
@@ -327,35 +328,32 @@ Func startResearch()
 			MouseClick("LEFT", $x, $y)
 			Sleep(500)
 		EndIf
-		Local $x1, $y1
-		$result = searchForImage("FrSchieber.png", $x1, $y1, 0)
+		Local $x1 = getCoordX($ScrollerX), $y1 = getCoordY($ScrollerY)
 		$count = 0
-		If $result = 1 Then
-			While $count <= 10
-				If searchForImage("FrSchieberUnten.png", $x, $y, 75) Then
-					$result = searchForImage($queue[0], $x, $y, 0)
-					If $result = 1 Then
-						MouseClick("LEFT", $x, $y)
-						Sleep(500)
-						updateQueue()
-						Return
-					EndIf
-					ExitLoop
-				EndIf
+		While $count <= 7
+			If searchForImage("FrSchieberUnten.png", $x, $y, 75) Then
 				$result = searchForImage($queue[0], $x, $y, 0)
 				If $result = 1 Then
 					MouseClick("LEFT", $x, $y)
-					Sleep(500)
+					Sleep(300)
 					updateQueue()
 					Return
-				Else
-					MouseClickDrag("LEFT", $x1, $y1, $x1, $y1 +100)
-					$y1 += 100
-					$count += 1
-					Sleep(500)
 				EndIf
-			WEnd
-		EndIf
+				ExitLoop
+			EndIf
+			$result = searchForImage($queue[0], $x, $y, 0)
+			If $result = 1 Then
+				MouseClick("LEFT", $x, $y)
+				Sleep(500)
+				updateQueue()
+				Return
+			Else
+				MouseClickDrag("LEFT", $x1, $y1, $x1, $y1 +100)
+				$y1 += 100
+				$count += 1
+				Sleep(300)
+			EndIf
+		WEnd
 	Next
 EndFunc
 
