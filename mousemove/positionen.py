@@ -74,7 +74,7 @@ def spiel_bbox():
 
 def ressourcen_positionen(*bilder):
     """Positionen der Ressourcen + zusätzliche bilder"""
-    bilder += images.bilder_ressourcen
+    bilder += tuple(images.bilder_ressourcen)
     return karten_positionen(*bilder)
 
 def karten_koordinaten():
@@ -95,6 +95,18 @@ _search_executor = ThreadPoolExecutor(1)
 
 submit_worker = _search_executor.submit
 
+_formationen_verwalten_position = None
+def formationen_verwalten_position():
+    global _formationen_verwalten_position
+    left, top ,right, bottom = spiel_koordinaten()
+    _formationen_verwalten_position = bild_positionen(left, top ,right, bottom, ('formationen verwalten',))
+    return _formationen_verwalten_position
+
+def formationen_verwalten(relx, rely):
+    if _formationen_verwalten_position is None:
+        formationen_verwalten_position()
+    return relx + _formationen_verwalten_position[0].x, rely + _formationen_verwalten_position[0].y
+    
 def bild_positionen(minx, miny, maxx, maxy, namen, debug_many_matches = True):
     from . import karte
     s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
@@ -164,4 +176,5 @@ __all__ = 'screen_width screen_height spiel_height spiel_width '\
           'start_der_karte_y höhe_der_karte breite_der_karte '\
           'rechts unten karte_mitte spiel_koordinaten spiel_bbox '\
           'karten_koordinaten beep ressourcen_positionen '\
-          'karten_positionen bild_positionen submit_worker'.split()
+          'karten_positionen bild_positionen submit_worker '\
+          'formationen_verwalten_position formationen_verwalten'.split()
