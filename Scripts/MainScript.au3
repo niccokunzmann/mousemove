@@ -17,7 +17,7 @@ Dim $connection
 Dim $myTurn = False
 Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5, $KUNDSCHAFTER =6
 Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019, $KundschafterTopX=995
-Dim $NUMBEROFVILLAGES = 2
+Dim $NUMBEROFVILLAGES = 3
 Dim $MyWinCenterY = 878/2
 Dim $MyWinCenterX =1600/2
 Dim $ScrollerX = 1554
@@ -223,6 +223,7 @@ Func executeRecruiting()
 			MouseClick("LEFT", $x, $y)
 		EndIf
 		MouseMove(100,100, 0)
+		Sleep(400)
 		startRecruiting()
 	Next
 EndFunc
