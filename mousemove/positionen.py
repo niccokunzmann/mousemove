@@ -73,7 +73,8 @@ def spiel_bbox():
     return x, y, width, height
 
 def ressourcen_positionen(*bilder):
-    if not bilder: bilder = images.bilder_ressourcen
+    """Positionen der Ressourcen + zusätzliche bilder"""
+    bilder += images.bilder_ressourcen
     return karten_positionen(*bilder)
 
 def karten_koordinaten():
