@@ -21,7 +21,7 @@ def _screenshot_with_size(left, top, width, height):
 def screenshot_with_size(left, top, width, height):
     # using a pool makes no performance difference
     _pool = multiprocessing.Pool(1)
-    return _pool.apply(_screenshot_with_size, (left, top, width, height))
+    return _pool.apply_async(_screenshot_with_size, (left, top, width, height)).get(20)
 
 def screenshot():
     hwin = win32gui.GetDesktopWindow()
