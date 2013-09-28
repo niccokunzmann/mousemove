@@ -39,7 +39,7 @@ def configure_wolfshöhlen():
         Pikeniere = entry(62, 156, '#b2a78b'),
         Schwertkämpfer = entry(145, 156, '#b2a78b'),
         Katapulte = entry(62, 232, '#ab9f85'),
-        Hauptmänner = entry(145, 232, '#ab9f85'),
+        Hauptmann = entry(145, 232, '#ab9f85'),
         )
     config.load()
     for name, var in entries.items():

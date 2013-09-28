@@ -7,6 +7,8 @@ from .navigation import *
 from . import mouse
 from . screenshot import last_screenshot_file_name
 from . import config
+from .constants import EHRENRADIUS
+
 import time
 
 Ressource = collections.namedtuple('Ressource', ['name', 'x', 'y', 'pos'])
@@ -61,6 +63,9 @@ def ressource_erkunden(x, y):
         ressource_erkunden_abbrechen()
         return False
     return True
+
+
+
 
 class Ressource(Ressource):
 
@@ -147,9 +152,25 @@ class Ressource(Ressource):
     def ist_bekannt(self):
         return not self.ist_unbekannt()
 
+    def ist_ressource(self):
+        from . import images
+        return self.name.capitalize() in images.bilder_ressourcen
+
     def gibt_ehre_beim_erkunden(self):
         # 768 ist die groesse des radius in dem es ehre gibt
-        return self.ist_unbekannt() and self.abstand_zum_dorf <= 768
+        return self.ist_unbekannt() and self.ist_im_ehrenradius()
+
+    def ist_im_ehrenradius(self):
+        return self.abstand_zum_dorf <= EHRENRADIUS
+
+    def gibt_ehre_beim_angreifen(self):
+        return self.ist_wolfshöhle() and self.ist_im_ehrenradius()
+
+    def ist_wolfshöhle(self):
+        return self.name.lower() in ('wolfshöhle', 'wolfshöhle zerstört')
+
+    def ist_zerstört(self):
+        return self.name.lower() in ('wolfshöhle zerstört',)
 
     def soll_zuerst_erkundet_werden(self):
         if config.erkunde_alle_unbekannten_ressourcen:
@@ -173,7 +194,7 @@ class Ressource(Ressource):
     def angreifen(self):
         assert self.name.lower() == 'wolfshöhle'
         self.scrolle_hin()
-        wolfshöhle_angreifen(self.x, self.y)
+        return wolfshöhle_angreifen(self.x, self.y)
 
 wolfshöhle_angreifen_click = lambda: mouse.click(*rechts(1254, 233))
 
@@ -184,7 +205,9 @@ def formationen_verwalten_click():
 erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
 formation_setzen_click = lambda: mouse.click(*formationen_verwalten(36, 92))
-angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 600))
+angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 537))
+angreifen_ausführen_click = lambda: mouse.click(*karte_mitte(833, 628))
+angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
 
 def formation_auswählen():
     mouse.move(*erste_formation_auswählen_position())
@@ -199,36 +222,42 @@ def wolfshöhle_angreifen(x, y):
     if not wolfshöhle_existiert():
         raise RessourceVerschwunden('Die Wolfshöhle an der Stelle ({},{}) nicht gefunden.'.format(x, y))
     wolfshöhle_angreifen_click()
+    time.sleep(0.7)
     if not genug_truppen_für_wolfshöhlen():
+        angriff_abbrechen_click()
         return False
     formationen_verwalten_click()
     formation_auswählen()
     angriff_losschicken_click()
+    angreifen_ausführen_click()
+    return True
 
 def genug_truppen_für_wolfshöhlen():
     from . import auslesen
-    for name, stärke in auslesen.angriffstruppen:
+    for name, stärke in auslesen.angriffstruppen().items():
         minimal_stärke = config.minimale_wolfshöhlen_truppenstärken[name]
         if minimal_stärke > stärke:
             print('Nur {} {} aber {} benötigt.'.format(stärke, name, minimal_stärke))
             return False
     return True
     
-def sichte_ressourcen():
+def sichte_ressourcen(zusätzliche_ressourcen = []):
     res = []
     height = höhe_der_karte() - 20
     width = breite_der_karte() - 20
     dörfer = {}
-    while not dörfer or any(dörfer.values()):
+    schon_mal_doppelt = False
+    while not schon_mal_doppelt or any(dörfer.values()):
         starte_kartenpositionsbestimmung()
         if dorfname() in dörfer:
             positionen = dörfer[dorfname()]
+            schon_mal_doppelt = True
         else:
             dörfer[dorfname()] = positionen = config.erkundungsmuster()
         if positionen:
             dx, dy = positionen.pop(0)
             scrolle_um(int(dx * width), int(dy * height))
-            res.append(ressourcen_positionen())
+            res.append(ressourcen_positionen(*zusätzliche_ressourcen))
     result = set()
     for rs in res:
         result.update(rs)

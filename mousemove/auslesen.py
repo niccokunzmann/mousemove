@@ -159,7 +159,7 @@ def debug_numbers(imageText):
                                                       imageText.image_file),
                   file = f)
 
-map_numbers = {'.' : 0}
+map_numbers = {'.' : 0, '1.21': 101}
 def _angriff_format_number(imageText):
     number = imageText.strip()
     if number in map_numbers:

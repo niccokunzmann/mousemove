@@ -2,6 +2,8 @@ import time
 from collections import defaultdict
 import os
 
+EHRENRADIUS = 768
+
 def wait():
     time.sleep(0.5)
 

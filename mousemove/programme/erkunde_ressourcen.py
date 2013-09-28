@@ -14,17 +14,21 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
     def start():
         öffne_spiel()
     ressourcen_erkundet = set()
+    wolfshöhlen_angegriffen = set()
     start()
     while 1:
         try:
-            alle_ressourcen = sichte_ressourcen()
+            zusätzliche_ressourcen = []
+            if config.wolfshöhlen_angreifen:
+                zusätzliche_ressourcen.extend(['wolfshöhle', 'wolfshöhle zerstört'])
+            alle_ressourcen = sichte_ressourcen(zusätzliche_ressourcen)
             for ressource in alle_ressourcen:
                 if ressource.ist_bekannt() and ressource in ressourcen_erkundet:
                     ressourcen_erkundet.remove(ressource)
                     print(ressource, 'wurde erkundet.')
             alle_dörfer = dorfnamen()
             for dorfname in alle_dörfer:
-                res = [r for r in alle_ressourcen if r.dorfname == dorfname]
+                res = [r for r in alle_ressourcen if r.dorfname == dorfname and r.ist_ressource()]
                 kundschafter = kundschafter_pro_dorf
                 if res:
                     print(len(res), 'Ressourcen gefunden:')
@@ -76,6 +80,25 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                             gesendete_kundschafter += 1
                 
                 print('kein Kundschafter mehr in {}'.format(dorfname))
+            wolfshöhlen = [r for r in alle_ressourcen if r.ist_wolfshöhle()]
+            erschöpfte_dörfer = set()
+            for wolfshöhle in wolfshöhlen:
+                if wolfshöhle.ist_zerstört():
+                    if wolfshöhle in wolfshöhlen_angegriffen:
+                        wolfshöhlen_angegriffen.remove(wolfshöhle)
+                        print('Wolfshöhle zerstört', wolfshöhle)
+                    continue
+                if wolfshöhle.dorfname in erschöpfte_dörfer: continue
+                if not wolfshöhle.gibt_ehre_beim_angreifen(): continue
+                try:
+                    if wolfshöhle.angreifen():
+                        print('Angriff auf', wolfshöhle)
+                    else:
+                        erschöpfte_dörfer.add(wolfshöhle.dorfname)
+                except RessourceVerschwunden:
+                    if wolfshöhle in wolfshöhlen_angegriffen:
+                        wolfshöhlen_angegriffen.remove(wolfshöhle)
+                    print('Wolfshöhle verschwunden!')
             yield 60
         except KeyboardInterrupt:
             while 1:

@@ -83,7 +83,7 @@ def öffne_dorf_auf_karte(name = ''):
     if name and name != _dorfname:
         raise ValueError('Dorf {} konnte nicht unter den Dörfern {} '\
                          'gefunden werden.'.format(repr(name), dorfnamen))
-    s = 1.8 - time.time() + t
+    s = 2 - time.time() + t
     if s > 0: time.sleep(s) # warten bis er zum dorf gescrollt hat
 
 def dorfname():
