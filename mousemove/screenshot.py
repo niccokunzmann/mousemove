@@ -19,8 +19,7 @@ def _screenshot_with_size(left, top, width, height, tempfilename):
 def screenshot_with_size(left, top, width, height):
     # using a pool makes no performance difference
     tempfilename = files.tempfilename('.bmp')
-    with _some_lock:
-        _screenshot_with_size(left, top, width, height, tempfilename)
+    _screenshot_with_size(left, top, width, height, tempfilename)
     return tempfilename
 
 def screenshot():
