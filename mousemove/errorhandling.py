@@ -10,9 +10,9 @@ def report_exc():
 def report_exception(ty, err, tb):
     with error_report_file() as file:
         traceback.print_exception(ty, err, tb, file = file)
-    tkinter.messagebox.showerror(ty.__name__, str(err) + \
-                                 '\nThe full error was saved to\n' +
-                                 file.name)
+##    tkinter.messagebox.showerror(ty.__name__, str(err) + \
+##                                 '\nThe full error was saved to\n' +
+##                                 file.name)
     p = subprocess.Popen(['notepad', file.name], shell = True)
     return err.with_traceback(tb)
 
