@@ -11,14 +11,16 @@ import re
 import collections
 from threading import Lock
 
+PARAMETER_ONLY_DIGITS = ['nobatch', 'digits']
+
 class ImageText(str):
     pass
 
-def text_from_image_file(image_name):
+def text_from_image_file(image_name, parameters = []):
     assert image_name.lower().endswith('.bmp')
     output_name = files.tempfilename('', 'tesser_output')
     exe_file = files.tesser_exe()
-    return_code = subprocess.call([exe_file, image_name, output_name, '-psm', '7'], shell = True)
+    return_code = subprocess.call([exe_file, image_name, output_name, '-psm', '7'] + parameters, shell = True)
     output_name += '.txt'
     if return_code != 0:
         raise NotImplementedError('Errorbehandlung für tesseract; code {}; '\
@@ -35,7 +37,7 @@ def text(x, y, width, height):
     image_name = screenshot_with_size(x, y, width, height)
     return text_from_image_file(image_name)
 
-def schwarzer_text(x, y, width, height, schwelle = 200):
+def schwarzer_text(x, y, width, height, schwelle = 200, parameters = []):
     image_name = screenshot_with_size(x, y, width, height)
     img = PIL.Image.open(image_name)
     x0, y0, width, height = img.getbbox()
@@ -47,9 +49,9 @@ def schwarzer_text(x, y, width, height, schwelle = 200):
             else:
                 img.putpixel((x, y), (0, 0, 0) + rgba[3:])
     img.save(image_name)
-    return text_from_image_file(image_name)
+    return text_from_image_file(image_name, parameters)
 
-def heller_text(x, y, width, height):
+def heller_text(x, y, width, height, parameters = []):
     image_name = screenshot_with_size(x, y, width, height)
     img = PIL.Image.open(image_name)
     x0, y0, width, height = img.getbbox()
@@ -61,7 +63,7 @@ def heller_text(x, y, width, height):
             else:
                 img.putpixel((x, y), (255,255,255) + rgba[3:])
     img.save(image_name)
-    return text_from_image_file(image_name)
+    return text_from_image_file(image_name, parameters)
 
 
 read_width = 120 # pixel
@@ -157,7 +159,7 @@ def debug_numbers(imageText):
                                                       imageText.image_file),
                   file = f)
 
-map_numbers = {};{', .1' : 0, '. a' : 0}
+map_numbers = {'.' : 0}
 def _angriff_format_number(imageText):
     number = imageText.strip()
     if number in map_numbers:
@@ -168,8 +170,8 @@ def _angriff_format_number(imageText):
     return int(number)
 
 def _angriffszahl(x, y):
-    x1, y1 = rechts(x, y)
-    return _angriff_format_number(heller_text(x1, y1, 21, 13))
+    x1, y1 = rechts(x + 1, y)
+    return _angriff_format_number(heller_text(x1, y1, 21, 13, parameters = PARAMETER_ONLY_DIGITS))
 
 def angriff_bauern():
     return _angriffszahl(1224, 224)
@@ -194,6 +196,7 @@ _angriffstruppen_pool = ThreadPoolExecutor(6)
 _submit_angriffstruppen_worker = _angriffstruppen_pool.submit
 
 def angriffstruppen():
+    spiel_window_handle() # sonst blockiert es
     fut = _submit_angriffstruppen_worker
     d = dict(Bauern = fut(angriff_bauern),
              Bogenschützen = fut(angriff_bogenschützen),
@@ -204,7 +207,6 @@ def angriffstruppen():
              )
     result = {}
     for k, v in d.items():
-        print(k, v)
         result[k] = v.result()
     return result
 
