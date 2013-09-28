@@ -30,6 +30,12 @@ Best benutzt, wenn die Ressource angewählt wurde"""
     return bild_positionen(x1-2, y1-2, x2+2, y2+2, ('nur Kundschafterbutton',), \
                            debug_many_matches = False)
 
+def wolfshöhle_existiert():
+    x1, y1 = rechts(1189, 148)
+    x2, y2 = rechts(1341, 234)
+    return bild_positionen(x1-2, y1-2, x2+2, y2+2, ('Wolfshöhle ausgewählt',), \
+                           debug_many_matches = False)
+
 class RessourceVerschwunden(Exception):
     pass
 
@@ -163,6 +169,38 @@ class Ressource(Ressource):
     @property
     def preferenz(self):
         return 1 / self.sortier_priorität
+
+    def angreifen(self):
+        assert self.name.lower() == 'wolfshöhle'
+        self.scrolle_hin()
+        wolfshöhle_angreifen(self.x, self.y)
+
+wolfshöhle_angreifen_click = lambda: mouse.click(*rechts(1254, 233))
+
+def formationen_verwalten_click():
+    mouse.click(*rechts(1276, 649))
+    formationen_verwalten_position()
+
+erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63)
+erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
+formation_setzen_click = lambda: mouse.click(*formationen_verwalten(36, 92))
+
+def formation_auswählen():
+    mouse.move(*erste_formation_auswählen_position())
+    formationen_verwalten_position()
+    erste_formation_auswählen_click()
+    formation_setzen_click()
+        
+def wolfshöhle_angreifen(x, y):
+    """greife eine wolfshhle an => ob geklappt"""
+    zerstöre_positionsbestimmung()
+    mouse.click(x, y)
+    if not wolfshöhle_existiert():
+        raise RessourceVerschwunden('Die Wolfshöhle an der Stelle ({},{}) nicht gefunden.'.format(x, y))
+    wolfshöhle_angreifen_click()
+    formationen_verwalten_click()
+    formation_auswählen()
+    
     
 def sichte_ressourcen():
     res = []
@@ -189,4 +227,5 @@ def sichte_ressourcen():
 
 
 __all__ = 'ressourcen_positionen Ressource sichte_ressourcen ein_kundschafter'\
-          ' RessourceVerschwunden kann_nur_erkundet_werden'.split()
+          ' RessourceVerschwunden kann_nur_erkundet_werden '\
+          'wolfshöhle_existiert wolfshöhle_angreifen'.split()

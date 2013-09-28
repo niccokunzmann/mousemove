@@ -3,10 +3,15 @@ import os
 import os.path
 import shutil
 
-from . import constants
+try: from . import constants
+except SystemError: import constants
 
+from threading import Lock
+
+_tempfilenamelock = Lock()
 def tempfilename(suffix = '', prefix = ''):
-    return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep + prefix)
+    with _tempfilenamelock:
+        return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep + prefix)
 
 path = os.path.dirname(tempfilename())
 if os.path.isdir(path):

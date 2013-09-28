@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 import win32gui, win32ui, win32con, win32api
-from . import files
+try: from . import files
+except SystemError: import files
 import time
+import multiprocessing
 
-
-def screenshot_with_size(left, top, width, height):
+def _screenshot_with_size(left, top, width, height, tempfilename):
     hwin = win32gui.GetDesktopWindow()
     hwindc = win32gui.GetWindowDC(hwin)
     srcdc = win32ui.CreateDCFromHandle(hwindc)
@@ -13,10 +14,15 @@ def screenshot_with_size(left, top, width, height):
     bmp.CreateCompatibleBitmap(srcdc, width, height)
     memdc.SelectObject(bmp)
     memdc.BitBlt((0, 0), (width, height), srcdc, (left, top), win32con.SRCCOPY)
-    tempfilename = files.tempfilename('.bmp')
     bmp.SaveBitmapFile(memdc, tempfilename)
+
+def screenshot_with_size(left, top, width, height):
+    # using a pool makes no performance difference
+    tempfilename = files.tempfilename('.bmp')
+    with _some_lock:
+        _screenshot_with_size(left, top, width, height, tempfilename)
     return tempfilename
-    
+
 def screenshot():
     hwin = win32gui.GetDesktopWindow()
     width = win32api.GetSystemMetrics(win32con.SM_CXVIRTUALSCREEN)

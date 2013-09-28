@@ -2,6 +2,7 @@ from .. import schedule
 from ..navigation import beep
 from ..errorhandling import report_exc, error_handling
 from .. import config
+from . import hanging_threads
 
 import collections
 import time

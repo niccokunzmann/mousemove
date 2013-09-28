@@ -14,6 +14,8 @@ def DEFAULT_RESSOURCEN_PRIORITÄT():
 def DEFAULT_BANKETT_OPTION():
     return False
 
+def DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE():
+    return 500
 
 class _erkundungsmusterClass:
     def __init__(self):
@@ -29,6 +31,8 @@ def default_configuration():
                 ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
                 erkunde_alle_unbekannten_ressourcen = False,
                 erkundungsmuster = _erkundungsmusterClass(),
+                wolfshöhlen_erkunden = False,
+                minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE)
                 )
 
 def tesser_exe():
