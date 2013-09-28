@@ -90,8 +90,10 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                     continue
                 if wolfshöhle.dorfname in erschöpfte_dörfer: continue
                 if not wolfshöhle.gibt_ehre_beim_angreifen(): continue
+                if wolfshöhle in wolfshöhlen_angegriffen: continue
                 try:
                     if wolfshöhle.angreifen():
+                        wolfshöhlen_angegriffen.add(wolfshöhle)
                         print('Angriff auf', wolfshöhle)
                     else:
                         erschöpfte_dörfer.add(wolfshöhle.dorfname)
