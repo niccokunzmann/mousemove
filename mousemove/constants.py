@@ -31,7 +31,7 @@ def default_configuration():
                 ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
                 erkunde_alle_unbekannten_ressourcen = False,
                 erkundungsmuster = _erkundungsmusterClass(),
-                wolfshöhlen_erkunden = False,
+                wolfshöhlen_angreifen = False,
                 minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE)
                 )
 

@@ -184,6 +184,7 @@ def formationen_verwalten_click():
 erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
 formation_setzen_click = lambda: mouse.click(*formationen_verwalten(36, 92))
+angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 600))
 
 def formation_auswählen():
     mouse.move(*erste_formation_auswählen_position())
@@ -198,9 +199,20 @@ def wolfshöhle_angreifen(x, y):
     if not wolfshöhle_existiert():
         raise RessourceVerschwunden('Die Wolfshöhle an der Stelle ({},{}) nicht gefunden.'.format(x, y))
     wolfshöhle_angreifen_click()
+    if not genug_truppen_für_wolfshöhlen():
+        return False
     formationen_verwalten_click()
     formation_auswählen()
-    
+    angriff_losschicken_click()
+
+def genug_truppen_für_wolfshöhlen():
+    from . import auslesen
+    for name, stärke in auslesen.angriffstruppen:
+        minimal_stärke = config.minimale_wolfshöhlen_truppenstärken[name]
+        if minimal_stärke > stärke:
+            print('Nur {} {} aber {} benötigt.'.format(stärke, name, minimal_stärke))
+            return False
+    return True
     
 def sichte_ressourcen():
     res = []
