@@ -88,58 +88,6 @@ def ressourcenzahlen(x, y, width, height):
 ##    print('Zahl:', zahl)
     return map(int, map(lambda z: z.replace('.', ''), zahl))
 
-Lager = collections.namedtuple('Lager', ('holz', 'stein', 'eisen', 'pech', 'max'))
-
-class Lager(Lager):
-    pass
-
-def lager():
-    öffne_ressourcen()
-    x, y = mitte(213, 305)
-    holz, stein, eisen, pech = ressourcenzahlen(x, y, 503 - 213, 327 - 305)
-    max = maximalzahl_in_klammern(*mitte(362, 249))
-    return Lager(holz, stein, eisen, pech, max)
-
-Dorfhalle = collections.namedtuple('Dorfhalle', ('wild', 'möbel', 'metallwaren', 'kleidung', 'wein', 'salz', 'gewürze', 'seide', 'max'))
-
-class Dorfhalle(Dorfhalle):
-    pass
-
-def dorfhalle():
-    öffne_ressourcen()
-    x, y = mitte(550, 305)
-    ressources = ressourcenzahlen(x, y, 1149 - 550, 327 - 305)
-    max = maximalzahl_in_klammern(*mitte(852, 248))
-    return Dorfhalle(*ressources, max = max)
-
-Kornspeicher = collections.namedtuple('Kornspeicher', ('äpfel', 'käse', 'fleisch', 'brot', 'gemüse', 'fisch', 'max'))
-
-class Kornspeicher(Kornspeicher):
-    pass
-
-def kornspeicher():
-    öffne_ressourcen()
-    x, y = mitte(205, 465)
-    ressources = ressourcenzahlen(x, y, 667 - 205, 490 - 465)
-    max = maximalzahl_in_klammern(*mitte(442, 412))
-    return Kornspeicher(*ressources, max = max)
-
-Kornspeicher = collections.namedtuple('Kornspeicher', ('äpfel', 'käse', 'fleisch', 'brot', 'gemüse', 'fisch', 'max'))
-
-class Kornspeicher(Kornspeicher):
-    pass
-
-def kornspeicher():
-    öffne_ressourcen()
-    x, y = mitte(205, 465)
-    ressources = ressourcenzahlen(x, y, 667 - 205, 490 - 465)
-    max = maximalzahl_in_klammern(*mitte(442, 412))
-    return Kornspeicher(*ressources, max = max)
-
-def erkundungszeit():
-    s = heller_text(482, 528, 590-482, 559-528)
-    s.replace('D', '0') # 0 wird manchmal als D erkannt
-    
 def _dorfname():
     x, y = rechts(970, 56)
     return schwarzer_text(x, y, 1340 - 970, 69 - 56, schwelle = 330).strip()

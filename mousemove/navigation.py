@@ -1,6 +1,7 @@
 import time
 import os
 import win32gui
+import pywintypes
 from . mouse import *
 
 from .files import forschungsordner
