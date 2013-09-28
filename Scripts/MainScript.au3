@@ -20,6 +20,7 @@ Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTo
 Dim $NUMBEROFVILLAGES = 3
 Dim $MyWinCenterY = 878/2
 Dim $MyWinCenterX =1600/2
+Dim $MyWinSizeX = 1600
 Dim $ScrollerX = 1554
 Dim $ScrollerY =379
 TCPStartup()
@@ -320,6 +321,12 @@ Func getCoordY( $y)
 	Return $newY
 EndFunc
 
+Func getRightCoordX($x)
+	$result = WinGetClientSize("Stronghold Kingdoms - Welt 3")
+	$newX = $result[0] + $x - $MyWinSizeX
+	Return $newX
+EndFunc
+
 Func startResearch()
 	Local $x, $y
 	Dim $Fields[4] = ["FrGewerbe.png", "FrMilitär.png", "FrLandwirtschaft.png", "FrBildung.png"]
@@ -329,7 +336,7 @@ Func startResearch()
 			MouseClick("LEFT", $x, $y)
 			Sleep(500)
 		EndIf
-		Local $x1 = getCoordX($ScrollerX), $y1 = getCoordY($ScrollerY)
+		Local $x1 = getRightCoordX($ScrollerX), $y1 = getCoordY($ScrollerY)
 		$count = 0
 		While $count <= 7
 			If searchForImage("FrSchieberUnten.png", $x, $y, 75) Then
