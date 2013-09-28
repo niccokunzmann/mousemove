@@ -67,14 +67,29 @@ _dorfname = None
 def dorfname_ist_bekannt():
     return _dorfname is not None
 
+click_dorf_nach_rechts = lambda: click(*rechts(933, 61))
+click_dorf_nach_links = lambda: click(*rechts(917, 61))
+
+ZOOM_ZUM_DORF_ZEIT = 2
+
 @im_menu('karte')
 def öffne_dorf_auf_karte(name = ''):
     global _dorfname
     from .auslesen import dorfname
     assert name is not None
+    if name == _dorfname:
+        click_dorf_nach_links()
+        t = ZOOM_ZUM_DORF_ZEIT + time.time()
+        click_dorf_nach_rechts()
+        now = time.time()
+        if now < t: time.sleep(t - now)
+        _dorfname = None
+        _dorfname = dorfname()
+        assert _dorfname == name, (name, dorfname)
+        return 
     dorfnamen = set()
     for i in range(20):
-        click(*rechts(933, 61))
+        click_dorf_nach_rechts()
         t = time.time()
         _dorfname = None
         _dorfname = dorfname()
@@ -83,7 +98,7 @@ def öffne_dorf_auf_karte(name = ''):
     if name and name != _dorfname:
         raise ValueError('Dorf {} konnte nicht unter den Dörfern {} '\
                          'gefunden werden.'.format(repr(name), dorfnamen))
-    s = 2 - time.time() + t
+    s = ZOOM_ZUM_DORF_ZEIT - time.time() + t
     if s > 0: time.sleep(s) # warten bis er zum dorf gescrollt hat
 
 def dorfname():
