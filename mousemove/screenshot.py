@@ -5,7 +5,7 @@ except SystemError: import files
 import time
 import multiprocessing
 
-def _screenshot_with_size(left, top, width, height):
+def _screenshot_with_size(left, top, width, height, tempfilename):
     hwin = win32gui.GetDesktopWindow()
     hwindc = win32gui.GetWindowDC(hwin)
     srcdc = win32ui.CreateDCFromHandle(hwindc)
@@ -14,14 +14,14 @@ def _screenshot_with_size(left, top, width, height):
     bmp.CreateCompatibleBitmap(srcdc, width, height)
     memdc.SelectObject(bmp)
     memdc.BitBlt((0, 0), (width, height), srcdc, (left, top), win32con.SRCCOPY)
-    tempfilename = files.tempfilename('.bmp')
     bmp.SaveBitmapFile(memdc, tempfilename)
-    return tempfilename
 
 def screenshot_with_size(left, top, width, height):
     # using a pool makes no performance difference
-    _pool = multiprocessing.Pool(1)
-    return _pool.apply_async(_screenshot_with_size, (left, top, width, height)).get(20)
+    tempfilename = files.tempfilename('.bmp')
+    with _some_lock:
+        _screenshot_with_size(left, top, width, height, tempfilename)
+    return tempfilename
 
 def screenshot():
     hwin = win32gui.GetDesktopWindow()
