@@ -68,7 +68,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 4):
                         # erkunden
                         try:
                             if r.erkunde():
-                                print('erkunde', r)
+                                pass
                             else:
                                 break
                         except RessourceVerschwunden:

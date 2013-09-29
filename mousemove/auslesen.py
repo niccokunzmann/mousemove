@@ -10,6 +10,7 @@ import PIL.Image
 import re
 import collections
 from threading import Lock
+import sys
 
 PARAMETER_ONLY_DIGITS = ['nobatch', 'digits']
 
@@ -100,16 +101,22 @@ def dorfname():
 
 _debug_numbers_lock = Lock()
 
+DEBUG_INTO_STDERR = False
+
 def debug_numbers(imageText):
+    string = 'number {} in screenshot {}'.format(repr(imageText), imageText.image_file)
     with _debug_numbers_lock:
         with open('debug numbers.out', 'a', encoding = 'utf8') as f:
-            print('number {} in screenshot {}'.format(repr(imageText), \
-                                                      imageText.image_file),
-                  file = f)
+            print(string, file = f)
+            if DEBUG_INTO_STDERR:
+                print(string, file = sys.stderr)
 
 map_numbers = {'.' : 0, '1.21': 101}
-def _angriff_format_number(imageText):
+def _tesseract_format_number(imageText):
     number = imageText.strip()
+    if len(number) > 3 and number[-4] == '.':
+        # remove .
+        number = number[:-4] + number[-3:]
     if number in map_numbers:
         return map_numbers[number]
     if not number.isdigit():
@@ -119,7 +126,7 @@ def _angriff_format_number(imageText):
 
 def _angriffszahl(x, y):
     x1, y1 = rechts(x + 1, y)
-    return _angriff_format_number(heller_text(x1, y1, 21, 13, parameters = PARAMETER_ONLY_DIGITS))
+    return _tesseract_format_number(heller_text(x1, y1, 21, 13, parameters = PARAMETER_ONLY_DIGITS))
 
 def angriff_bauern():
     return _angriffszahl(1224, 224)
@@ -139,10 +146,6 @@ def angriff_katapulte():
 def angriff_hauptmann():
     return _angriffszahl(1307, 374)
 
-_angriffstruppen_pool = ThreadPoolExecutor(6)
-
-_submit_angriffstruppen_worker = _angriffstruppen_pool.submit
-
 def angriffstruppen():
     spiel_window_handle() # sonst blockiert es
     fut = _submit_angriffstruppen_worker
@@ -158,8 +161,41 @@ def angriffstruppen():
         result[k] = v.result()
     return result
 
-__all__ = 'Lager lager Kornspeicher kornspeicher'\
-          ' dorfhalle Dorfhalle schwarzer_text heller_text dorfname'\
+
+
+ressourcen_speicher_positionen = dict(
+    Holz = (200, 307), Stein = (280, 307), Eisen = (360, 307), Pech = (440, 307),
+    Wild = (535, 307), Möbel = (615, 307), Metallwaren = (695, 307), Gewänder = (775, 307), Wein = (855, 307), Salz = (935, 307), Gewürze = (1015, 307), Seide = (1095, 307),
+    Äpfel = (200, 467), Käse = (280, 467), Fleisch = (360, 467), Brot = (440, 467), Gemüse = (520, 467), Fisch = (600, 467),
+    Bier = (685, 467),
+    Bögen = (775, 467), Piken = (855, 467), Rüstung = (935, 467), Schwerter = (1015, 467), Katapulte = (1095, 467), )
+
+_auslesen_pool = ThreadPoolExecutor(len(ressourcen_speicher_positionen))
+
+_submit_angriffstruppen_worker = _auslesen_pool.submit
+_submit_ressourcen_speicher_worker = _auslesen_pool.submit
+
+
+
+def ressourcen_zahl(name):
+    x, y = mitte(*ressourcen_speicher_positionen[name.capitalize()])
+    text = schwarzer_text(x, y, 80, 20, parameters = PARAMETER_ONLY_DIGITS)
+    return _tesseract_format_number(text)
+
+
+def ressourcenstand():
+    spiel_window_handle() # sonst blockiert es
+    fut = _submit_ressourcen_speicher_worker
+    futures = []
+    for name in ressourcen_speicher_positionen:
+        futures.append((name, fut(ressourcen_zahl, name)))
+    result = {}
+    for name, future in futures:
+        result[name] = future.result()
+    return result
+    
+__all__ = 'schwarzer_text heller_text dorfname PARAMETER_ONLY_DIGITS'\
           ' schwarzer_text heller_text angriff_bauern angriff_bogenschützen'\
           ' angriff_pikeniere angriff_schwertkämpfer angriff_katapulte'\
-          ' angriff_hauptmann angriffstruppen'.split()
+          ' angriff_hauptmann angriffstruppen ressourcen_zahl'\
+          ' ressourcen_speicher_positionen ressourcenstand'.split()
