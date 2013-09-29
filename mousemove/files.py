@@ -39,5 +39,8 @@ def error_report_file():
 def tesser_exe():
     return constants.tesser_exe()
 
+def screenshot_script_path():
+    return os.path.join(os.path.dirname(__file__), '_screenshot script.py')
+
 __all__ = 'tempfilename image_folder forschungsordner config_file_name '\
-          'error_report_file'.split()
+          'error_report_file screenshot_script_path'.split()
