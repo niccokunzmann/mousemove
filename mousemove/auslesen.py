@@ -111,7 +111,7 @@ def debug_numbers(imageText):
             if DEBUG_INTO_STDERR:
                 print(string, file = sys.stderr)
 
-map_numbers = {'.' : 0, '1.21': 101, '2.2' : 20 '1.35' : 105}
+map_numbers = {'.' : 0, '1.21': 101, '2.2' : 20, '1.35' : 105}
 def _tesseract_format_number(imageText):
     number = imageText.strip()
     if len(number) > 3 and number[-4] == '.':
