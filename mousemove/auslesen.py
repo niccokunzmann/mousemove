@@ -111,12 +111,13 @@ def debug_numbers(imageText):
             if DEBUG_INTO_STDERR:
                 print(string, file = sys.stderr)
 
-map_numbers = {'.' : 0, '1.21': 101}
+map_numbers = {'.' : 0, '1.21': 101, '2.2' : 20 '1.35' : 105}
 def _tesseract_format_number(imageText):
     number = imageText.strip()
     if len(number) > 3 and number[-4] == '.':
         # remove .
         number = number[:-4] + number[-3:]
+    number = number.replace('.3', '0').replace('.2', '0')
     if number in map_numbers:
         return map_numbers[number]
     if not number.isdigit():
