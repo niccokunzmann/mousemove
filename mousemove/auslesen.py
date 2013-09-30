@@ -66,7 +66,6 @@ def heller_text(x, y, width, height, parameters = []):
     img.save(image_name)
     return text_from_image_file(image_name, parameters)
 
-
 read_width = 120 # pixel
 read_height = 22 # pixel
 def maximalzahl_in_klammern(x, y):
@@ -127,7 +126,9 @@ def _tesseract_format_number(imageText):
 
 def _angriffszahl(x, y):
     x1, y1 = rechts(x + 1, y)
-    return _tesseract_format_number(heller_text(x1, y1, 21, 13, parameters = PARAMETER_ONLY_DIGITS))
+    filename = screenshot_with_size(x1, y1, 21, 13)
+    text = text_from_image_file(filename, PARAMETER_ONLY_DIGITS)
+    return _tesseract_format_number(text)
 
 def angriff_bauern():
     return _angriffszahl(1224, 224)
