@@ -344,7 +344,9 @@ Func startResearch()
 				If $result = 1 Then
 					MouseClick("LEFT", $x, $y)
 					Sleep(300)
-					updateQueue()
+					if isResearching() Then
+						updateQueue()
+					EndIf
 					Return
 				EndIf
 				ExitLoop
@@ -424,7 +426,7 @@ EndFunc
 Func algorithm()
 	While 1
 		schedule()
-		MouseMove(100, 100, 0)
+		MouseClick("LEFT",100, 100, 1, 0)
 		Sleep(100)
 		executeResearch()
 		Sleep(500)
