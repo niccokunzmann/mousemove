@@ -200,4 +200,4 @@ __all__ = 'schwarzer_text heller_text dorfname PARAMETER_ONLY_DIGITS'\
           ' schwarzer_text heller_text angriff_bauern angriff_bogenschützen'\
           ' angriff_pikeniere angriff_schwertkämpfer angriff_katapulte'\
           ' angriff_hauptmann angriffstruppen ressourcen_zahl'\
-          ' ressourcen_speicher_positionen ressourcenstand'.split()
+          ' ressourcen_speicher_positionen ressourcenstand text'.split()

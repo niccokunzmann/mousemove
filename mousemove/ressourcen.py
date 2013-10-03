@@ -202,9 +202,10 @@ def formationen_verwalten_click():
     mouse.click(*rechts(1276, 649))
     formationen_verwalten_position()
 
-erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63)
+erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63 - 106)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
-formation_setzen_click = lambda: mouse.click(*formationen_verwalten(36, 92))
+formation_setzen_click = lambda: mouse.click(*formationen_verwalten(137, 47))
+formation_schließen_click = lambda: mouse.click(*formationen_verwalten(430, 92))
 angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 537))
 angreifen_ausführen_click = lambda: mouse.click(*karte_mitte(833, 628))
 angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
@@ -212,8 +213,12 @@ angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
 def formation_auswählen():
     mouse.move(*erste_formation_auswählen_position())
     formationen_verwalten_position()
+    print(1)
     erste_formation_auswählen_click()
+    print(2)
     formation_setzen_click()
+    print(3)
+    formation_schließen_click()
         
 def wolfshöhle_angreifen(x, y):
     """greife eine wolfshhle an => ob geklappt"""
@@ -231,6 +236,16 @@ def wolfshöhle_angreifen(x, y):
     angriff_losschicken_click()
     angreifen_ausführen_click()
     return True
+
+def test():
+    formationen_verwalten_click()
+    print('a')
+    formation_auswählen()
+    print('b')
+    angriff_losschicken_click()
+    print('c')
+    angreifen_ausführen_click()
+    print('d')
 
 def genug_truppen_für_wolfshöhlen():
     from . import auslesen
