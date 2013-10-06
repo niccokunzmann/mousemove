@@ -10,19 +10,20 @@ HotKeySet("^!a", "algorithm")
 HotKeySet("^!q", "quit")
 Opt("MouseClickDownDelay", 100)
 Dim $priorityRecruiting[6] = [0,0,0,0,0,0]
-$queueSize=10
+$queueSize=15
 Dim $queue[$queueSize]= [""]
 Dim $lastCheck
 Dim $connection
 Dim $myTurn = False
 Dim $NICHTS = 0, $MILIZ = 1, $BOGEN = 2, $PIKE = 3, $SCHWERT = 4, $KATAPULT = 5, $KUNDSCHAFTER =6
-Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=1019, $KundschafterTopX=995
+Dim $MilizTopX=331, $BogenTopX=489, $PikeTopX=651, $SchwertTopX=813, $KatapultTopX=972, $KundschafterTopX=995
 Dim $NUMBEROFVILLAGES = 3
 Dim $MyWinCenterY = 878/2
 Dim $MyWinCenterX =1600/2
 Dim $MyWinSizeX = 1600
 Dim $ScrollerX = 1554
 Dim $ScrollerY =379
+Dim $ImageNumber = 0
 TCPStartup()
 
 Func startServer()
@@ -183,8 +184,9 @@ Func defineResearch()
 	Local $name = ""
 	For $i = 0 To $queueSize-1
 		If $queue[$i] = "" Then
-			$name = "r" & $i
+			$name = "r" & $ImageNumber
 			$queue[$i] = $name & ".png"
+			$ImageNumber += 1
 			ExitLoop
 		EndIf
 	Next
