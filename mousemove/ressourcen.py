@@ -194,7 +194,7 @@ class Ressource(Ressource):
     def angreifen(self):
         assert self.name.lower() == 'wolfshöhle'
         self.scrolle_hin()
-        return wolfshöhle_angreifen(self.x, self.y)
+        return wolfshöhle_angreifen(self.x, self.y, self)
 
 wolfshöhle_angreifen_click = lambda: mouse.click(*rechts(1254, 233))
 
@@ -213,14 +213,11 @@ angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
 def formation_auswählen():
     mouse.move(*erste_formation_auswählen_position())
     formationen_verwalten_position()
-    print(1)
     erste_formation_auswählen_click()
-    print(2)
     formation_setzen_click()
-    print(3)
     formation_schließen_click()
         
-def wolfshöhle_angreifen(x, y):
+def wolfshöhle_angreifen(x, y, wolfshöhle = ''):
     """greife eine wolfshhle an => ob geklappt"""
     zerstöre_positionsbestimmung()
     mouse.click(x, y)
@@ -228,7 +225,7 @@ def wolfshöhle_angreifen(x, y):
         raise RessourceVerschwunden('Die Wolfshöhle an der Stelle ({},{}) nicht gefunden.'.format(x, y))
     wolfshöhle_angreifen_click()
     time.sleep(0.7)
-    if not genug_truppen_für_wolfshöhlen():
+    if not genug_truppen_für_wolfshöhlen(wolfshöhle):
         angriff_abbrechen_click()
         return False
     formationen_verwalten_click()
@@ -237,22 +234,12 @@ def wolfshöhle_angreifen(x, y):
     angreifen_ausführen_click()
     return True
 
-def test():
-    formationen_verwalten_click()
-    print('a')
-    formation_auswählen()
-    print('b')
-    angriff_losschicken_click()
-    print('c')
-    angreifen_ausführen_click()
-    print('d')
-
-def genug_truppen_für_wolfshöhlen():
+def genug_truppen_für_wolfshöhlen(wolfshöhle):
     from . import auslesen
     for name, stärke in auslesen.angriffstruppen().items():
         minimal_stärke = config.minimale_wolfshöhlen_truppenstärken[name]
         if minimal_stärke > stärke:
-            print('Nur {} {} aber {} benötigt.'.format(stärke, name, minimal_stärke))
+            print('Nur {} {} aber {} benötigt in {}.'.format(stärke, name, minimal_stärke, wolfshöhle.dorfname))
             return False
     return True
     
