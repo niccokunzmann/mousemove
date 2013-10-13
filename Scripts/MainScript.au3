@@ -364,6 +364,7 @@ Func startResearch()
 				EndIf
 				Return
 			Else
+				;MsgBox(1, "test", $ScrollDistance)
 				MouseClickDrag("LEFT", $x1, $y1, $x1, $y1 +$ScrollDistance)
 				$y1 += $ScrollDistance
 				$count += 1
