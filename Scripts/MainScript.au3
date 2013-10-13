@@ -25,7 +25,7 @@ Dim $ScrollerX = 1554
 Dim $ScrollerY =379
 Dim $ImageNumber = 0
 $res = WinGetClientSize("Stronghold Kingdoms - Welt 3")
-Dim $ScrollDistance = $res[1]/878*100
+Dim $ScrollDistance = ($res[1]-360)/(878-360)*90
 TCPStartup()
 
 Func startServer()
