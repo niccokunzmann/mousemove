@@ -24,6 +24,8 @@ Dim $MyWinSizeX = 1600
 Dim $ScrollerX = 1554
 Dim $ScrollerY =379
 Dim $ImageNumber = 0
+$res = WinGetClientSize("Stronghold Kingdoms - Welt 3")
+Dim $ScrollDistance = $res[1]/878*100
 TCPStartup()
 
 Func startServer()
@@ -357,11 +359,13 @@ Func startResearch()
 			If $result = 1 Then
 				MouseClick("LEFT", $x, $y)
 				Sleep(500)
-				updateQueue()
+				if isResearching() Then
+					updateQueue()
+				EndIf
 				Return
 			Else
-				MouseClickDrag("LEFT", $x1, $y1, $x1, $y1 +100)
-				$y1 += 100
+				MouseClickDrag("LEFT", $x1, $y1, $x1, $y1 +$ScrollDistance)
+				$y1 += $ScrollDistance
 				$count += 1
 				Sleep(300)
 			EndIf
