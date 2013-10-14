@@ -205,7 +205,7 @@ def formationen_verwalten_click():
 erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63 - 106)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
 formation_setzen_click = lambda: mouse.click(*formationen_verwalten(137, 47))
-formation_schließen_click = lambda: mouse.click(*formationen_verwalten(430, 92))
+formation_schließen_click = lambda: mouse.click(*formationen_verwalten(430, 100))
 angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 537))
 angreifen_ausführen_click = lambda: mouse.click(*karte_mitte(833, 628))
 angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
@@ -217,7 +217,7 @@ def formation_auswählen():
     formation_setzen_click()
     formation_schließen_click()
         
-def wolfshöhle_angreifen(x, y, wolfshöhle = ''):
+def wolfshöhle_angreifen(x, y, wolfshöhle = None):
     """greife eine wolfshhle an => ob geklappt"""
     zerstöre_positionsbestimmung()
     mouse.click(x, y)
@@ -236,10 +236,12 @@ def wolfshöhle_angreifen(x, y, wolfshöhle = ''):
 
 def genug_truppen_für_wolfshöhlen(wolfshöhle):
     from . import auslesen
+    if wolfshöhle: dorfname = wolfshöhle.dorfname
+    else: dorfname = 'unbekanntes Dorf'
     for name, stärke in auslesen.angriffstruppen().items():
         minimal_stärke = config.minimale_wolfshöhlen_truppenstärken[name]
         if minimal_stärke > stärke:
-            print('Nur {} {} aber {} benötigt in {}.'.format(stärke, name, minimal_stärke, wolfshöhle.dorfname))
+            print('Nur {} {} aber {} benötigt in {}.'.format(stärke, name, minimal_stärke, dorfname))
             return False
     return True
     
