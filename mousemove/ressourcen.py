@@ -103,12 +103,12 @@ class Ressource(Ressource):
 
     @property
     def relx(self):
-        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
+        assert self.pos, 'Die Ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         return self.x - self.pos[0]
 
     @property
     def rely(self):
-        assert self.pos, 'De ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
+        assert self.pos, 'Die Ressource wurde aufgenommen, als karte.starte_kartenpositionsbestimmung() vergessen wurde'
         return self.y - self.pos[1]
 
     def abstand_zu(self, other):
@@ -164,13 +164,19 @@ class Ressource(Ressource):
         return self.abstand_zum_dorf <= EHRENRADIUS
 
     def gibt_ehre_beim_angreifen(self):
-        return self.ist_wolfshöhle() and self.ist_im_ehrenradius()
+        return self.ist_angreifbar() and self.ist_im_ehrenradius()
 
     def ist_wolfshöhle(self):
-        return self.name.lower() in ('wolfshöhle', 'wolfshöhle zerstört')
+        return 'wolfshöhle' in self.name.lower()
+
+    def ist_banditenlager(self):
+        return 'banditenlager' in self.name.lower()
+
+    def ist_angreifbar(self):
+        return self.ist_wolfshöhle() or self.ist_banditenlager()
 
     def ist_zerstört(self):
-        return self.name.lower() in ('wolfshöhle zerstört',)
+        return 'zerstört' in self.name.lower()
 
     def soll_zuerst_erkundet_werden(self):
         if config.erkunde_alle_unbekannten_ressourcen:
@@ -192,9 +198,44 @@ class Ressource(Ressource):
         return 1 / self.sortier_priorität
 
     def angreifen(self):
-        assert self.name.lower() == 'wolfshöhle'
+        """greife eine ressource an => ob geklappt"""
+        assert self.ist_angreifbar()
         self.scrolle_hin()
-        return wolfshöhle_angreifen(self.x, self.y, self)
+        zerstöre_positionsbestimmung()
+        mouse.click(self.x, self.y)
+        if not wolfshöhle_existiert():
+            raise RessourceVerschwunden('Angriff abgebrochen, da {} nicht gefunden.'.format(self))
+        wolfshöhle_angreifen_click()
+        time.sleep(0.7)
+        if not self.ausreichend_truppen():
+            angriff_abbrechen_click()
+            return False
+        formationen_verwalten_click()
+        self.formation_auswählen()
+        angriff_losschicken_click()
+        angreifen_ausführen_click()
+        return True
+
+    def ausreichend_truppen(self):
+        if self.ist_banditenlager():
+            return genug_truppen_für_banditenlager(self)
+        if self.ist_wolfshöhle():
+            return genug_truppen_für_wolfshöhlen(self)
+        assert False, 'Keine Truppen für {} konfigurierbar.'.format(self.name)
+
+    def formation_auswählen(self):
+        mouse.move(*erste_formation_auswählen_position())
+        formationen_verwalten_position()
+        self.formation_auswählen_click()
+        formation_setzen_click()
+        formation_schließen_click()
+
+    def formation_auswählen_click(self):
+        if self.ist_wolfshöhle():
+            erste_formation_auswählen_click()
+        elif self.ist_banditenlager():
+            zweite_formation_auswählen_click()
+        assert 'Kann die Formation nicht anklicken in {}.'.format(self)
 
 wolfshöhle_angreifen_click = lambda: mouse.click(*rechts(1254, 233))
 
@@ -204,42 +245,27 @@ def formationen_verwalten_click():
 
 erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63 - 106)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())
+zweite_formation_auswählen_click = lambda: mouse.click(*formationen_verwalten(137, -63 - 106 + 13))
 formation_setzen_click = lambda: mouse.click(*formationen_verwalten(137, 47))
 formation_schließen_click = lambda: mouse.click(*formationen_verwalten(430, 100))
 angriff_losschicken_click = lambda: mouse.click(*rechts(1267, 537))
 angreifen_ausführen_click = lambda: mouse.click(*karte_mitte(833, 628))
 angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
 
-def formation_auswählen():
-    mouse.move(*erste_formation_auswählen_position())
-    formationen_verwalten_position()
-    erste_formation_auswählen_click()
-    formation_setzen_click()
-    formation_schließen_click()
-        
-def wolfshöhle_angreifen(x, y, wolfshöhle = None):
-    """greife eine wolfshhle an => ob geklappt"""
-    zerstöre_positionsbestimmung()
-    mouse.click(x, y)
-    if not wolfshöhle_existiert():
-        raise RessourceVerschwunden('Die Wolfshöhle an der Stelle ({},{}) nicht gefunden.'.format(x, y))
-    wolfshöhle_angreifen_click()
-    time.sleep(0.7)
-    if not genug_truppen_für_wolfshöhlen(wolfshöhle):
-        angriff_abbrechen_click()
-        return False
-    formationen_verwalten_click()
-    formation_auswählen()
-    angriff_losschicken_click()
-    angreifen_ausführen_click()
-    return True
-
 def genug_truppen_für_wolfshöhlen(wolfshöhle):
+    return genug_truppen_für_ressource(wolfshöhle, \
+                config.minimale_wolfshöhlen_truppenstärken)
+
+def genug_truppen_für_banditenlager(banditenlager):
+    return genug_truppen_für_ressource(banditenlager, \
+                config.minimale_banditenlager_truppenstärken)
+
+def genug_truppen_für_ressource(ressource, mindesttruppen):
     from . import auslesen
-    if wolfshöhle: dorfname = wolfshöhle.dorfname
+    if ressource: dorfname = ressource.dorfname
     else: dorfname = 'unbekanntes Dorf'
     for name, stärke in auslesen.angriffstruppen().items():
-        minimal_stärke = config.minimale_wolfshöhlen_truppenstärken[name]
+        minimal_stärke = [name]
         if minimal_stärke > stärke:
             print('Nur {} {} aber {} benötigt in {}.'.format(stärke, name, minimal_stärke, dorfname))
             return False
@@ -273,4 +299,4 @@ def sichte_ressourcen(zusätzliche_ressourcen = []):
 
 __all__ = 'ressourcen_positionen Ressource sichte_ressourcen ein_kundschafter'\
           ' RessourceVerschwunden kann_nur_erkundet_werden '\
-          'wolfshöhle_existiert wolfshöhle_angreifen'.split()
+          'wolfshöhle_existiert'.split()

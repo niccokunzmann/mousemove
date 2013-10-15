@@ -16,8 +16,11 @@ def DEFAULT_RESSOURCEN_PRIORITÄT():
 def DEFAULT_BANKETT_OPTION():
     return False
 
-def DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE():
+def DEFAULT_TRUPPENSTÄRKE():
     return 500
+
+DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE = DEFAULT_TRUPPENSTÄRKE
+DEFAULT_BANDITENLAGER_TRUPPENSTÄRKE = DEFAULT_TRUPPENSTÄRKE
 
 class _erkundungsmusterClass:
     def __init__(self):
@@ -34,7 +37,9 @@ def default_configuration():
                 erkunde_alle_unbekannten_ressourcen = False,
                 erkundungsmuster = _erkundungsmusterClass(),
                 wolfshöhlen_angreifen = False,
-                minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE)
+                minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE),
+                banditenlager_angreifen = False,
+                minimale_banditenlager_truppenstärken = defaultdict(DEFAULT_BANDITENLAGER_TRUPPENSTÄRKE),
                 )
 
 def tesser_exe():
