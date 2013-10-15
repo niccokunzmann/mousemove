@@ -265,7 +265,7 @@ def genug_truppen_für_ressource(ressource, mindesttruppen):
     if ressource: dorfname = ressource.dorfname
     else: dorfname = 'unbekanntes Dorf'
     for name, stärke in auslesen.angriffstruppen().items():
-        minimal_stärke = [name]
+        minimal_stärke = mindesttruppen[name]
         if minimal_stärke > stärke:
             print('Nur {} {} aber {} benötigt in {}.'.format(stärke, name, minimal_stärke, dorfname))
             return False

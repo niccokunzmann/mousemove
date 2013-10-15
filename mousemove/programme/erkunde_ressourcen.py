@@ -23,7 +23,6 @@ def greife_an(ressourcen, ressourcen_angegriffen):
                 ressourcen_angegriffen.add(ressource)
                 print('Angriff auf', ressource)
             else:
-                print('else')
                 erschöpfte_dörfer.add(ressource.dorfname)
         except RessourceVerschwunden:
             if ressource in ressourcen_angegriffen:
@@ -38,7 +37,7 @@ def plündere(alle_ressourcen, ressourcen_erkundet):
     alle_dörfer = dorfnamen()
     for dorfname in alle_dörfer:
         res = [r for r in alle_ressourcen if r.dorfname == dorfname and r.ist_ressource()]
-        kundschafter = kundschafter_pro_dorf
+        kundschafter = 8
         if res:
             print(len(res), 'Ressourcen gefunden:')
             for r in res:
@@ -99,7 +98,7 @@ def finde_alle_ressourcen():
     return sichte_ressourcen(zusätzliche_ressourcen) 
 
 @programm
-def erkunde_ressourcen(kundschafter_pro_dorf = 5):
+def erkunde_ressourcen():
     # mit Keyboardinterrupt pausieren
     # anzahl der Kundschafter merken
     # wenn eine unerkannte ressource gefunden wird sofort losschicken
@@ -113,7 +112,7 @@ def erkunde_ressourcen(kundschafter_pro_dorf = 5):
     while 1:
         try:
             alle_ressourcen = finde_alle_ressourcen()
-##            plündere(alle_ressourcen, ressourcen_erkundet)
+            plündere(alle_ressourcen, ressourcen_erkundet)
             wolfshöhlen = [r for r in alle_ressourcen if r.ist_wolfshöhle()]
             print(wolfshöhlen)
             greife_an(wolfshöhlen, angegriffene_ressourcen)
