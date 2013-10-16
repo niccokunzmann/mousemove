@@ -12,9 +12,6 @@ def greife_an(ressourcen, ressourcen_angegriffen):
                 ressourcen_angegriffen.remove(ressource)
                 print(ressource, 'zerstört')
             continue
-        print(ressource.dorfname in erschöpfte_dörfer, \
-              not ressource.gibt_ehre_beim_angreifen(), \
-              ressource in ressourcen_angegriffen)
         if ressource.dorfname in erschöpfte_dörfer: continue
         if not ressource.gibt_ehre_beim_angreifen(): continue
         if ressource in ressourcen_angegriffen: continue

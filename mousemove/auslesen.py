@@ -34,9 +34,9 @@ def text_from_image_file(image_name, parameters = []):
     result.text_file = output_name
     return result
 
-def text(x, y, width, height):
+def text(x, y, width, height, *args, **kw):
     image_name = screenshot_with_size(x, y, width, height)
-    return text_from_image_file(image_name)
+    return text_from_image_file(image_name, *args, **kw)
 
 def schwarzer_text(x, y, width, height, schwelle = 200, parameters = []):
     image_name = screenshot_with_size(x, y, width, height)
@@ -113,7 +113,7 @@ def debug_numbers(imageText):
 map_numbers = {'.' : 0, '1.21': 101, '2.2' : 20, '1.35' : 105,
                '1 5' : 105}
 def _tesseract_format_number(imageText):
-    number = imageText.strip()
+    number = imageText.replace(' ', '').strip()
     if len(number) > 3 and number[-4] == '.':
         # remove .
         number = number[:-4] + number[-3:]
@@ -182,8 +182,8 @@ _submit_ressourcen_speicher_worker = _auslesen_pool.submit
 
 def ressourcen_zahl(name):
     x, y = mitte(*ressourcen_speicher_positionen[name.capitalize()])
-    text = schwarzer_text(x, y, 80, 20, parameters = PARAMETER_ONLY_DIGITS)
-    return _tesseract_format_number(text)
+    _text = text(x + 5, y, 70, 20, parameters = PARAMETER_ONLY_DIGITS)
+    return _tesseract_format_number(_text)
 
 
 def ressourcenstand():
