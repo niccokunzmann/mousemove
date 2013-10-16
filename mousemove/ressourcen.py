@@ -1,12 +1,10 @@
 import collections
 from . navigation import im_menu
-from . import config
 import mousemove.constants
 from .positionen import *
 from .navigation import *
 from . import mouse
 from . screenshot import last_screenshot_file_name
-from . import config
 from .constants import EHRENRADIUS
 
 import time
@@ -96,6 +94,7 @@ class Ressource(Ressource):
 
     @property
     def priorität(self):
+        from . import config
         prio = config.ressourcen_prioritäten[self.name.lower()]
         if prio <= 1:
             return 1
@@ -179,6 +178,7 @@ class Ressource(Ressource):
         return 'zerstört' in self.name.lower()
 
     def soll_zuerst_erkundet_werden(self):
+        from . import config
         if config.erkunde_alle_unbekannten_ressourcen:
             return self.ist_unbekannt()
         return self.gibt_ehre_beim_erkunden()
@@ -253,10 +253,12 @@ angreifen_ausführen_click = lambda: mouse.click(*karte_mitte(833, 628))
 angriff_abbrechen_click = lambda: mouse.click(*rechts(1266, 601))
 
 def genug_truppen_für_wolfshöhlen(wolfshöhle):
+    from . import config
     return genug_truppen_für_ressource(wolfshöhle, \
                 config.minimale_wolfshöhlen_truppenstärken)
 
 def genug_truppen_für_banditenlager(banditenlager):
+    from . import config
     return genug_truppen_für_ressource(banditenlager, \
                 config.minimale_banditenlager_truppenstärken)
 
@@ -272,6 +274,7 @@ def genug_truppen_für_ressource(ressource, mindesttruppen):
     return True
     
 def sichte_ressourcen(zusätzliche_ressourcen = []):
+    from . import config
     res = []
     height = höhe_der_karte() - 20
     width = breite_der_karte() - 20
@@ -294,8 +297,6 @@ def sichte_ressourcen(zusätzliche_ressourcen = []):
     result = list(result)
     result.sort()
     return result
-    
-
 
 __all__ = 'ressourcen_positionen Ressource sichte_ressourcen ein_kundschafter'\
           ' RessourceVerschwunden kann_nur_erkundet_werden '\

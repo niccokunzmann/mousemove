@@ -73,7 +73,6 @@ click_dorf_nach_links = lambda: click(*rechts(917, 61))
 
 ZOOM_ZUM_DORF_ZEIT = 2
 
-@im_menu('karte')
 def öffne_dorf_auf_karte(name = ''):
     global _dorfname
     from .auslesen import dorfname

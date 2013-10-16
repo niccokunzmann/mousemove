@@ -1,6 +1,7 @@
 import time
 from collections import defaultdict
 import os
+import threading
 
 EHRENRADIUS = 768
 
@@ -22,6 +23,9 @@ def DEFAULT_TRUPPENSTÄRKE():
 DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE = DEFAULT_TRUPPENSTÄRKE
 DEFAULT_BANDITENLAGER_TRUPPENSTÄRKE = DEFAULT_TRUPPENSTÄRKE
 
+def DEFAULT_RESSOURCEN_VERKAUF_SCHWELLWERT():
+    return 1000000
+
 class _erkundungsmusterClass:
     def __init__(self):
         self.muster = [(.5, .5), (.5, -.5), (-.5, .5), (-.5, -.5)]
@@ -34,12 +38,14 @@ class _erkundungsmusterClass:
 def default_configuration():
     return dict(bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
                 ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
+                waren_verkaufs_schwellwert = defaultdict(DEFAULT_RESSOURCEN_VERKAUF_SCHWELLWERT),
                 erkunde_alle_unbekannten_ressourcen = False,
                 erkundungsmuster = _erkundungsmusterClass(),
                 wolfshöhlen_angreifen = False,
                 minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE),
                 banditenlager_angreifen = False,
                 minimale_banditenlager_truppenstärken = defaultdict(DEFAULT_BANDITENLAGER_TRUPPENSTÄRKE),
+                letzte_bildpositionen = {},
                 )
 
 def tesser_exe():

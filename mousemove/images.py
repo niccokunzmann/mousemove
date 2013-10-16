@@ -67,13 +67,16 @@ def open_image(image):
         image = name_zu_pfad[image]
     return PIL.Image.open(image)
 
+def bildmaße(image):
+    left, upper, right, lower = open_image(image).getbbox()
+    return right - left, lower - upper
 
 def bild_positionen(*args, **kw):
     from .positionen import bild_positionen
     return bild_positionen(*args, **kw)
 
 __all__ = 'screenshot last_screenshot_file_name pil2tkinter_image open_image'\
-          ' bild_positionen screenshot_with_size'.split()
+          ' bild_positionen screenshot_with_size bildmaße'.split()
 
 
 

@@ -4,26 +4,33 @@ import os as _os
 from . import files as _files
 from . import constants as _constants
 
+import threading as _threading
+_config_lock = _threading.RLock()
+del _threading
+
 _config_file_name = _files.config_file_name
 
 _config = globals()
 
 def load():
-    if not _os.path.isfile(_config_file_name()):
-        return
-    d = _pickle.load(open(_config_file_name(), 'rb'))
-    for k, v in d.items():
-        if k not in _do_not_load_and_save and not k.startswith('_'):
-            _config[k] = v
+    with config_lock():
+        if not _os.path.isfile(_config_file_name()):
+            return
+        d = _pickle.load(open(_config_file_name(), 'rb'))
+        for k, v in d.items():
+            if k not in _do_not_load_and_save and not k.startswith('_'):
+                _config[k] = v
 
 def save():
-    d = _config.copy()
-    for k in list(d.keys()):
-        if k in _do_not_load_and_save or k.startswith('_'):
-            d.pop(k)
-    _pickle.dump(d, open(_config_file_name(), 'wb'))
+    with config_lock():
+        d = _config.copy()
+        for k in list(d.keys()):
+            if k in _do_not_load_and_save or k.startswith('_'):
+                d.pop(k)
+        _pickle.dump(d, open(_config_file_name(), 'wb'))
 
-
+def config_lock():
+    return _config_lock
 
 _do_not_load_and_save = dir()
 # everything below this line will be loaded and saved

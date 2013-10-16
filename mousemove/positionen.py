@@ -2,6 +2,7 @@ from tkinter import *
 from concurrent.futures import ThreadPoolExecutor
 from .lazy import FutureList
 import win32gui
+import threading
 
 from . import images
 
@@ -91,22 +92,57 @@ def karten_positionen(*bilder):
     minx, miny, maxx, maxy, *x = karten_koordinaten()
     return bild_positionen(minx, miny, maxx, maxy, bilder)
 
+def spiel_positionen(*bilder, **kw):
+    left, top ,right, bottom = spiel_koordinaten()
+    return bild_positionen(left, top ,right, bottom, bilder)
+    
+
 _search_executor = ThreadPoolExecutor(1)
 
 submit_worker = _search_executor.submit
 
-_formationen_verwalten_position = None
-def formationen_verwalten_position():
-    global _formationen_verwalten_position
-    left, top ,right, bottom = spiel_koordinaten()
-    _formationen_verwalten_position = bild_positionen(left, top ,right, bottom, ('formationen verwalten',))
-    return _formationen_verwalten_position
+def neue_bildposition(bild, alt = None, box = None):
+    if box is None:
+        box = spiel_koordinaten()
+    if not alt:
+##        print('schlechter weg')
+        return bild_positionen(box[0], box[1], box[2], box[3], (bild,)).position_at(0)
+    width, height = images.bildmaße(bild)
+    x, y = alt.x, alt.y
+##    print(x, y, width, height, box)
+    list = bild_positionen(x - width // 2, y - height // 2, x + width - width //2, y + height - height // 2, (bild,))
+    position = list.position_at(0)
+##    print(list)
+##    print(bool(position))
+    if position: return position
+##    print("langer weg")
+    return neue_bildposition(bild, box = box)
+
+def letzte_bildpositionen_speicher(box = None):
+    from . import config
+    config.letzte_bildpositionen.setdefault(box, {})
+    positionen = config.letzte_bildpositionen[box]
+    return positionen
+    
+def erneuere_position(bild, alt = None, box = None):
+    from . import config
+    bild = bild.lower()
+    alte_position = letzte_bildpositionen_speicher(box).get(bild, None)
+    if not alte_position: alte_position = alt
+    neue_position = neue_bildposition(bild, alte_position, box)
+    def update(neue_position):
+        if not alte_position or neue_position != alte_position:
+##            print("position hat sich ge'ndert")
+            config.load()
+            letzte_bildpositionen_speicher(box)[bild] = neue_position
+            config.save()
+    neue_position.add_done_callback(update)
+    return neue_position
 
 def formationen_verwalten(relx, rely):
-    if _formationen_verwalten_position is None:
-        formationen_verwalten_position()
-    return relx + _formationen_verwalten_position[0].x, rely + _formationen_verwalten_position[0].y
-    
+    pos = erneuere_position('Formationen Verwalten')
+    return relx + pos.x, rely + pos.y
+
 def bild_positionen(minx, miny, maxx, maxy, namen, debug_many_matches = True):
     from . import karte
     s = images.screenshot_with_size(minx, miny, maxx - minx, maxy - miny)
@@ -116,40 +152,47 @@ def bild_positionen(minx, miny, maxx, maxy, namen, debug_many_matches = True):
     return FutureList(future)
 
 def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos, debug_many_matches):
+    """mitte der bilder!"""
     from .ressourcen import Ressource
     bilder = [images.open_image(name) for name in namen]
     _s_getpixel = s.getpixel 
     def s_getpixel(x, y):
         try:
-            return _s_getpixel((x0 + x, y0 + y))
+            return _s_getpixel((x0 + x, y0 + y))[:3]
         except IndexError as e:
             raise IndexError('x0={}, y0={}, x={}, y={}, maxx={}, maxy={},'\
                              ' xrange={}, yrange={}, in file {}'\
                              ''.format(x0, y0, x, y, maxx, maxy, xrange, yrange,
                                        images.last_screenshot_file_name()))
     x0, y0, maxx, maxy = s.getbbox()
+##    print(x0, y0, maxx, maxy)
+##    print(minx, miny, maxx, maxy)
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
-    xrange = maxx - min([img[2][2] for img in ps1]) - x0
-    yrange = maxy - min([img[2][3] for img in ps1]) - y0
+    xrange = maxx - min([img[2][2] - img[2][0] for img in ps1]) - x0 + 1
+    yrange = maxy - min([img[2][3] - img[2][1] for img in ps1]) - y0 + 1
+##    print(xrange, yrange)
     positions = []
     matches = {img : 0 for img in ps1}
     for x in range(xrange):
         for y in range(yrange):
             match = True
-            px = s_getpixel(x, y)[:3]
+            px = s_getpixel(x, y)
             for img in ps1:
+##                print('img[0] != px', img[0], '!=', px)
                 if img[0] != px: continue
                 matches[img] += 1
                 bbox = img[2]
                 matches[img]
+##                print('match', x, y, bbox)
                 if maxx - x < bbox[2] or maxy - y < bbox[3]:
                     continue
+##                print(':)')
                 image_getpixel = img[1].getpixel
                 i_x0, i_y0 = bbox[:2]
                 try:
                     for dx in range(bbox[2]):
                         for dy in range(bbox[3]):
-                            if s_getpixel(x + dx, y + dy)[:3] != \
+                            if s_getpixel(x + dx, y + dy) != \
                                image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
                                 match = False
                                 break
@@ -177,4 +220,5 @@ __all__ = 'screen_width screen_height spiel_height spiel_width '\
           'rechts unten karte_mitte spiel_koordinaten spiel_bbox '\
           'karten_koordinaten beep ressourcen_positionen '\
           'karten_positionen bild_positionen submit_worker '\
-          'formationen_verwalten_position formationen_verwalten'.split()
+          'formationen_verwalten erneuere_position neue_bildposition '\
+          'spiel_positionen'.split()

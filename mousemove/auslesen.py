@@ -168,17 +168,15 @@ def angriffstruppen():
 
 ressourcen_speicher_positionen = dict(
     Holz = (200, 307), Stein = (280, 307), Eisen = (360, 307), Pech = (440, 307),
-    Wild = (535, 307), Möbel = (615, 307), Metallwaren = (695, 307), Gewänder = (775, 307), Wein = (855, 307), Salz = (935, 307), Gewürze = (1015, 307), Seide = (1095, 307),
+    Wild = (535, 307), Möbel = (615, 307), Metallwaren = (695, 307), Gewänder = (775, 307), Wein = (855, 307), Salz = (935, 307), Gewürze = (1015, 307), Seide = (1092, 307),
     Äpfel = (200, 467), Käse = (280, 467), Fleisch = (360, 467), Brot = (440, 467), Gemüse = (520, 467), Fisch = (600, 467),
     Bier = (685, 467),
-    Bögen = (775, 467), Piken = (855, 467), Rüstung = (935, 467), Schwerter = (1015, 467), Katapulte = (1095, 467), )
+    Bögen = (775, 467), Piken = (855, 467), Rüstung = (935, 467), Schwerter = (1015, 467), Katapulte = (1092, 467), )
 
 _auslesen_pool = ThreadPoolExecutor(len(ressourcen_speicher_positionen))
 
 _submit_angriffstruppen_worker = _auslesen_pool.submit
 _submit_ressourcen_speicher_worker = _auslesen_pool.submit
-
-
 
 def ressourcen_zahl(name):
     x, y = mitte(*ressourcen_speicher_positionen[name.capitalize()])
@@ -196,9 +194,17 @@ def ressourcenstand():
     for name, future in futures:
         result[name] = future.result()
     return result
+
+def warenmenge_im_handel(index):
+    x, y = mitte(423, 344)
+    y += 40 * index
+    _text = text(x, y, 95, 28, parameters = PARAMETER_ONLY_DIGITS)
+    return _tesseract_format_number(_text)
+    
     
 __all__ = 'schwarzer_text heller_text dorfname PARAMETER_ONLY_DIGITS'\
           ' schwarzer_text heller_text angriff_bauern angriff_bogenschützen'\
           ' angriff_pikeniere angriff_schwertkämpfer angriff_katapulte'\
           ' angriff_hauptmann angriffstruppen ressourcen_zahl'\
-          ' ressourcen_speicher_positionen ressourcenstand text'.split()
+          ' ressourcen_speicher_positionen ressourcenstand text'\
+          ' warenmenge_im_handel'.split()
