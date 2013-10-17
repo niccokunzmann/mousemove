@@ -105,17 +105,17 @@ def neue_bildposition(bild, alt = None, box = None):
     if box is None:
         box = spiel_koordinaten()
     if not alt:
-##        print('schlechter weg')
+        print('schlechter weg')
         return bild_positionen(box[0], box[1], box[2], box[3], (bild,)).position_at(0)
     width, height = images.bildmaße(bild)
     x, y = alt.x, alt.y
-##    print(x, y, width, height, box)
+##    print('masse', x, y, width, height, box)
     list = bild_positionen(x - width // 2, y - height // 2, x + width - width //2, y + height - height // 2, (bild,))
     position = list.position_at(0)
 ##    print(list)
 ##    print(bool(position))
     if position: return position
-##    print("langer weg")
+    print("langer weg")
     return neue_bildposition(bild, box = box)
 
 def letzte_bildpositionen_speicher(box = None):
@@ -132,7 +132,7 @@ def erneuere_position(bild, alt = None, box = None):
     neue_position = neue_bildposition(bild, alte_position, box)
     def update(neue_position):
         if not alte_position or neue_position != alte_position:
-##            print("position hat sich ge'ndert")
+            print("position hat sich ge'ndert")
             config.load()
             letzte_bildpositionen_speicher(box)[bild] = neue_position
             config.save()
@@ -165,17 +165,16 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos, debug_many_mat
                              ''.format(x0, y0, x, y, maxx, maxy, xrange, yrange,
                                        images.last_screenshot_file_name()))
     x0, y0, maxx, maxy = s.getbbox()
-##    print(x0, y0, maxx, maxy)
-##    print(minx, miny, maxx, maxy)
+##    print('x0', x0, y0, maxx, maxy)
+##    print('minmax', minx, miny, maxx, maxy)
     ps1 = [(image.getpixel((0,0))[:3], image, image.getbbox()) for image in bilder]
     xrange = maxx - min([img[2][2] - img[2][0] for img in ps1]) - x0 + 1
     yrange = maxy - min([img[2][3] - img[2][1] for img in ps1]) - y0 + 1
-##    print(xrange, yrange)
+##    print('pixels', xrange, yrange)
     positions = []
     matches = {img : 0 for img in ps1}
     for x in range(xrange):
         for y in range(yrange):
-            match = True
             px = s_getpixel(x, y)
             for img in ps1:
 ##                print('img[0] != px', img[0], '!=', px)
@@ -183,25 +182,26 @@ def _bild_positionen(minx, miny, maxx, maxy, namen, s, karte_pos, debug_many_mat
                 matches[img] += 1
                 bbox = img[2]
                 matches[img]
-##                print('match', x, y, bbox)
+##                print('match', x + minx, y + miny, bbox)
                 if maxx - x < bbox[2] or maxy - y < bbox[3]:
                     continue
 ##                print(':)')
                 image_getpixel = img[1].getpixel
+                match = True
                 i_x0, i_y0 = bbox[:2]
-                try:
-                    for dx in range(bbox[2]):
-                        for dy in range(bbox[3]):
-                            if s_getpixel(x + dx, y + dy) != \
-                               image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
-                                match = False
-                                break
-                        if not match: break
-                except IndexError: pass # image index out of range
+##                try:
+                for dx in range(bbox[2] - i_x0):
+                    for dy in range(bbox[3] - i_y0):
+                        if s_getpixel(x + dx, y + dy) != \
+                           image_getpixel((i_x0 + dx, i_y0 + dy))[:3]:
+                            match = False
+                            break
+                    if not match: break
+##                except IndexError: pass # image index out of range
                 if match:
                     positions.append(Ressource(namen[ps1.index(img)],
-                                      minx + x + bbox[2] // 2,
-                                      miny + y + bbox[3] // 2,
+                                      x0 + minx + x + (bbox[2] - bbox[0]) // 2,
+                                      y0 + miny + y + (bbox[3] - bbox[1]) // 2,
                                       karte_pos))
     if debug_many_matches:
         for img, _matches in matches.items():

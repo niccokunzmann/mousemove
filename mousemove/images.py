@@ -62,6 +62,13 @@ for dirpath, dirnames, filenames in os.walk(image_folder):
         locals()[kathegorie].append(name.capitalize())
         locals()[kathegorie].sort()
 
+assert PIL.Image.Image.__reduce__ is object.__reduce__
+
+def _Image_reduce(self):
+    return PIL.Image.frombytes, (self.mode, self.size, self.tobytes())
+# monkeypatch the __reduce__ function of images
+PIL.Image.Image.__reduce__ = _Image_reduce
+
 def open_image(image):
     if not os.path.isfile(image):
         image = name_zu_pfad[image]

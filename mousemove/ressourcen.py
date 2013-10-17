@@ -225,7 +225,6 @@ class Ressource(Ressource):
 
     def formation_auswählen(self):
         mouse.move(*erste_formation_auswählen_position())
-        formationen_verwalten_position()
         self.formation_auswählen_click()
         formation_setzen_click()
         formation_schließen_click()
@@ -241,7 +240,6 @@ wolfshöhle_angreifen_click = lambda: mouse.click(*rechts(1254, 233))
 
 def formationen_verwalten_click():
     mouse.click(*rechts(1276, 649))
-    formationen_verwalten_position()
 
 erste_formation_auswählen_position = lambda: formationen_verwalten(137, -63 - 106)
 erste_formation_auswählen_click = lambda: mouse.click(*erste_formation_auswählen_position())

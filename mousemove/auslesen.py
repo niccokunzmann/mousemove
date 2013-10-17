@@ -126,8 +126,8 @@ def _tesseract_format_number(imageText):
     return int(number)
 
 def _angriffszahl(x, y):
-    x1, y1 = rechts(x + 1, y)
-    filename = screenshot_with_size(x1, y1, 21, 13)
+    x1, y1 = rechts(x + 1, y + 2)
+    filename = screenshot_with_size(x1, y1, 21, 11)
     text = text_from_image_file(filename, PARAMETER_ONLY_DIGITS)
     return _tesseract_format_number(text)
 
