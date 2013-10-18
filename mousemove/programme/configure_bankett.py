@@ -1,20 +1,14 @@
 from tkinter import *
 from ..images import pil2tkinter_image
-from .. import config
-import collections
-import mousemove.constants
-from .programm import configuration
+from .programm import dorf_configuration
 
-@configuration
-def configure_bankett():
-    t = Tk()
-    t.title('Welche Bankette sollen abgehalten werden?')
-    image = pil2tkinter_image('BankettKonfigurationHintergrund', master = t)
+image = None
+
+@dorf_configuration('Welche Bankette sollen abgehalten werden?')
+def configure_bankett(t, dorf, default):
+    image = default(image = lambda: pil2tkinter_image('BankettKonfigurationHintergrund', master = t))
     l = Label(t, image = image, border = 0)
     l.pack()
-    b = Button(t, command = t.quit, text = 'OK')
-    b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
-    t.resizable(width=FALSE, height=FALSE)
     def entry(x, y):
         spin = Checkbutton(t)
         v = BooleanVar(spin)
@@ -32,19 +26,14 @@ def configure_bankett():
         Majestätisch = entry(591, 436),
         Erlesen = entry(591, 476),
         )
-    config.load()
     for name, var in entries.items():
         prio = config.bankett_optionen[name]
         var.set(prio)
-    t.bind('<Escape>', lambda e: t.quit())
-    t.protocol("WM_DELETE_WINDOW", t.quit)
-    try:
-        t.mainloop()
-        config.load()
+    def save(dorf):
         for name, var in entries.items():
-            config.bankett_optionen[name] = var.get()
-        config.save()
-    finally:
-        t.destroy()
+            pass
+##            config.bankett_optionen[name] = var.get()
+    return save
+
 
 __all__ = ['configure_bankett']

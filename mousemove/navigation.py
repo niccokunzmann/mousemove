@@ -2,10 +2,10 @@ import time
 import os
 import win32gui
 import pywintypes
-from . mouse import *
+from .mouse import *
 
 from .files import forschungsordner
-from . positionen import *
+from .positionen import *
 
 wo = 'spiel geöffnet'
 
@@ -32,6 +32,9 @@ def im_menu(ort):
 
 windowhandle = None
 
+class SpielNichtGestartet(Exception):
+    pass
+
 @öffnen
 def öffne_spiel():
     global windowhandle
@@ -50,7 +53,7 @@ def öffne_spiel():
                     windowhandle = handle
                     return
                 except pywintypes.error: pass
-    raise Exception('Spiel nicht gestartet')
+    raise SpielNichtGestartet('Spiel nicht gestartet')
 
 def spiel_window_handle():
     if windowhandle == None:
@@ -114,9 +117,11 @@ def dorfnamen():
 
 def alle_dörfer():
     '''Iterator über alle Dörfer'''
+    from . import config
+    from .dorf import Dorf
     dörfer = []
     while 1:
-        dorf = dorfname()
+        dorf = Dorf()
         if dorf in dörfer: break
         dörfer.append(dorf)
         yield dorf
@@ -260,7 +265,7 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' zerstöre_positionsbestimmung dorf im_menu pos beep öffne_dorfkarte'\
           ' öffne_burgkarte öffne_ressourcen öffne_handel öffne_truppen'\
           ' öffne_einheiten öffne_bankett öffne_vasallen dorfname_ist_bekannt'\
-          ' dorfname dorfnamen alle_dörfer'.split()
+          ' dorfname dorfnamen alle_dörfer SpielNichtGestartet'.split()
 
 __all__.extend(_names)
 

@@ -15,7 +15,8 @@ import sys
 PARAMETER_ONLY_DIGITS = ['nobatch', 'digits']
 
 class ImageText(str):
-    pass
+    @staticmethod
+    def is_image_text(): return True
 
 def text_from_image_file(image_name, parameters = []):
     assert image_name.lower().endswith('.bmp')
