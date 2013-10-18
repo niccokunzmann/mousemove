@@ -85,7 +85,7 @@ def öffne_dorf_auf_karte(name = ''):
         if now < t: time.sleep(t - now)
         _dorfname = None
         _dorfname = dorfname()
-        assert _dorfname == name, (name, _dorfname)
+        assert _dorfname == name, (_dorfname, name)
         return 
     dorfnamen = set()
     for i in range(20):

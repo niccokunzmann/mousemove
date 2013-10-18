@@ -92,10 +92,15 @@ def karten_positionen(*bilder):
     minx, miny, maxx, maxy, *x = karten_koordinaten()
     return bild_positionen(minx, miny, maxx, maxy, bilder)
 
-def spiel_positionen(*bilder, **kw):
-    left, top ,right, bottom = spiel_koordinaten()
+def spiel_positionen(*bilder):
+    left, top, right, bottom = spiel_koordinaten()
     return bild_positionen(left, top ,right, bottom, bilder)
-    
+
+def markt_positionen(*bilder):
+    bilder += ('keine Favoritenstadt', 'Favoritenstadt')
+    left, top = mitte(544, 277)
+    right, bottom = mitte(567, 617)
+    return bild_positionen(left, top ,right, bottom, bilder)
 
 _search_executor = ThreadPoolExecutor(1)
 
@@ -105,7 +110,7 @@ def neue_bildposition(bild, alt = None, box = None):
     if box is None:
         box = spiel_koordinaten()
     if not alt:
-        print('schlechter weg')
+##        print('schlechter weg')
         return bild_positionen(box[0], box[1], box[2], box[3], (bild,)).position_at(0)
     width, height = images.bildmaße(bild)
     x, y = alt.x, alt.y
@@ -115,7 +120,7 @@ def neue_bildposition(bild, alt = None, box = None):
 ##    print(list)
 ##    print(bool(position))
     if position: return position
-    print("langer weg")
+##    print("langer weg")
     return neue_bildposition(bild, box = box)
 
 def letzte_bildpositionen_speicher(box = None):
@@ -221,4 +226,4 @@ __all__ = 'screen_width screen_height spiel_height spiel_width '\
           'karten_koordinaten beep ressourcen_positionen '\
           'karten_positionen bild_positionen submit_worker '\
           'formationen_verwalten erneuere_position neue_bildposition '\
-          'spiel_positionen'.split()
+          'spiel_positionen markt_positionen'.split()

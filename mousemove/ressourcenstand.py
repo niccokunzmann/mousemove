@@ -18,7 +18,8 @@ def öffnen(öffner):
             dorf_ist_offen = öffner
             try:
                 öffner()
-                öffne_dorf_auf_karte(self.dorfname)
+                if dorfname() != self.dorfname:
+                    öffne_dorf_auf_karte(self.dorfname)
                 return function(self, *args, **kw)
             finally:
                 if callable(alt):

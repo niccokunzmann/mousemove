@@ -46,6 +46,7 @@ def default_configuration():
                 banditenlager_angreifen = False,
                 minimale_banditenlager_truppenstärken = defaultdict(DEFAULT_BANDITENLAGER_TRUPPENSTÄRKE),
                 letzte_bildpositionen = {},
+                markt_reihenfolge = {},
                 )
 
 def tesser_exe():
