@@ -49,4 +49,7 @@ def right_click(x, y):
     win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP,x,y,0,0)
     wait()
 
-__all__ = 'mouse_speed move drag click click_again right_click'.split()
+position = win32api.GetCursorPos
+
+__all__ = 'mouse_speed move drag click click_again right_click position'\
+          ''.split()
