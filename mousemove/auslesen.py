@@ -38,6 +38,9 @@ def text(x, y, width, height, *args, **kw):
     image_name = screenshot_with_size(x, y, width, height)
     return text_from_image_file(image_name, *args, **kw)
 
+def text2(left, top, right, bottom):
+    return text(left, top, right - left, bottom - top)
+
 def schwarzer_text(x, y, width, height, schwelle = 200, parameters = []):
     image_name = screenshot_with_size(x, y, width, height)
     img = PIL.Image.open(image_name)
@@ -207,4 +210,4 @@ __all__ = 'schwarzer_text heller_text dorfname PARAMETER_ONLY_DIGITS'\
           ' angriff_pikeniere angriff_schwertkämpfer angriff_katapulte'\
           ' angriff_hauptmann angriffstruppen ressourcen_zahl'\
           ' ressourcen_speicher_positionen ressourcenstand text'\
-          ' warenmenge_im_handel'.split()
+          ' warenmenge_im_handel text2'.split()

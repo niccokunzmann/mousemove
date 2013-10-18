@@ -112,6 +112,16 @@ def dorfname():
 def dorfnamen():
     return _dorfnamen.copy()
 
+def alle_dörfer():
+    '''Iterator über alle Dörfer'''
+    dörfer = []
+    while 1:
+        dorf = dorfname()
+        if dorf in dörfer: break
+        dörfer.append(dorf)
+        yield dorf
+        öffne_dorf_auf_karte()
+
 @öffnen
 def öffne_karte():
     click(*rechts(932, 91))
@@ -250,7 +260,7 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' zerstöre_positionsbestimmung dorf im_menu pos beep öffne_dorfkarte'\
           ' öffne_burgkarte öffne_ressourcen öffne_handel öffne_truppen'\
           ' öffne_einheiten öffne_bankett öffne_vasallen dorfname_ist_bekannt'\
-          ' dorfname dorfnamen'.split()
+          ' dorfname dorfnamen alle_dörfer'.split()
 
 __all__.extend(_names)
 
