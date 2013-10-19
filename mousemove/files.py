@@ -2,6 +2,7 @@ import tempfile
 import os
 import os.path
 import shutil
+import time
 
 try: from . import constants
 except SystemError: import constants
@@ -14,11 +15,20 @@ def tempfilename(suffix = '', prefix = ''):
         return tempfile.mktemp(suffix, 'Stronghold Kingdoms Bot' + os.sep + prefix)
 
 path = os.path.dirname(tempfilename())
-if os.path.isdir(path):
-    try: shutil.rmtree(path)
-    except PermissionError: pass
-try: os.mkdir(path)
-except (PermissionError, FileExistsError): pass
+deadline = time.time() - 6 * 60 * 60
+if not os.path.isdir(path):
+    os.mkdir(path)
+for filename in os.listdir(path):
+    filepath = os.path.join(path, filename)
+    try:
+        if os.path.getmtime(filepath) < deadline:
+            if os.path.isfile(fileath):
+                os.remove(filepath)
+            else:
+                shutil.rmtree(filepath)
+    except FileNotFoundError: pass
+
+del path, filename, filepath, deadline
 
 image_folder = os.path.join(os.path.dirname(__file__), 'images')
 if not os.path.isdir(image_folder):
