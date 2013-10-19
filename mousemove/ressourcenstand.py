@@ -77,7 +77,7 @@ def handelspositionen():
                                      (BANKETTWAREN, 'wild möbel metallwaren gewänder wein salz gewürze seide')
                                      ]:
         for i, ware in enumerate(waren.split()):
-            handelspositionen[ware.lower()] = (MENUPOSITION, eintrag[i], i)
+            handelspositionen[ware.lower()] = (MENUPOSITION, mitte(*eintrag[i]), i)
     _handelspositionen = handelspositionen
     return handelspositionen
 
@@ -138,11 +138,12 @@ class WarenZuVerkaufen(dict):
         """=> Anzahl der losgeschickten Händler"""
         if ware not in self:
             return 0
+        märkte = wechsele_markt()
         self.öffne_ware(ware)
         setze_auf_einen_händler()
         if not es_gibt_noch_händler():
             return 0
-        for i in range(wechsele_markt()):
+        for i in range(märkte):
             if click_verkaufen():
                 # börse stimmt
                 return 1
