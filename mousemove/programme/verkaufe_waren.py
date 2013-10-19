@@ -6,6 +6,8 @@ MINUTEN = 60
 
 @programm
 def verkaufe_waren():
+##    import sys
+##    sys.stdout = sys.stderr = open('debug.out', 'w', encoding = 'utf8')
     while 1:
         for dorf in alle_dörfer():
             ressourcenstand = Ressourcenstand()

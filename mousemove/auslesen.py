@@ -30,7 +30,7 @@ def text_from_image_file(image_name, parameters = []):
                                                                 image_name,
                                                                 output_name))
     time.sleep(0.5) # öffnet sich ein blödes Fenster
-    result = ImageText(open(output_name, encoding = 'utf8').read())
+    result = ImageText(open(output_name, encoding = 'utf8').read().strip())
     result.image_file = image_name
     result.text_file = output_name
     return result
@@ -94,7 +94,7 @@ def ressourcenzahlen(x, y, width, height):
 
 def _dorfname():
     x, y = rechts(970, 56)
-    return schwarzer_text(x, y, 1340 - 970, 69 - 56, schwelle = 330).strip()
+    return schwarzer_text(x, y, 1340 - 970, 69 - 56, schwelle = 330)
 
 def dorfname():
     from .navigation import dorfname_ist_bekannt, dorfname

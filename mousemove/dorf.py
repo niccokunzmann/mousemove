@@ -15,7 +15,7 @@ class _Dorf:
     def name(self, value):
         assert value.is_image_text(), 'Der Name muss ausgelesen sein.'
         self._image = open_image(value.image_file)
-        self._name = name
+        self._name = value
 
     def pil_image(self):
         return self._image.copy()
@@ -33,7 +33,7 @@ class _Dorf:
         return self.name
 
     def __repr__(self):
-        return '<{} name={}>'.format(self.__class__.__name__, repr(self.__name__))
+        return '<{} name={}>'.format(self.__class__.__name__, repr(self.name))
 
     def __eq__(self, other):
         return other == str(self)
@@ -45,7 +45,7 @@ def Dorf(name = None):
     from . import config
     if name is None:
         name = dorfname()
-    if hasattr(config.alle_dörfer):
+    if hasattr(config, 'alle_dörfer'):
         for dorf in config.alle_dörfer:
             if dorf.name == name:
                 return dorf
