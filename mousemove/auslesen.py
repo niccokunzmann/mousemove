@@ -29,7 +29,7 @@ def text_from_image_file(image_name, parameters = []):
                                   'input {} ; output {}'.format(return_code,
                                                                 image_name,
                                                                 output_name))
-    time.sleep(0.5) # öffnet sich ein blödes Fenster
+##    time.sleep(0.5) # öffnet sich ein blödes Fenster
     result = ImageText(open(output_name, encoding = 'utf8').read().strip())
     result.image_file = image_name
     result.text_file = output_name

@@ -30,7 +30,7 @@ class _Dorf:
         return self.name == dorfname()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def __repr__(self):
         return '<{} name={}>'.format(self.__class__.__name__, repr(self.name))
