@@ -36,10 +36,7 @@ class _erkundungsmusterClass:
         self.muster = wert
 
 def default_configuration():
-    return dict(ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
-                waren_verkaufs_schwellwert = defaultdict(DEFAULT_RESSOURCEN_VERKAUF_SCHWELLWERT),
-                erkunde_alle_unbekannten_ressourcen = False,
-                erkundungsmuster = _erkundungsmusterClass(),
+    return dict(erkundungsmuster = _erkundungsmusterClass(),
                 wolfshöhlen_angreifen = False,
                 minimale_wolfshöhlen_truppenstärken = defaultdict(DEFAULT_WOLFSHÖHLEN_TRUPPENSTÄRKE),
                 banditenlager_angreifen = False,
@@ -52,6 +49,9 @@ def default_configuration():
 def default_dorf_configuration():
     return dict(
         bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
+        waren_verkaufs_schwellwert = defaultdict(DEFAULT_RESSOURCEN_VERKAUF_SCHWELLWERT),
+        erkunde_alle_unbekannten_ressourcen = False,
+        ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
         )
 
 def tesser_exe():

@@ -94,8 +94,7 @@ class Ressource(Ressource):
 
     @property
     def priorität(self):
-        from . import config
-        prio = config.ressourcen_prioritäten[self.name.lower()]
+        prio = self.dorf.ressourcen_prioritäten[self.name.lower()]
         if prio <= 1:
             return 1
         return prio
@@ -200,6 +199,11 @@ class Ressource(Ressource):
     @property
     def dorfname(self):
         return self.pos[2]
+
+    @property
+    def dorf(self):
+        from . import dorf
+        return dorf.Dorf(self.dorfname)
 
     @property
     def preferenz(self):

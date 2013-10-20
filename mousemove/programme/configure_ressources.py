@@ -1,8 +1,7 @@
 from tkinter import *
 from ..images import pil2tkinter_image
-from .. import config
 from .. errorhandling import error_handling
-from .programm import configuration
+from .programm import dorf_configuration
 import abc
 
 to_be_defined = abc.abstractstaticmethod(lambda:0)
@@ -16,38 +15,20 @@ class configure_ressources(metaclass = abc.ABCMeta):
     auch_waffen_anzeigen = to_be_defined
     lagerwerte = to_be_defined
 
-    @property
-    def aktiviert(self):
-        return getattr(config, self.config_aktivieren_attribut)
-    @aktiviert.setter
-    def aktiviert(self, value):
-        setattr(config, self.config_aktivieren_attribut, value)
-    
-    @property
-    def ressourcen(self):
-        return getattr(config, self.config_ressourcen_attribut)
-    @ressourcen.setter
-    def ressourcen(self, value):
-        setattr(config, self.config_ressourcen_attribut, value)
-
-    load = staticmethod(config.load)
-    save = staticmethod(config.save)
-
-    @configuration
     def __init__(self):
-        t = Tk()
-        t.title(self.titel)
-        image = pil2tkinter_image(self.hintergrundbildname, master = t)
+        method = dorf_configuration(self.titel)(self._configure_ressources)
+        method(self)
+
+    @staticmethod
+    def _configure_ressources(t, dorf, default, self):
+        image = default(image = lambda: pil2tkinter_image(self.hintergrundbildname, master = t))
         l = Label(t, image = image, border = 0)
         l.pack()
-        b = Button(t, command = t.quit, text = 'OK')
-        b.place(relx = 0.5, rely = 0.5, anchor = CENTER)
         if self.config_aktivieren_attribut:
-            c_value = BooleanVar(t, value = self.aktiviert)
+            c_value = BooleanVar(t, value = dorf.config[self.config_aktivieren_attribut])
             c = Checkbutton(t, text = self.aktivieren_text, \
                             variable = c_value, onvalue = True, offvalue = False)
             c.place(x = 5, rely = 0.5, anchor = W)
-        t.resizable(width=FALSE, height=FALSE)
         entry1 = lambda x, step: entry(x, 109, step)
         entry2 = lambda x, step: entry(x, 270, step)
         def entry(x, y, step):
@@ -94,21 +75,14 @@ class configure_ressources(metaclass = abc.ABCMeta):
             schwerter = entry2(855, 5),
             katapulte = entry2(935, 5),
             ))
-        self.load()
         for name, var in entries.items():
-            prio = self.ressourcen[name]
+            prio = dorf.config[self.config_ressourcen_attribut][name]
             var.set(prio)
-        t.bind('<Escape>', lambda e: t.quit())
-        t.protocol("WM_DELETE_WINDOW", t.quit)
-        try:
-            t.mainloop()
-            self.load()
+        def save(dorf):
             if self.config_aktivieren_attribut:
-                self.aktiviert = bool(c_value.get())
+                dorf.config[self.config_aktivieren_attribut] = bool(c_value.get())
             for name, var in entries.items():
-                self.ressourcen[name] = var.get()
-            self.save()
-        finally:
-            t.destroy()
+                dorf.config[self.config_ressourcen_attribut][name] = var.get()
+        return save
 
 __all__ = ['configure_ressources']

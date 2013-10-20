@@ -46,6 +46,11 @@ class Ressourcenstand(dict):
     def auslesen(self):
         self.update(ressourcenstand_auslesen())
 
+    @property
+    def dorf(self):
+        from . import dorf
+        return dorf.Dorf(self.dorfname)
+
     def __repr__(self):
         super_string = super().__repr__()
         return '{}({}, {})'.format(self.__class__.__name__,
@@ -54,8 +59,9 @@ class Ressourcenstand(dict):
     def waren_zum_verkauf(self):
         d = WarenZuVerkaufen(self.dorfname)
         for ware, stand in self.items():
-            if config.waren_verkaufs_schwellwert[ware] < stand:
-                d[ware] = stand - config.waren_verkaufs_schwellwert[ware]
+            schwellwert = self.dorf.waren_verkaufs_schwellwert[ware]
+            if schwellwert < stand:
+                d[ware] = stand - schwellwert
         return d
 
 _handelspositionen = None

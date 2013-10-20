@@ -87,6 +87,7 @@ def dorf_configuration(titel):
                 frame = Frame(tk)
                 frame.pack(fill = BOTH, expand = True)
                 save = function(frame, dorf, default, *args, **kw)
+                assert callable(save), '{} should return a callable save function, not {}'.format(function, save)
                 dorf_frames[dorf] = (frame, save)
             dorfwahl.aktualisieren = aktualisieren
             def für_alle_übernehmen(dorf):
