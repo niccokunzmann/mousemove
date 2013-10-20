@@ -183,6 +183,14 @@ class Ressource(Ressource):
             return self.ist_unbekannt()
         return self.gibt_ehre_beim_erkunden()
 
+    @property
+    def angiffskategorie(self):
+        if self.ist_wolfshöhle():
+            return 'Wolfshöhle'
+        if self.ist_banditenlager():
+            return 'Banditenlager'
+        return None
+
     def format_for_print(self, *args):
         return '{:<15} {:4.0f}({:4.2f}) {} {}'.format(self.name, \
                                                       self.abstand_zum_dorf, \
