@@ -3,7 +3,7 @@ from ..navigation import beep
 from ..errorhandling import report_exc, error_handling
 from .. import config
 from . import hanging_threads
-from ..dorf import DorfWahlWidget
+from ..DorfWahlWidget import DorfWahlWidget
 from tkinter import *
 
 import collections
@@ -81,13 +81,13 @@ def dorf_configuration(titel):
                 for frame, save in dorf_frames.values():
                     frame.pack_forget()
                 if dorf in dorf_frames:
-                    frame = dorf_frames[dorf]
+                    frame = dorf_frames[dorf][0]
                     frame.pack()
                     return 
                 frame = Frame(tk)
                 frame.pack(fill = BOTH, expand = True)
                 save = function(frame, dorf, default, *args, **kw)
-                dorf_frames[dorf] = (f, save)
+                dorf_frames[dorf] = (frame, save)
             dorfwahl.aktualisieren = aktualisieren
             def für_alle_übernehmen(dorf):
                 frame, save = dorf_frames[dorf]

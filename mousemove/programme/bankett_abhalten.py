@@ -25,11 +25,12 @@ for qualität in qualitäten:
 def bankett_abhalten():
     öffne_spiel()
     while 1:
-        öffne_bankett()
-        for qualität, x, y in positionen:
-            if config.bankett_optionen[qualität]:
-                click(*mitte(x, y))
-                print('Halte Bankett ab', qualität)
+        for dorf in alle_dörfer():
+            öffne_bankett()
+            for qualität, x, y in positionen:
+                if dorf.bankett_optionen[qualität]:
+                    click(*mitte(x, y))
+                    print('Halte in', dorf, 'Bankett ab', qualität)
         yield 2 * 60 * 60
 
 

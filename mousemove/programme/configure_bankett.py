@@ -27,12 +27,12 @@ def configure_bankett(t, dorf, default):
         Erlesen = entry(591, 476),
         )
     for name, var in entries.items():
-        prio = config.bankett_optionen[name]
+        prio = dorf.bankett_optionen[name]
         var.set(prio)
     def save(dorf):
         for name, var in entries.items():
-            pass
-##            config.bankett_optionen[name] = var.get()
+            dorf.bankett_optionen[name] = var.get()
+        print('save', dorf)
     return save
 
 

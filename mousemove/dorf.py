@@ -1,11 +1,26 @@
-from .navigation import alle_dörfer, dorfname, öffne_spiel, SpielNichtGestartet
+from .navigation import *
 from .images import *
+from . import constants
+
+class Dorfkonfiguration:
+    def __init__(self, dict):
+        self.__dict__ = dict
+        for name, value in constants.default_dorf_configuration().items():
+            if name not in self.__dict__:
+                self[name] = value
+            
+    def __getitem__(self, item):
+        return self.__dict__[item]
+
+    def __setitem__(self, item, value):
+        self.__dict__[item] = value
 
 class _Dorf:
     _dorfbilder = {}
 
     def __init__(self, name):
         self.name = name
+        self._konfiguration = {}
 
     @property
     def name(self):
@@ -21,10 +36,11 @@ class _Dorf:
         return self._image.copy()
 
     def tk_image(self, master = None, *args, **kw):
-        if self in self._dorfbilder[self]:
+        if self in self._dorfbilder:
             return self._dorfbilder[self]
         bild = pil2tkinter_image(self.pil_image(), master = master, *args, **kw)
         self._dorfbilder[self] = bild
+        return bild
 
     def ist_aktiv(self):
         return self.name == dorfname()
@@ -63,6 +79,30 @@ class _Dorf:
         result.sort()
         return result
 
+    @property
+    def config(self):
+        return Dorfkonfiguration(self._konfiguration)
+
+def _config_property(name):
+    @property
+    def _get_config(dorf):
+        return dorf.config[name]
+    @_get_config.setter
+    def _set_config(dorf, value):
+        dorf.config[name] = value
+    _get_config.fget.__name__ = _set_config.fset.__name__ = name
+    _get_config.fget.__qualname__ = _set_config.fset.__qualname__ = _Dorf.__qualname__ + '.' + name
+    return _get_config
+
+def update_dorf():
+    for name, value in constants.default_dorf_configuration().items():
+        if name in dir(_Dorf):
+            raise ValueError('{} is already an attribute of _Dorf. '\
+                             'The configuration is invalid.'.format(name))
+        setattr(_Dorf, name, _config_property(name))
+update_dorf()
+del update_dorf, _config_property
+
 def Dorf(name = None):
     from . import config
     if name is None:
@@ -76,100 +116,5 @@ def Dorf(name = None):
 def speichere_alle_dörfer_in_config():
     from . import config
     config.alle_dörfer = set(alle_dörfer())
-
-try:
-    from tkinter import *
-    from tkinter.messagebox import showerror
-except:
-    class DorfWahlWidget:
-        def __init__(self, *args, **kw):
-            raise NotImplementedError('need tkinter for this')
-else:
-    class DorfWahlWidget(Frame):
-
-        def __init__(self, *args, **kw):
-            super().__init__(*args, **kw)
-            self.alles_speichern_button = Button(self, text = 'alle speichern',
-                                                 command = self._alles_speichern)
-            self.alles_speichern_button.pack(side = RIGHT, fill = Y)
-            self.für_alle_übernehmen_button = Button(self, text = 'das für alle Dörfer',
-                                                 command = self._für_alle_übernehmen)
-            self.für_alle_übernehmen_button.pack(side = RIGHT, fill = Y)
-            self.neuladen_bild = pil2tkinter_image('neu laden', master = self)
-            self.neuladen_button = Button(self, image = self.neuladen_bild, 
-                                          command = self.dörfer_laden)
-            self.neuladen_button.pack(side = RIGHT, fill = Y)
-            self.dorf_auswählen_button = Button(self,
-                                command = self.klicke_dorfname)
-            self.dorf_auswählen_button.pack(side = RIGHT, fill = BOTH,
-                                            expand = True)
-            self.aktives_dorf = None
-            self.after(0, self.ändere_dorfname)
-
-        @property
-        def aktives_dorf(self):
-            return self._aktives_dorf
-
-        @aktives_dorf.setter
-        def aktives_dorf(self, value):
-            if value is None:
-                self.für_alle_übernehmen_button.pack_forget()
-            else:
-                self.für_alle_übernehmen_button.pack()
-            self._aktives_dorf = value
-
-        def klicke_dorfname(self):
-            if not self.ändere_dorfname():
-                self.dörfer_laden()
-
-        def ändere_dorfname(self):
-            alle_dörfer = self.alle_dörfer
-            if not alle_dörfer:
-                self.dorf_auswählen_button['text'] = 'keine Dörfer'
-                return False
-            try: index = alle_dörfer.index(self.aktives_dorf)
-            except: index = -1
-            index += 1
-            index %= len(alle_dörfer)
-            self.aktives_dorf = dorf = alle_dörfer[index]
-            self.dorf_auswählen_button['image'] = dorf.tk_image
-            self._aktualisieren(dorf)
-            return True
-
-        def dörfer_laden(self):
-            try:
-                öffne_spiel()
-            except SpielNichtGestartet:
-                showerror('Spiel erst starten!', 'Das Spiel muss gestartet werden, \ndamit ich mich durchklicken kann und mir alle Dörfer merken.')
-            else:
-                speichere_alle_dörfer_in_config()
-                self.ändere_dorfname()
-            
-        @property
-        def alle_dörfer(self):
-            from . import config
-            dörfer = list(config.alle_dörfer)
-            dörfer.sort(key = lambda dorf: dorf.name)
-            return dörfer
-
-        def _alles_speichern(self):
-            self.alles_speichern()
-
-        def _aktualisieren(self):
-            self.aktualisieren()
-
-        def _für_alle_übernehmen(self):
-            if self.aktives_dorf:
-                self.für_alle_übernehmen(self.aktives_dorf)
-
-        ## zum überschreiben
-        def aktualisieren(self, dorf):
-            pass
-
-        def alles_speichern(self):
-            pass
-
-        def für_alle_übernehmen(self):
-            pass
 
 __all__ = 'Dorf speichere_alle_dörfer_in_config DorfWahlWidget'.split()

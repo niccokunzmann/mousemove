@@ -36,8 +36,7 @@ class _erkundungsmusterClass:
         self.muster = wert
 
 def default_configuration():
-    return dict(bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
-                ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
+    return dict(ressourcen_prioritäten = defaultdict(DEFAULT_RESSOURCEN_PRIORITÄT),
                 waren_verkaufs_schwellwert = defaultdict(DEFAULT_RESSOURCEN_VERKAUF_SCHWELLWERT),
                 erkunde_alle_unbekannten_ressourcen = False,
                 erkundungsmuster = _erkundungsmusterClass(),
@@ -49,6 +48,11 @@ def default_configuration():
                 markt_reihenfolge = {},
                 alle_dörfer = [],
                 )
+
+def default_dorf_configuration():
+    return dict(
+        bankett_optionen = defaultdict(DEFAULT_BANKETT_OPTION),
+        )
 
 def tesser_exe():
     path = os.path.join(os.environ['Programfiles'], 'Tesseract-OCR', 'tesseract.exe')
