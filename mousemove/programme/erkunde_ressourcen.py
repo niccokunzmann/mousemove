@@ -90,13 +90,13 @@ def plündere(alle_ressourcen, ressourcen_erkundet):
                     gesendete_kundschafter += 1
         print('kein Kundschafter mehr in {}'.format(dorfname))
 
-def finde_alle_ressourcen():
+def sichte_dorf_ressourcen(dorf):
     zusätzliche_ressourcen = []
     if config.wolfshöhlen_angreifen:
         zusätzliche_ressourcen.extend(['wolfshöhle', 'wolfshöhle zerstört'])
     if config.banditenlager_angreifen:
         zusätzliche_ressourcen.extend(['banditenlager', 'banditenlager zerstört'])
-    return sichte_ressourcen(zusätzliche_ressourcen) 
+    return dorf.sichte_ressourcen(zusätzliche_ressourcen) 
 
 @programm
 def erkunde_ressourcen():
@@ -113,7 +113,7 @@ def erkunde_ressourcen():
     while 1:
         try:
             for dorf in alle_dörfer():
-                ressourcen = dorf.sichte_ressourcen()
+                ressourcen = sichte_dorf_ressourcen(dorf)
                 plündere(ressourcen, ressourcen_erkundet)
                 angriffsziele = [ziel for ziel in alle_ressourcen
                                  if ziel.ist_angreifbar()]

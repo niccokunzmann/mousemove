@@ -41,6 +41,28 @@ class _Dorf:
     def __hash__(self):
         return hash(str(self))
 
+    def starte_kartenpositionsbestimmung(self):
+        from . import karte
+        karte.starte_kartenpositionsbestimmung(self.name)
+
+    def sichte_ressourcen(self, zusätzliche_ressourcen = []):
+        from . import config
+        res = []
+        height = höhe_der_karte() - 20
+        width = breite_der_karte() - 20
+        self.starte_kartenpositionsbestimmung()
+        positionen = config.erkundungsmuster()
+        while positionen:
+            dx, dy = positionen.pop(0)
+            scrolle_um(int(dx * width), int(dy * height))
+            res.append(ressourcen_positionen(*zusätzliche_ressourcen))
+        result = set()
+        for rs in res:
+            result.update(rs)
+        result = list(result)
+        result.sort()
+        return result
+
 def Dorf(name = None):
     from . import config
     if name is None:
