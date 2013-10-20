@@ -104,13 +104,14 @@ def click_verkaufen():
     return richtige_börse()
 
 def richtige_börse():
-    p1 = erneuere_position('handelsfehler links')
-    p2 = erneuere_position('handelsfehler rechts')
-    assert bool(p1) == bool(p2), 'Das Fenster muss vollständig sein'
-    if p1 and p2:
-        assert p1.y == p2.y, (p1.y, p2.y)
-        mouse.click((p1.x + p2.x) // 2, p1.y + 109)
-        return False
+    if not markt_lässt_sich_öffnen():
+        p1 = erneuere_position('handelsfehler links')
+        p2 = erneuere_position('handelsfehler rechts')
+        assert bool(p1) == bool(p2), 'Das Fenster muss vollständig sein'
+        if p1 and p2:
+            assert p1.y == p2.y, (p1.y, p2.y)
+            mouse.click((p1.x + p2.x) // 2, p1.y + 109)
+            return False
     return True
 
 def vorhandene_warenmenge_im_handel(ware):

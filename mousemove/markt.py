@@ -3,6 +3,7 @@ from .navigation import dorfname
 from . import config
 from .positionen import markt_positionen as _markt_positionen
 from .positionen import mitte
+import time
 
 def markt_reihenfolge(dorf = None):
     if dorf is None:
@@ -33,17 +34,31 @@ def markt_positionen():
 def öffne_märktemenu():
     mouse.click(*mitte(800, 254))
 
+def markt_lässt_sich_öffnen():
+    return _wähle_einen_markt()
+
 _letztes_verkaufsdorf = None
+
+def _wähle_einen_markt():
+    öffne_märktemenu()
+    t = time.time()
+    positionen = markt_positionen()
+    if not positionen:
+        sleeping = 0.5 - time.time() + t
+        if sleeping > 0: time.sleep(sleeping)
+        positionen = markt_positionen()
+    if positionen:
+        mouse.click(*wähle_markt_position(positionen))
+    return positionen
+
 
 def wechsele_markt():
     '''Wechsele zu dem Markt, der am besten für das Dorf geeignet ist.
     !!! nur falscher_markt() und wechsele_markt() können zur Endlosschelife führen.
     benutze die Anzahl der Märkte als Rückgabe dieser Funktion.'''
     global _letztes_verkaufsdorf
-    öffne_märktemenu()
-    positionen = markt_positionen()
+    positionen = _wähle_einen_markt()
     assert len(positionen), 'Es muss ein Markt zur Verfügung stehen.'
-    mouse.click(*wähle_markt_position(positionen))
     assert not markt_positionen(), 'Das Menu "Märkte" muss geschlossen sein.'
     _letztes_verkaufsdorf = dorfname()
     # plus 1 wegen falscher verwendung von falscher_markt()
@@ -57,4 +72,4 @@ def falscher_markt():
     if reihenfolge:
         reihenfolge.append(reihenfolge.pop(0))
 
-__all__ = 'wechsele_markt falscher_markt'.split()
+__all__ = 'wechsele_markt falscher_markt markt_lässt_sich_öffnen'.split()
