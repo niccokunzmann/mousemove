@@ -1,6 +1,7 @@
 from .navigation import *
 from .images import *
 from . import constants
+from .positionen import *
 
 class Dorfkonfiguration:
     def __init__(self, dict):
@@ -66,9 +67,9 @@ class _Dorf:
         res = []
         height = höhe_der_karte() - 20
         width = breite_der_karte() - 20
-        self.starte_kartenpositionsbestimmung()
         positionen = config.erkundungsmuster()
         while positionen:
+            self.starte_kartenpositionsbestimmung()
             dx, dy = positionen.pop(0)
             scrolle_um(int(dx * width), int(dy * height))
             res.append(ressourcen_positionen(*zusätzliche_ressourcen))

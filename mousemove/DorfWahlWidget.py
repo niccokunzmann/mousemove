@@ -1,7 +1,8 @@
 from .navigation import *
 from .images import *
 from tkinter import *
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, askyesnocancel
+from .dorf import speichere_alle_dörfer_in_config
 
 
 
@@ -88,7 +89,7 @@ class DorfWahlWidget(Frame):
         self.aktualisieren(self.aktives_dorf)
 
     def _für_alle_übernehmen(self):
-        if self.aktives_dorf and self.ask_okay_für_alle_übernehmen:
+        if self.aktives_dorf and self.ask_okay_für_alle_übernehmen():
             self.für_alle_übernehmen(self.aktives_dorf)
 
     def ask_okay_für_alle_übernehmen(self):

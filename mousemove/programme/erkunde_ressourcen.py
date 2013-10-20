@@ -115,7 +115,7 @@ def erkunde_ressourcen():
             for dorf in alle_dörfer():
                 ressourcen = sichte_dorf_ressourcen(dorf)
                 plündere(ressourcen, ressourcen_erkundet)
-                angriffsziele = [ziel for ziel in alle_ressourcen
+                angriffsziele = [ziel for ziel in ressourcen
                                  if ziel.ist_angreifbar()]
                 greife_an(angriffsziele, angegriffene_ziele)
             yield 60
