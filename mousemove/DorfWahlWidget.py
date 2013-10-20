@@ -88,8 +88,13 @@ class DorfWahlWidget(Frame):
         self.aktualisieren(self.aktives_dorf)
 
     def _für_alle_übernehmen(self):
-        if self.aktives_dorf:
+        if self.aktives_dorf and self.ask_okay_für_alle_übernehmen:
             self.für_alle_übernehmen(self.aktives_dorf)
+
+    def ask_okay_für_alle_übernehmen(self):
+        return askyesnocancel("Alle anderen überschreiben?",
+                              "Soll die Konfiguration für alle anderen "\
+                              "Dörfer gelöscht und überschrieben werden?")
 
     ## zum überschreiben
     def aktualisieren(self, dorf):
