@@ -71,8 +71,15 @@ _dorfname = None
 def dorfname_ist_bekannt():
     return _dorfname is not None
 
-click_dorf_nach_rechts = lambda: click(*rechts(933, 61))
-click_dorf_nach_links = lambda: click(*rechts(917, 61))
+def click_dorf_nach_rechts():
+    global _dorfname
+    _dorfname = None
+    click(*rechts(933, 61))
+    
+def click_dorf_nach_links():
+    global _dorfname
+    _dorfname = None
+    click(*rechts(917, 61))
 
 ZOOM_ZUM_DORF_ZEIT = 2
 
@@ -86,7 +93,6 @@ def öffne_dorf_auf_karte(name = ''):
         click_dorf_nach_rechts()
         now = time.time()
         if now < t: time.sleep(t - now)
-        _dorfname = None
         _dorfname = dorfname()
         assert _dorfname == name, (_dorfname, name)
         return 
@@ -94,7 +100,7 @@ def öffne_dorf_auf_karte(name = ''):
     for i in range(20):
         click_dorf_nach_rechts()
         t = time.time()
-        _dorfname = None
+        time.sleep(0.5)
         _dorfname = dorfname()
         dorfnamen.add(_dorfname)
         if name == _dorfname or not name: break
@@ -121,11 +127,11 @@ def alle_dörfer():
     from .dorf import Dorf
     dörfer = []
     while 1:
+        öffne_dorf_auf_karte()
         dorf = Dorf()
         if dorf in dörfer: break
         dörfer.append(dorf)
         yield dorf
-        öffne_dorf_auf_karte()
 
 @öffnen
 def öffne_karte():
@@ -235,6 +241,7 @@ def öffne_burgkarte():
 
 def öffne_ressourcen():
     öffne_dorf()
+    time.sleep(0.5)
     click(*rechts(1084, 123))
 
 def öffne_handel():

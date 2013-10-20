@@ -22,7 +22,7 @@ for filename in os.listdir(path):
     filepath = os.path.join(path, filename)
     try:
         if os.path.getmtime(filepath) < deadline:
-            if os.path.isfile(fileath):
+            if os.path.isfile(filepath):
                 os.remove(filepath)
             else:
                 shutil.rmtree(filepath)
