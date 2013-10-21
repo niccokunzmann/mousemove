@@ -1,5 +1,5 @@
 from . import mouse
-from .navigation import dorfname
+from .navigation import dorfname, schließe_error_dialog
 from . import config
 from .positionen import markt_positionen as _markt_positionen
 from .positionen import mitte
@@ -58,6 +58,9 @@ def wechsele_markt():
     benutze die Anzahl der Märkte als Rückgabe dieser Funktion.'''
     global _letztes_verkaufsdorf
     positionen = _wähle_einen_markt()
+    if not positionen:
+        schließe_error_dialog()
+        positionen = _wähle_einen_markt()
     assert len(positionen), 'Es muss ein Markt zur Verfügung stehen.'
     assert not markt_positionen(), 'Das Menu "Märkte" muss geschlossen sein.'
     _letztes_verkaufsdorf = dorfname()

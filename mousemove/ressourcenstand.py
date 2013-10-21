@@ -5,6 +5,7 @@ from . import mouse
 from . import config
 from . import auslesen
 from .markt import *
+from .navigation import schließe_error_dialog
 
 dorf_ist_offen = None
 
@@ -111,13 +112,7 @@ def click_verkaufen():
 
 def richtige_börse():
     if not markt_lässt_sich_öffnen():
-        p1 = erneuere_position('handelsfehler links')
-        p2 = erneuere_position('handelsfehler rechts')
-        assert bool(p1) == bool(p2), 'Das Fenster muss vollständig sein'
-        if p1 and p2:
-            assert p1.y == p2.y, (p1.y, p2.y)
-            mouse.click((p1.x + p2.x) // 2, p1.y + 109)
-            return False
+        return schließe_error_dialog()
     return True
 
 def vorhandene_warenmenge_im_handel(ware):

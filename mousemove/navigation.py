@@ -264,6 +264,17 @@ def öffne_vasallen():
     öffne_dorf()
     click(*rechts(1345, 123))
 
+def schließe_error_dialog():
+    from .positionen import erneuere_position
+    p1 = erneuere_position('handelsfehler links')
+    p2 = erneuere_position('handelsfehler rechts')
+    assert bool(p1) == bool(p2), 'Das Fenster muss vollständig sein'
+    if p1 and p2:
+        assert p1.y == p2.y, (p1.y, p2.y)
+        mouse.click((p1.x + p2.x) // 2, p1.y + 109)
+        return False
+    return True
+
 __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' öffne_karte öffne_dorf öffne_gemeinde öffne_forschung öffne_rang'\
           ' öffne_quests öffne_angriffe öffne_berichte öffne_fraktion'\
@@ -272,7 +283,8 @@ __all__ = 'zoom_raus spiel_window_handle öffne_spiel öffne_dorf_auf_karte'\
           ' zerstöre_positionsbestimmung dorf im_menu pos beep öffne_dorfkarte'\
           ' öffne_burgkarte öffne_ressourcen öffne_handel öffne_truppen'\
           ' öffne_einheiten öffne_bankett öffne_vasallen dorfname_ist_bekannt'\
-          ' dorfname dorfnamen alle_dörfer SpielNichtGestartet'.split()
+          ' dorfname dorfnamen alle_dörfer SpielNichtGestartet'\
+          ' schließe_error_dialog'.split()
 
 __all__.extend(_names)
 
