@@ -266,6 +266,7 @@ def öffne_vasallen():
 
 def schließe_error_dialog():
     from .positionen import erneuere_position
+    from . import mouse
     p1 = erneuere_position('handelsfehler links')
     p2 = erneuere_position('handelsfehler rechts')
     assert bool(p1) == bool(p2), 'Das Fenster muss vollständig sein'
