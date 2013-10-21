@@ -5,16 +5,50 @@ from .. import config
 from . import hanging_threads
 from ..DorfWahlWidget import DorfWahlWidget
 from tkinter import *
+import io
 
 import collections
 import time
+import sys
+import re
 
 andere_waren_nicht_dran_zeit = 0.5
+
+def patch_print():
+    if hasattr(__builtins__, 'print'):
+        _print = __builtins__.print
+    else:
+        _print = __builtins__['print']
+    pattern = re.compile('codec can\'t encode character \'([^\']*)\' in position (\\d+)')
+    def print(*args, **kw):
+        if 'file' in kw:
+            _file = kw.pop('file')
+        else:
+            _file = sys.stdout
+        file = io.StringIO()
+        ret = _print(file = file, *args, **kw)
+        string = file.getvalue()
+        while 1:
+            try:
+                _file.write(string)
+            except UnicodeEncodeError as e:
+                character = e.args[1][e.args[2]]
+                string = string.replace(character, '\u0001')
+            else:
+                break
+        return ret
+
+    if hasattr(__builtins__, 'print'):
+        __builtins__.print = print
+    else:
+        __builtins__['print'] = print
+    
 
 def programm(funktion):
     def f(*args, **kw):
         try:
             schedule.schedule()
+            patch_print()
             config.load()
             iterator = funktion(*args, **kw)
             if isinstance(iterator, collections.Iterable):
