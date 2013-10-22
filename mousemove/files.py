@@ -18,7 +18,8 @@ path = os.path.dirname(tempfilename())
 deadline = time.time() - 6 * 60 * 60
 if not os.path.isdir(path):
     os.mkdir(path)
-for filename in os.listdir(path):
+files = os.listdir(path)
+for filename in files:
     filepath = os.path.join(path, filename)
     try:
         if os.path.getmtime(filepath) < deadline:
@@ -28,7 +29,8 @@ for filename in os.listdir(path):
                 shutil.rmtree(filepath)
     except FileNotFoundError: pass
 
-del path, filename, filepath, deadline
+if files: del filename, filepath
+del path, files, deadline
 
 image_folder = os.path.join(os.path.dirname(__file__), 'images')
 if not os.path.isdir(image_folder):
