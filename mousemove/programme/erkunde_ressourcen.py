@@ -69,7 +69,7 @@ def plündere(alle_ressourcen, ressourcen_erkundet):
             while gesendete_kundschafter < kundschafter and res:
                 # roulette wheel
                 chosen_index0 = chosen_index = random.random() * \
-                                all_preferences_sum 
+                                all_preferences_sum / 2
                 i = 0
                 while chosen_index > all_preferences[i]:
                     chosen_index -= all_preferences[i]
@@ -107,6 +107,7 @@ def erkunde_ressourcen():
     # wenn unerkannte ressource erneut erschient wird sie erkundet
     def start():
         öffne_spiel()
+        config.load()
     ressourcen_erkundet = set()
     angegriffene_ziele = set()
     start()

@@ -27,7 +27,7 @@ for filename in files:
                 os.remove(filepath)
             else:
                 shutil.rmtree(filepath)
-    except FileNotFoundError: pass
+    except (FileNotFoundError, PermissionError): pass
 
 if files: del filename, filepath
 del path, files, deadline
