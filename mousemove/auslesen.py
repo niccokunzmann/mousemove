@@ -18,6 +18,17 @@ class ImageText(str):
     @staticmethod
     def is_image_text(): return True
 
+    def mspaint(self):
+        from . import images
+        return images.mspaint(self.image_file)
+
+    def image(self):
+        from . import images
+        return images.open_image(self.image_file)
+        
+    def show(self):
+        return self.image().show(str(self))
+
 def text_from_image_file(image_name, parameters = []):
     assert image_name.lower().endswith('.bmp')
     output_name = files.tempfilename('', 'tesser_output')
@@ -35,9 +46,9 @@ def text_from_image_file(image_name, parameters = []):
     result.text_file = output_name
     return result
 
-def text(x, y, width, height, *args, **kw):
+def text(x, y, width, height, parameters = []):
     image_name = screenshot_with_size(x, y, width, height)
-    return text_from_image_file(image_name, *args, **kw)
+    return text_from_image_file(image_name, parameters = parameters)
 
 def text2(left, top, right, bottom):
     return text(left, top, right - left, bottom - top)

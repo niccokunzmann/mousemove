@@ -118,4 +118,4 @@ def speichere_alle_dörfer_in_config():
     from . import config
     config.alle_dörfer = set(alle_dörfer())
 
-__all__ = 'Dorf speichere_alle_dörfer_in_config DorfWahlWidget'.split()
+__all__ = 'Dorf speichere_alle_dörfer_in_config'.split()

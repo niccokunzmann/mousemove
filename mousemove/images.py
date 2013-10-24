@@ -2,6 +2,7 @@ import os
 import PIL.Image
 import tkinter
 import time
+import subprocess
 
 from . import files
 
@@ -69,10 +70,16 @@ def _Image_reduce(self):
 # monkeypatch the __reduce__ function of images
 PIL.Image.Image.__reduce__ = _Image_reduce
 
-def open_image(image):
+def image_path(image):
     if not os.path.isfile(image):
         image = name_zu_pfad[image]
-    return PIL.Image.open(image)
+    return image
+
+def open_image(image):
+    return PIL.Image.open(image_path(image))
+
+def mspaint(image_file):
+    return subprocess.Popen(['mspaint', image_path(image)], shell = True)
 
 def bildmaße(image):
     left, upper, right, lower = open_image(image).getbbox()
@@ -81,6 +88,7 @@ def bildmaße(image):
 def bild_positionen(*args, **kw):
     from .positionen import bild_positionen
     return bild_positionen(*args, **kw)
+
 
 __all__ = 'screenshot last_screenshot_file_name pil2tkinter_image open_image'\
           ' bild_positionen screenshot_with_size bildmaße'.split()
